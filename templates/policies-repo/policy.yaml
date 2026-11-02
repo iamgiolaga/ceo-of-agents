@@ -1,3 +1,4 @@
+# Policies repo: policy/1. Contains no sensitive data; shared with every company clone.
 schema: policy/1
 gates:                 # minimum tier per action; companies may only move actions to a stricter tier
   free: {{GATES_FREE}}

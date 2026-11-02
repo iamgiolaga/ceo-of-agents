@@ -60,7 +60,7 @@ gates:
 
 ## Tighten-only rule against a holding policy
 
-When a company sets `policy` in `org.yaml`, the company CoS checks it at session start (read files only; no script). It reads only the `policies/` folder of the pinned holding commit, read-only, with `git -C <local> fetch` (optional) then `git -C <local> show <pin>:<path>policy.yaml`. Departments never read the holding repo. Compare with org.yaml:
+When a company sets `policy` in `org.yaml`, the company CoS checks it at session start (read files only; no script). It reads only `policy.yaml` from the pinned commit of the holding's separate policies repo, read-only: an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`. It never reads a clone of the holding hq, and departments never read the policies repo. Compare with org.yaml:
 
 1. Gates: for every action in the holding file, the company tier must be at or above the holding tier. An action absent from the company gates inherits the holding tier (fine).
 2. Connectors: any holding `forbidden_connectors` entry present in any department's `connectors` is a loosening.

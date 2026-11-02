@@ -13,8 +13,8 @@ Open decisions for the CEO. Answer in chat; the CoS records the answer with `rec
 <!-- END IF -->
 ### Context
 ### Options
-- (a) ...
-- (b) ...
+- (a) first option, with its cost and risk
+- (b) second option, with its cost and risk
 ### Recommendation
 -->
 

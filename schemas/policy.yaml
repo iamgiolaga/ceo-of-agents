@@ -1,9 +1,11 @@
-# Schema: policies/policy.yaml (`policy/1`)
+# Schema: policy.yaml at the root of the holding's policies repo (`policy/1`)
 #
 # Holding only. Minimum rules companies must respect. Companies may only tighten:
 # move an action to a stricter tier, add restrictions, add requirements, lower
-# ceilings. A company CoS reads this file from the pinned holding commit; see
-# gates/default.md for the tighten-only check.
+# ceilings. The file lives in a separate small policies repo (only policy.yaml and
+# README.md at its root, no sensitive data), never in the holding hq. A company CoS
+# reads it from the pinned commit of that repo; see gates/default.md for the
+# tighten-only check.
 #
 # Required keys: schema, gates, accounts, language, models
 #   schema                       exactly "policy/1"
@@ -29,7 +31,8 @@ models:
     workers: sonnet
 
 # Tighten-only check (company CoS at session start; read files only). Read the pinned
-# commit read-only: `git -C <local> show <pin>:<path>policy.yaml`. Compare with org.yaml:
+# commit read-only: an optional `git -C <local> fetch` (may fail offline), then
+# `git -C <local> show <pin>:policy.yaml`. Nothing else in that repo is read. Compare with org.yaml:
 #   1. Gates: for every action in the holding file, the company tier must be at or above
 #      the holding tier. An action absent from the company gates inherits the holding
 #      tier (fine).
@@ -51,5 +54,7 @@ models:
 #     default for companies (no extra restriction from the holding).
 #   - Model ceilings are concrete tier names from models.tiers (e.g. opus, sonnet,
 #     haiku), never the rule name one-down.
-#   - Changing this file is a holding hq commit approved by the CEO
+#   - Contains no sensitive data, secrets or company details (the repo is shared with
+#     every company clone).
+#   - Changing this file is a commit in the policies repo approved by the CEO
 #     (action change-policy-rules, tier ok); companies pick it up by moving their pin.

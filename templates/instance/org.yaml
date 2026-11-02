@@ -13,16 +13,16 @@ language:
 models:
   tiers: [opus, sonnet, haiku]  # most to least capable
   cos: {{MODEL_COS}}
-  departments: {{MODEL_DEPARTMENTS}}   # default for departments; per-department override below
+  departments: {{MODEL_DEPARTMENTS}}   # applies to departments unless overridden below
   workers: one-down             # a rule, not a model: one tier below the parent; never escalate
 # Zero departments is valid. Item shape:
 #  - id: engineering            # kebab-case; files .claude/agents/<id>.md, departments/<id>/charter.md
 #    from_catalog: engineering  # catalog id or "custom"
-#    display_name: Engineering  # role name by default, persona optional
+#    display_name: Engineering  # role name or persona, the CEO's choice
 #    model: opus
 #    connectors: []             # MCP tool patterns granted to this department only
 departments: {{DEPARTMENTS_YAML}}
-gates:                          # action ids from the framework default gates
+gates:                          # action ids from the framework gate table
   free: {{GATES_FREE}}
   notice: {{GATES_NOTICE}}
   ok: {{GATES_OK}}
@@ -31,8 +31,15 @@ accounts:
 # IF company
 policy: {{POLICY_YAML}}
 # Either `null` (no holding policy) or:
-#  source: <holding hq git remote>
-#  local: <path to the CEO's local clone of the holding hq, read-only>
-#  path: policies/
+#  repo: <git remote of the holding's policies repo>
+#  local: <path to the CEO's local clone of the policies repo, read-only>
 #  pin: <commit sha>
+policies_repo: null
+# END IF
+# IF holding
+policy: null
+policies_repo: {{POLICIES_REPO_YAML}}
+# A mapping:
+#  local: <path to the policies repo on the CEO's machine, outside this hq>
+#  remote: <git remote, or "" when none yet>
 # END IF

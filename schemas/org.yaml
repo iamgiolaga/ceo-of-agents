@@ -5,7 +5,8 @@
 #
 # Required keys: schema, framework_version, org, ceo, language, models,
 #                departments, gates, accounts
-# Optional keys: policy (company level only; null when unused)
+# Optional keys: policy (company level only; null when unused),
+#                policies_repo (holding level only; null for a company)
 #
 # Allowed values and rules
 #   schema                  exactly "org/1"
@@ -13,13 +14,13 @@
 #   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
 #   org.name                free text
 #   org.level               company | holding
-#   ceo.role_id             role id for the CEO (default "ceo"); a role, not a person
+#   ceo.role_id             role id for the CEO (for example "ceo"); a role, not a person
 #   ceo.display_name        optional free text, may be ""
 #   language.chat           language the CoS uses with the CEO (ISO 639-1 code)
 #   language.files          language of every file in hq (ISO 639-1 code)
 #   models.tiers            list, most to least capable
 #   models.cos              one of models.tiers
-#   models.departments      one of models.tiers; default for departments
+#   models.departments      one of models.tiers; applies to departments unless overridden
 #   models.workers          "one-down" (one tier below the parent; never escalate)
 #   departments             list, zero items is valid; item fields:
 #     id                    kebab-case; files .claude/agents/<id>.md and
@@ -27,21 +28,25 @@
 #     from_catalog          a catalog id (engineering, design-brand, business,
 #                           growth-social, legal, finance, tax, operations)
 #                           or "custom"
-#     display_name          role name by default; a persona name is optional
+#     display_name          role name or a persona name, the CEO's choice
 #     model                 one of models.tiers
 #     connectors            MCP tool patterns granted to this department only,
 #                           e.g. mcp__github__*; [] for none
 #   gates                   three lists of action ids, see gates/default.md;
 #                           every action id appears in exactly one list
 #   accounts.forbidden_connectors   connector patterns no agent of this org may use
-#   policy                  null, or a mapping:
-#     source                holding hq git remote
-#     local                 CEO's local clone of the holding hq, read-only
-#     path                  folder in the holding hq holding the policy, e.g. policies/
-#     pin                   commit sha of the holding hq the policy is read from
+#   policy                  company only; null, or a mapping:
+#     repo                  git remote URL of the holding's policies repo, or "" when
+#                           it has no remote yet (the CoS reads only local and pin)
+#     local                 CEO's local clone of the policies repo, read-only
+#     pin                   commit sha the policy.yaml is read from
+#   policies_repo           holding only; null for a company; a mapping:
+#     local                 path to the policies repo on the CEO's machine
+#                           (a separate repo outside the hq)
+#     remote                its git remote, or "" when none yet
 
 schema: org/1
-framework_version: 0.1.0
+framework_version: 0.1.1
 org:
   id: ACME
   name: Acme
@@ -70,17 +75,22 @@ gates:
 accounts:
   forbidden_connectors: []
 policy: null
+policies_repo: null
 # Example of a policy block (company only):
 # policy:
-#   source: <holding hq git remote>
-#   local: ~/path/to/holding-hq
-#   path: policies/
+#   repo: <policies repo git remote>
+#   local: ~/path/to/policies-repo
 #   pin: <commit sha>
+# Example of a policies_repo block (holding only; then policy is null):
+# policies_repo:
+#   local: ~/path/to/policies-repo
+#   remote: <git remote, or "" when none yet>
 
 # Validation checklist
 #   - Parses as YAML; all required keys present; schema is "org/1".
 #   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
-#   - org.level is company or holding; policy is null when level is holding.
+#   - org.level is company or holding; policy is null when level is holding;
+#     policies_repo is null when level is company.
 #   - models.cos, models.departments and every department model are in models.tiers.
 #   - models.workers is one-down; no worker model is more capable than its parent.
 #   - Department ids are unique kebab-case; each has a matching charter and agent file.
