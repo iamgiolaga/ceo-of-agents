@@ -6,7 +6,7 @@ Organizations come in two levels: a holding (the CEO as entrepreneur) and one co
 
 ## Status
 
-v0.1.0, early. Design and schemas are in place; see the roadmap in the design spec.
+v0.1.1, early. Design and schemas are in place; see the roadmap in the design spec.
 
 ## Install
 
@@ -19,13 +19,15 @@ To test locally: `claude --plugin-dir <path-to-this-repo>`.
 
 ## Quick start
 
-Create an empty directory, start Claude Code in it and run `/ceo-of-agents:init-org`. The wizard asks for level, name, languages, departments, gates, connectors and models, then generates the hq.
+Create an empty directory, start Claude Code in it and run `/ceo-of-agents:init-org`. The wizard asks for level, name, languages, departments, gates, connectors and models, then generates the hq. A holding also creates a separate policies repo that its companies pin.
+
+Run `init-org` interactively. If you run it headless, the plugin directory and (for a holding) the policies repo path are outside the current directory, so pass them with `--add-dir`. Writing `.claude/agents/*` may also need interactive approval.
 
 ## Plugin layout
 
 ```
 .claude-plugin/   plugin.json, marketplace.json
-templates/        instance and department templates
+templates/        instance, department, worker and policies-repo templates
 catalog/          starting department catalog (charter + agent each)
 skills/           init-org, intake, record-decision, weekly-brief, portfolio-brief
 schemas/          state, org, portfolio, policy, handoff, decision card/record
