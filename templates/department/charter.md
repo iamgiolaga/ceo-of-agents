@@ -31,12 +31,9 @@ What it produces and where it lands (dated analysis files `departments/{{DEPT_ID
 - ...
 
 ## Gates
-
-Actions that need the CEO's OK or a notice for this department, on top of the org's gate table in `org.yaml`. The department prepares and recommends; it does not perform outward-facing actions without the gate.
-
-| Action | Tier |
-|---|---|
-| ... | free / notice / ok |
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `<action ids relevant to this department, no tiers>`
+- Note: The department prepares and recommends; it does not perform outward-facing actions without the gate. Advisory departments (legal, finance, tax) never perform `file-or-sign` or `make-payment`, regardless of `org.yaml`.
 
 ## Handoff
 
