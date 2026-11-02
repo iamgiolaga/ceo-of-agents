@@ -1,0 +1,30 @@
+# Schema: portfolio.yaml (`portfolio/1`)
+#
+# Holding only, at the hq root. A registry of company hqs the holding CoS reads
+# read-only. Nothing is copied or synced; reads use the CEO's own git credentials
+# and no credentials are stored here.
+#
+# Required keys: schema, stale_after_days, orgs
+#   schema             exactly "portfolio/1"
+#   stale_after_days   integer >= 1; an org is stale when its state.md
+#                      last_updated is older than this many days
+#   orgs               list, zero items is valid; item fields (all required):
+#     id               org id, same as org.id in that org's org.yaml
+#     name             display name
+#     path             local clone of that org's hq (e.g. ~/work/acme-hq)
+#     remote           git remote of that org's hq
+
+schema: portfolio/1
+stale_after_days: 14
+orgs:
+  - id: ACME
+    name: Acme
+    path: ~/work/acme-hq
+    remote: <git remote>
+
+# Validation checklist
+#   - Parses as YAML; schema is "portfolio/1"; stale_after_days is an integer >= 1.
+#   - Each org has id, name, path and remote; ids are unique.
+#   - No org entry points at the holding's own hq.
+#   - No credentials, tokens or passwords appear anywhere in the file.
+#   - The holding never writes to any listed path (portfolio-brief reads only).

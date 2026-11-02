@@ -1,0 +1,16 @@
+{
+  "name": "ceo-of-agents",
+  "owner": {
+    "name": "Giovanni Laganà"
+  },
+  "metadata": {
+    "description": "Marketplace for the ceo-of-agents plugin."
+  },
+  "plugins": [
+    {
+      "name": "ceo-of-agents",
+      "source": "./",
+      "description": "Run one or many organizations with an AI chief of staff and department agents, with a git-backed hq per org and a single list of what waits on the CEO."
+    }
+  ]
+}
