@@ -139,7 +139,7 @@ Policy layering: framework defaults < holding policies < company overrides. A co
 | Language | Add a requirement | Files must be in a stated language |
 | Models | Lower a ceiling | Cap workers to the cheapest tier |
 
-The holding keeps its policy in a separate small policies repo, not in its hq. The repo has only `policy.yaml` (schema `policy/1`: minimum gate tiers, forbidden connectors, required file language, model ceilings) and `README.md` at its root, and no sensitive data, because it is shared with every company's CEO clone. The holding `org.yaml` records it as `policies_repo` (`local` path, `remote` or `""`). Changing a policy is a commit in that repo approved by the CEO (`change-policy-rules`, tier ok). A company hq pins a commit of it in `org.yaml`:
+The holding keeps its policy in a separate small policies repo, not in its hq. The repo has only `policy.yaml` (schema `policy/1`: minimum gate tiers, forbidden connectors, required file language, model ceilings for the CoS, departments and workers) and `README.md` at its root, and no sensitive data, because it is shared with every company's CEO clone. The holding `org.yaml` records it as `policies_repo` (`local` path, `remote` or `""`). Changing a policy is a commit in that repo approved by the CEO (`change-policy-rules`, tier ok). A company hq pins a commit of it in `org.yaml`:
 
 ```yaml
 policy:
@@ -148,7 +148,7 @@ policy:
   pin: <commit sha>
 ```
 
-At session start the company CoS runs an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`, and compares four areas: gates (company tier at least as strict as the holding minimum), connectors (no holding-forbidden connector granted to any department), language (file language matches the required one), models (no company model above the holding ceilings). It reports `Policy check: OK` or one line per loosening, and adds an `A` item. It never fixes silently. If the policy is unreadable it says "skipped: <reason>". Moving the pin is an explicit commit the CEO approves. The company never needs a clone of the holding hq.
+At session start the company CoS runs an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`, and compares four areas: gates (company tier at least as strict as the holding minimum), connectors (no holding-forbidden connector granted to any department), language (file language matches the required one), models (`models.cos` not above `models.ceiling.cos`, no company department above `models.ceiling.departments`, no worker above `models.ceiling.workers`). It reports `Policy check: OK` or one line per loosening, and adds an `A` item. It never fixes silently. If the policy is unreadable it says "skipped: <reason>". Moving the pin is an explicit commit the CEO approves. The company never needs a clone of the holding hq.
 
 ### Aggregated CEO pending list
 

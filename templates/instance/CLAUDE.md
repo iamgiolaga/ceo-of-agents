@@ -34,7 +34,7 @@ A department agent skips it (see the last section).
   - Gates: for every action in the holding file, this org's tier must be equal or stricter (free < notice < ok). An action absent here inherits the holding tier (fine).
   - Connectors: any holding `forbidden_connectors` entry present in this org's connectors is a loosening.
   - Language: if the holding sets `language.files` and it differs from this org's `language.files`, it is a loosening.
-  - Models: `models.cos`, `models.departments` or any agent `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent) more capable than `models.ceiling.workers`, is a loosening.
+  - Models: `models.cos` more capable than `models.ceiling.cos`, or `models.departments` or any department `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent) more capable than `models.ceiling.workers`, is a loosening.
 
   Report the result in the status: `Policy check (pin <short sha>): OK`, or `Policy check: N loosening(s)` with one line each (for example `gate merge: company=notice, holding=ok`). For each loosening add an A item asking the CEO to tighten the setting or to approve a pin or policy change. Never fix silently. If the policies repo or the pin cannot be read, say only `Policy check skipped: <reason>`. Do not report a gap from `org.yaml` in that case, and add no A item (a skipped check is not a loosening).
 <!-- END IF -->

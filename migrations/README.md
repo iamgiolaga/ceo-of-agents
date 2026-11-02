@@ -20,4 +20,4 @@ How long a holding keeps reading the previous schema version of a company `state
 
 No migration scripts yet. Framework version `0.1.0` was the first release.
 
-Version `0.1.1` changes the `org.yaml` `policy` block (`repo`, `local` and `pin`; `path` removed), adds `policies_repo`, moves holding policies to a separate repo, and adds `.claude/agents/reader.md` and `worker.md`. No migration ships because no `0.1.0` instance is supported for upgrade yet.
+Version `0.1.1` changes the `org.yaml` `policy` block (`repo`, `local` and `pin`; `path` removed), adds `policies_repo`, adds `models.ceiling.cos` to the holding `policy.yaml`, moves holding policies to a separate repo, and adds `.claude/agents/reader.md` and `worker.md`. No migration ships because no `0.1.0` instance is supported for upgrade yet.

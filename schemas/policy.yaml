@@ -13,6 +13,7 @@
 #                                action is in is its MINIMUM tier for companies
 #   accounts.forbidden_connectors connector patterns no company agent may use
 #   language.files               required file language, or null for no requirement
+#   models.ceiling.cos           most capable model a company CoS may use
 #   models.ceiling.departments   most capable model a company department may use
 #   models.ceiling.workers       most capable model a company worker may use
 
@@ -27,6 +28,7 @@ language:
   files: en
 models:
   ceiling:
+    cos: opus
     departments: opus
     workers: sonnet
 
@@ -40,8 +42,8 @@ models:
 #      connectors is a loosening.
 #   3. Language: holding language.files set and different from the company
 #      language.files is a loosening.
-#   4. Models: models.cos, models.departments or any department model more capable than
-#      models.ceiling.departments, or a worker model (one tier below its parent) more
+#   4. Models: models.cos more capable than models.ceiling.cos, or models.departments
+#      or any department model more capable than models.ceiling.departments, or a worker model (one tier below its parent) more
 #      capable than models.ceiling.workers, is a loosening.
 # Report: `Policy check (pin <short sha>): OK` or `Policy check: N loosening(s)` with one
 # line each; add an A item; never fix silently; `Policy check skipped: <reason>` if the
@@ -52,7 +54,7 @@ models:
 #   - Gate action ids are known (see gates/default.md) and appear in one list only.
 #   - Tier order is free < notice < ok; an action absent here inherits the framework
 #     default for companies (no extra restriction from the holding).
-#   - Model ceilings are concrete tier names from models.tiers (e.g. opus, sonnet,
+#   - Model ceilings (cos, departments, workers) are concrete tier names from models.tiers (e.g. opus, sonnet,
 #     haiku), never the rule name one-down.
 #   - Contains no sensitive data, secrets or company details (the repo is shared with
 #     every company clone).
