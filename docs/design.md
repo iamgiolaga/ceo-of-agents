@@ -1,6 +1,6 @@
 # ceo-of-agents: design spec (draft v0)
 
-Status: v0.1.0 implemented (phase 0). Sections updated where implementation diverged.
+Status: v0.1.1 implemented (phase 0 plus review fixes). Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments.
 
 ## 1. Problem
 
@@ -55,6 +55,8 @@ ceo-of-agents/
   templates/
     instance/        CoS CLAUDE.md template and all hq files, with placeholders
     department/      custom department: charter + agent
+    workers/         reader and worker agent templates, one pair per instance
+    policies-repo/   policy.yaml and README.md for the holding's separate policies repo
   catalog/           department catalog (charter + agent template each)
   skills/            init-org, intake, record-decision, weekly-brief, portfolio-brief
   schemas/           state.md, org.yaml, portfolio.yaml, policy.yaml, handoff, decision card, decision record
@@ -69,7 +71,7 @@ There is no `agents/` dir: Claude Code auto-registers every `.md` under a plugin
 ```
 <org>-hq/
   CLAUDE.md                     CoS instructions (generated)
-  org.yaml                      level, id, language, models, gates, policy pin
+  org.yaml                      level, id, language, models, gates, policy pin (company) or policies_repo (holding)
   operating-model.md            how the CEO works with this org
   company/
     state.md                    living snapshot, fixed schema (see 5)
@@ -81,11 +83,12 @@ There is no `agents/` dir: Claude Code auto-registers every `.md` under a plugin
   departments/<dept>/charter.md
   metrics/README.md             metric definitions, sources, dates
   .claude/agents/<dept>.md      department agents with tool allowlists
+  .claude/agents/reader.md      read-only worker (bulk reading, research)
+  .claude/agents/worker.md      hands-on worker (for departments with Bash)
   portfolio.yaml                holding only
-  policies/policy.yaml          holding only
 ```
 
-A holding instance is an org like any other whose specific job is to be a registry: `portfolio.yaml` lists references to company hqs, which may live in separate code orgs. It also holds `policies/` (`policies/policy.yaml`). Its departments are chosen at setup like in any org, and may be none.
+A holding instance is an org like any other whose specific job is to be a registry: `portfolio.yaml` lists references to company hqs, which may live in separate code orgs. It does not keep its policies in the hq: they live in a separate small policies repo (see 5), whose path is recorded in `org.yaml` as `policies_repo`. Its departments are chosen at setup like in any org, and may be none.
 
 ## 5. Cross-org context
 
@@ -101,7 +104,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.1.0
+framework_version: 0.1.1
 next_action: 1
 next_decision: 1
 ---
@@ -120,10 +123,10 @@ orgs:
   - id: ACME
     name: Acme
     path: ~/work/acme-hq        # local clone
-    remote: <git remote>        # for pull
+    remote: <git remote>        # the hq remote
 ```
 
-The holding CoS runs `git pull --ff-only` on each registered hq and reads `state.md` read-only. On pull failure it reads the local copy and marks the org "pull failed". It never writes to a company hq. Staleness is visible from `last_updated` against `stale_after_days`. Reads use the CEO's own git credentials (the CEO is a member of every org); the holding stores no credentials and nothing is shared between orgs.
+The holding CoS never pulls. For each registered hq it runs `git -C <path> fetch`, then `git -C <path> show origin/<default-branch>:company/state.md`, so the clone's working tree is never touched. The Organizations line records when a clone is dirty, on another branch or not fetched (the last fetched copy is then read, and marked). It never writes to a company hq. Staleness is visible from `last_updated` against `stale_after_days`. Reads use the CEO's own git credentials (the CEO is a member of every org); the holding stores no credentials and nothing is shared between orgs.
 
 ### Downward: holding to company
 
@@ -136,17 +139,16 @@ Policy layering: framework defaults < holding policies < company overrides. A co
 | Language | Add a requirement | Files must be in a stated language |
 | Models | Lower a ceiling | Cap workers to the cheapest tier |
 
-The holding's policy lives in `policies/policy.yaml` (schema `policy/1`): minimum gate tiers, forbidden connectors, required file language, model ceilings. A company hq references it from `org.yaml`:
+The holding keeps its policy in a separate small policies repo, not in its hq. The repo has only `policy.yaml` (schema `policy/1`: minimum gate tiers, forbidden connectors, required file language, model ceilings for the CoS, departments and workers) and `README.md` at its root, and no sensitive data, because it is shared with every company's CEO clone. The holding `org.yaml` records it as `policies_repo` (`local` path, `remote` or `""`). Changing a policy is a commit in that repo approved by the CEO (`change-policy-rules`, tier ok). A company hq pins a commit of it in `org.yaml`:
 
 ```yaml
 policy:
-  source: <holding hq remote>
-  local: <path>                 # CEO's local clone of the holding hq, read-only
-  path: policies/
+  repo: <policies repo remote>
+  local: <path>                 # CEO's local clone of the policies repo, read-only
   pin: <commit sha>
 ```
 
-At session start the company CoS runs `git -C <local> show <pin>:policies/policy.yaml` and compares four areas: gates (company tier at least as strict as the holding minimum), connectors (no holding-forbidden connector granted to any department), language (file language matches the required one), models (no company model above the holding ceilings). It reports `Policy check: OK` or one line per loosening, and adds an `A` item. It never fixes silently. If the policy is unreadable it says "skipped: <reason>". Moving the pin is an explicit commit the CEO approves.
+At session start the company CoS runs an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`, and compares four areas: gates (company tier at least as strict as the holding minimum), connectors (no holding-forbidden connector granted to any department), language (file language matches the required one), models (`models.cos` not above `models.ceiling.cos`, no company department above `models.ceiling.departments`, no worker above `models.ceiling.workers`). It reports `Policy check: OK` or one line per loosening, and adds an `A` item. It never fixes silently. If the policy is unreadable it says "skipped: <reason>". Moving the pin is an explicit commit the CEO approves. The company never needs a clone of the holding hq.
 
 ### Aggregated CEO pending list
 
@@ -163,14 +165,16 @@ When a company decision touches money, personal liability or the portfolio, the 
 1. Level: holding or company.
 2. Org name and short id (used in codes).
 3. Language for chat with the CEO, and language for files.
-4. Departments: nothing is preselected. Pick from the catalog, define custom ones, or none.
-5. Names or personas per agent (optional; default is the role name).
-6. Approval-gate table: accept defaults or edit.
-7. Allowed connectors per department.
+4. Departments: nothing is preselected. Pick from the catalog, define custom ones, or none. For every custom department the wizard asks scope, triggers, exclusions and the single core job, so no placeholder is left in its files.
+5. Names or personas per agent (optional; the role name or a persona, the CEO's choice).
+6. Approval-gate table: take the framework table as listed or edit it.
+7. Allowed connectors per department. Advisory departments (legal, finance, tax) get read-only connector tools only, named one by one (no server wildcard); the wizard refuses tools that file, pay, send, publish or write.
 8. Model tiers for the CoS, departments and workers.
-9. For a company: holding policy source and pin (optional). If a policy is given, the tighten-only check runs before anything is generated.
+9. For a company: the holding's policies repo (remote), the local clone and the pin (optional). If a policy is given, the tighten-only check runs before anything is generated. A holding skips this question.
 
-It generates `CLAUDE.md`, `org.yaml`, `operating-model.md`, the `company/` files with empty schema-valid state, one charter and one agent file per department (file names use the department id), `decisions/README.md`, `inbox/README.md`, `metrics/README.md` and an initial decision record (`0001`) capturing the setup answers. A holding also gets `portfolio.yaml` and `policies/`. Optionally it writes `.claude/settings.json` enabling the plugin, only with the CEO's OK. It never pushes and asks before the first commit.
+The wizard also offers an optional remote for the hq, added with `git remote add` and never pushed. Without a remote, the CoS skips pull and push and says once "No remote: pull and push skipped". A holding additionally creates its policies repo at a path the CEO gives (outside the hq; the only write outside the current directory): `git init`, renders `policy.yaml` and `README.md` from `templates/policies-repo/`, asks before its first commit, and offers an optional remote the same way.
+
+It generates `CLAUDE.md`, `org.yaml`, `operating-model.md`, the `company/` files with empty schema-valid state, one charter and one agent file per department (file names use the department id), `decisions/README.md`, `inbox/README.md`, `metrics/README.md` and an initial decision record (`0001`) capturing the setup answers. It also generates `.claude/agents/reader.md` and `.claude/agents/worker.md`. A holding also gets `portfolio.yaml` and the separate policies repo. Optionally it writes `.claude/settings.json` enabling the plugin, only with the CEO's OK. It never pushes and asks before the first commit.
 
 **Starting department catalog**
 
@@ -178,14 +182,14 @@ Catalog entries are templates, not defaults: each org decides its own structure.
 
 | Department | Purpose | Default tool allowlist idea | Default gate notes |
 |---|---|---|---|
-| Engineering | Code, CI, releases, security | Read, edit, shell, delegation; repo access for the org only | Open PRs free; merge, deploy, secret rotation need OK |
-| Design and brand | Identity, assets, tone of voice, brand review | Read, edit, design-tool connector, delegation | Brand-rule changes need OK; publishing needs OK |
+| Engineering | Code, CI, releases, security | Read, edit, shell, may spawn `reader` and `worker`; repo access for the org only | Open PRs free; merge, deploy, secret rotation need OK |
+| Design and brand | Identity, assets, tone of voice, brand review | Read, edit, design-tool connector, may spawn `reader` | Brand-rule changes need OK; publishing needs OK |
 | Business | Model, pricing, market, competitors, discovery | Read, edit, web search and fetch | Contacting people or spending needs OK |
 | Growth and social | Editorial calendar, post drafts | Read, edit, web search | Drafts only; publishing needs OK |
-| Legal | Privacy, terms, policies, accuracy of claims. Advisory | Read, edit, web search | Never signs or files; routes to a professional on request |
-| Finance and accounting | Bookkeeping views, cash, invoices review. Advisory | Read, edit; no payment tools | No payments or transfers; spending needs OK |
-| Tax | Tax position, deadlines, document checklists. Advisory | Read, edit, web search; no filing tools | Never files or signs; deadlines surface as `A` items |
-| Operations | Admin, vendors, tooling, calendars of obligations | Read, edit, scoped connectors | Subscriptions and vendor contact need OK |
+| Legal | Privacy, terms, policies, accuracy of claims. Advisory | Read, edit, web search; read-only connectors; no Agent tool | Never signs or files; routes to a professional on request |
+| Finance and accounting | Bookkeeping views, cash, invoices review. Advisory | Read, edit; read-only connectors; no payment tools; no Agent tool | No payments or transfers; spending needs OK |
+| Tax | Tax position, deadlines, document checklists. Advisory | Read, edit, web search; read-only connectors; no filing tools; no Agent tool | Never files or signs; deadlines surface as `A` items |
+| Operations | Admin, vendors, tooling, calendars of obligations | Read, edit, scoped connectors, may spawn `reader` | Subscriptions and vendor contact need OK |
 
 ## 7. Approval gates
 
@@ -205,25 +209,30 @@ Tier order: free < notice < ok.
 | With notice | One line before acting (what, where, content) | Pushes to a non-deploying branch, hq commits, dispatching a department that will push |
 | Explicit CEO OK | Narrow, exact request, batched | Merge, deploy, publish, contacting people, spending money, rotating secrets, deleting data, org or repo settings, changing brand or policy rules |
 
-Principles: do not ask for OKs the table does not require; batch the asks into the pending list; run the exact approved action, nothing broader. Advisory departments (legal, finance, tax) never do `file-or-sign` or `make-payment` at all; no config can lower them.
+Principles: do not ask for OKs the table does not require; batch the asks into the pending list; run the exact approved action, nothing broader. Advisory departments (legal, finance, tax) never do `file-or-sign` or `make-payment` at all; no config can lower them. Changing a holding policy is `change-policy-rules` (tier `ok`): a CEO-approved commit in the policies repo.
 
 ## 8. Models and cost
 
-| Role | Default tier | Notes |
+| Role | Tier | Notes |
 |---|---|---|
 | CoS | Top | Plans, decides, judges, talks to the CEO |
-| Department | Configurable, default top | Vertical specialist; orchestrates its own workers |
-| Workers | One tier down from their parent | Bulk reading, drafting, code, commands |
+| Department | Chosen per org (from the tier list) | Vertical specialist; orchestrates its own workers |
+| Workers | One tier down from their parent (the lowest tier stays itself) | Bulk reading, drafting, code, commands |
+
+Every instance ships two worker agents in `.claude/agents/`, generated from `templates/workers/`. `reader` has Read, Grep, Glob, WebSearch and WebFetch only: read-only research and bulk reading, returning conclusions, not dumps. `worker` adds Edit, Write and Bash and is for departments that already have Bash. Neither has the Agent tool or any connector, and neither spawns agents or escalates. Both run on `{{MODEL_WORKERS}}`, one tier below `models.departments`.
+
+Who may spawn what: engineering `Agent(reader, worker)`; other non-advisory departments `Agent(reader)`; advisory departments (legal, finance, tax) no Agent tool at all. When an advisory department needs bulk reading, the CoS dispatches a `reader` for it. Known limit: the `Agent(type)` allowlist is enforced only when the department runs as the main thread of `claude --agent`. When the CoS dispatches a department as a subagent, any type list is ignored, so the rule there is that departments spawn only `reader` or `worker`, and advisory departments carry no Agent tool so nothing can be spawned from them.
 
 Rules: workers never escalate to a more capable model than their parent. Departments delegate to workers and do not hand work back up. The CoS does small things itself when writing the brief would cost more than the work. Every result is verified (diff read, check run) before it is built on or reported. Briefs to workers are self-contained: goal, files, constraints, definition of done, what to return.
 
 ## 9. Separation and privacy
 
 - Each department has an explicit `tools:` allowlist; connectors are granted per department, not globally.
-- Never mix accounts: credentials and connectors for org A are not used for org B, and work-employer accounts are never used for any org's affairs.
+- Never mix accounts: credentials and connectors for org A are not used for org B, and other accounts (for example an employer's) are never used for any org's affairs.
+- Advisory departments (legal, finance, tax) get read-only connector tools only, named one by one.
 - The holding holds the most sensitive data (tax, personal legal, finances). Its repo stays private.
 - Upward, cross-org reads happen only through the holding CoS, read-only, through `state.md`. Sensitive detail stays out of `state.md`.
-- Downward, the only cross-org read is the company CoS reading `policies/` at the pinned commit. Departments never read it. Nothing else in the holding repo is read.
+- Downward, the only cross-org read is the company CoS reading `policy.yaml` from the pinned commit of the holding's separate policies repo. Departments never read it. A company never needs a clone of the holding hq, which stays private. The policies repo holds no sensitive data and is shared with every company's CEO clone.
 - Numbers always carry source and date. If unknown, say so. Never invent a metric.
 
 ## 10. Roadmap
@@ -235,7 +244,7 @@ Rules: workers never escalate to a more capable model than their parent. Departm
 | 2 | Link the holding and the reference instance, read-only |
 | 3 | Publish the framework |
 
-Migrating the reference instance onto the framework happens only after v0 exists.
+Migrating the reference instance onto the framework happens only after v0 exists. v0.1.1 applied the review fixes to phase 0 (see the status line at the top).
 
 ## 11. Open questions
 
@@ -245,5 +254,5 @@ Migrating the reference instance onto the framework happens only after v0 exists
 4. Migration UX: how much of an upgrade can be applied automatically while still arriving as a reviewable diff?
 5. Policy enforcement: v0: the CoS reads files at session start; a validator script stays open.
 6. Pending-list staleness: v0: `stale_after_days` in `portfolio.yaml` (default 14) flags stale orgs; open: what to do beyond flagging.
-7. Holding policy repo separation: a holding may later publish policies from a separate repo, so company sessions need no clone of the private holding repo.
+7. Holding policy repo separation: resolved in v0.1.1. The holding keeps policies in a separate small repo with no sensitive data; companies pin a commit of it and need no clone of the holding hq.
 8. Whether `allowed-tools` patterns for `git -C` in skills behave as intended (unverified).

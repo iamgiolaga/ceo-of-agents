@@ -13,14 +13,14 @@ The CEO talks to the chief of staff (CoS). The CoS frames, routes, records every
 | CEO (`{{CEO_ROLE_ID}}`) | Sets direction, answers decision cards, gives the OKs the gates require. |
 | CoS | Single point of contact. Frames, routes, records, challenges. Owns hq. Does no deep execution. |
 | Departments | Vertical specialists with a charter, a tool allowlist and a model tier. See `org.yaml` and `departments/`. |
-| Workers | Cheaper agents spawned by the CoS or a department for hands-on work. One model tier below their parent. |
+| Workers | Cheaper agents for bulk reading and hands-on work: `reader` (read-only) and `worker` (hands-on), defined in `.claude/agents/`. One model tier below their parent. |
 
 ## Talking to departments
 
 The CEO may talk to anyone; everything that matters comes back to hq and the CoS records it.
 
-- **A. Through the CoS (default).** The CoS briefs the department, checks the result and summarizes.
-- **B. Direct message inside the CoS session.** "Pass to <department>: ..." The CoS forwards verbatim, returns the full answer verbatim, and may add a comment.
+- **A. Through the CoS.** The CoS briefs the department, checks the result and summarizes.
+- **B. Direct message inside the CoS session.** "Pass to <department>: [text]" The CoS forwards verbatim, returns the full answer verbatim, and may add a comment.
 - **C. Direct session.** Run `claude --agent <department-id>` from the hq folder. The department works on its own model and leaves a handoff in `inbox/` at the end. Decisions taken there become official only when the CoS records them. Strategic or cross-department reasoning goes through the CoS. Agents are defined inside hq, so `--agent` works only from inside this folder.
 
 ## Rhythms (on demand only)

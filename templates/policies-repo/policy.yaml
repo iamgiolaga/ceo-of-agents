@@ -1,3 +1,4 @@
+# Policies repo: policy/1. Contains no sensitive data; shared with every company clone.
 schema: policy/1
 gates:                 # minimum tier per action; companies may only move actions to a stricter tier
   free: {{GATES_FREE}}
@@ -9,5 +10,6 @@ language:
   files: {{FILE_LANGUAGE}}   # required file language, or null
 models:
   ceiling:
+    cos: {{CEILING_COS}}                   # most capable model a company CoS may use (a name from the tiers)
     departments: {{CEILING_DEPARTMENTS}}   # most capable model a company department may use (a name from the tiers)
     workers: {{CEILING_WORKERS}}           # most capable model a company worker may use (a name from the tiers)

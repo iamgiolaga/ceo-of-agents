@@ -60,11 +60,11 @@ gates:
 
 ## Tighten-only rule against a holding policy
 
-When a company sets `policy` in `org.yaml`, the company CoS checks it at session start (read files only; no script). It reads only the `policies/` folder of the pinned holding commit, read-only, with `git -C <local> fetch` (optional) then `git -C <local> show <pin>:<path>policy.yaml`. Departments never read the holding repo. Compare with org.yaml:
+When a company sets `policy` in `org.yaml`, the company CoS checks it at session start (read files only; no script). It reads only `policy.yaml` from the pinned commit of the holding's separate policies repo, read-only: an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`. It never reads a clone of the holding hq, and departments never read the policies repo. Compare with org.yaml:
 
 1. Gates: for every action in the holding file, the company tier must be at or above the holding tier. An action absent from the company gates inherits the holding tier (fine).
 2. Connectors: any holding `forbidden_connectors` entry present in any department's `connectors` is a loosening.
 3. Language: holding `language.files` set and different from the company `language.files` is a loosening.
-4. Models: `models.cos`, `models.departments` or any department `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent) more capable than `models.ceiling.workers`, is a loosening.
+4. Models: `models.cos` more capable than `models.ceiling.cos`, or `models.departments` or any department `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent) more capable than `models.ceiling.workers`, is a loosening.
 
 Report in the session-start status either `Policy check (pin <short sha>): OK` or `Policy check: N loosening(s)` with one line each (for example `gate merge: company=notice, holding=ok`), and add an `A` item asking the CEO to tighten or to approve a pin or policy change. Never fix silently. If the pin cannot be read, say `Policy check skipped: <reason>`.

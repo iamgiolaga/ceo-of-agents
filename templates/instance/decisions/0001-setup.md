@@ -7,11 +7,11 @@
 
 ## Context
 
-{{ORG_NAME}} (`{{ORG_ID}}`) was set up with ceo-of-agents {{FRAMEWORK_VERSION}}. The setup wizard asked nine questions; the answers below are the starting configuration. They live in `org.yaml`, which stays the source of truth for the current values.
+{{ORG_NAME}} (`{{ORG_ID}}`) was set up with ceo-of-agents {{FRAMEWORK_VERSION}}. The setup wizard asked {{SETUP_QUESTION_COUNT}} question groups; rows marked not applicable were skipped. The answers below are the starting configuration. They live in `org.yaml`, which stays the source of truth for the current values.
 
 ## Options
 
-Each question offered the framework defaults or a custom answer. The answers chosen are listed under Decision.
+Each question offered the framework's listed choices or a custom answer. The answers chosen are listed under Decision.
 
 ## Decision
 
@@ -25,7 +25,8 @@ Each question offered the framework defaults or a custom answer. The answers cho
 | 6 | Approval gates | {{SETUP_GATES}} |
 | 7 | Connectors per department | {{SETUP_CONNECTORS}} |
 | 8 | Models (CoS / departments / workers) | {{MODEL_COS}} / {{MODEL_DEPARTMENTS}} / one-down (CoS workers: {{MODEL_WORKERS}}) |
-| 9 | Holding policy source and pin | {{SETUP_POLICY}} |
+| 9 | Holding policy: repo, local clone and pin (companies only) | {{SETUP_POLICY}} |
+| 10 | Repositories | {{SETUP_REPOS}} |
 
 ## Consequences
 

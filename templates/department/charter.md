@@ -4,9 +4,11 @@ Department `{{DEPT_ID}}` of {{ORG_NAME}} (`{{ORG_ID}}`). Agent file: `.claude/ag
 
 ## Scope
 
-What this department owns and is responsible for. One short list.
+Core job: {{DEPT_CORE_JOB}}
 
-- ...
+In scope:
+
+{{DEPT_SCOPE}}
 
 ## Never does
 
@@ -15,24 +17,32 @@ Hard limits. What it never does, and which department or the CEO owns each exclu
 - Never takes an action the approval gates reserve for the CEO.
 - Never commits to the hq main branch.
 - Never invents numbers.
-- ...
+
+Excluded from this department, and owned elsewhere:
+
+{{DEPT_EXCLUSIONS}}
+
+Use this department when:
+
+{{DEPT_TRIGGERS}}
 
 ## Inputs
 
 What it reads before and during work (files, repos, other departments' outputs).
 
 - `company/state.md`, `company/decision-queue.md`, `inbox/`
-- ...
+- Any file or repo the ask names.
 
 ## Outputs
 
 What it produces and where it lands (dated analysis files `departments/{{DEPT_ID}}/YYYY-MM-DD-<slug>.md`, drafts, decision drafts, pull requests in code repos).
 
-- ...
+- Dated analysis files and drafts in `departments/{{DEPT_ID}}/`.
+- A handoff note in `inbox/` at the end of each piece of work.
 
 ## Gates
 The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
-- Relevant actions: `<action ids relevant to this department, no tiers>`
+- Relevant actions: `research`, `drafts`, `comments` and any other action id from `org.yaml` that this department's work touches (ids only, no tiers).
 - Note: The department prepares and recommends; it does not perform outward-facing actions without the gate. Advisory departments (legal, finance, tax) never perform `file-or-sign` or `make-payment`, regardless of `org.yaml`.
 
 ## Handoff

@@ -12,7 +12,10 @@
 #     id               org id, same as org.id in that org's org.yaml
 #     name             display name
 #     path             local clone of that org's hq (e.g. ~/work/acme-hq)
-#     remote           git remote of that org's hq
+#     remote           git remote of that org's hq, or "" when the company has no
+#                      remote yet; the brief then reads the local default branch and
+#                      marks it "read: local <branch> (no remote, may include unpushed
+#                      changes)"
 
 schema: portfolio/1
 stale_after_days: 14
@@ -24,7 +27,7 @@ orgs:
 
 # Validation checklist
 #   - Parses as YAML; schema is "portfolio/1"; stale_after_days is an integer >= 1.
-#   - Each org has id, name, path and remote; ids are unique.
+#   - Each org has id, name, path and remote (remote may be ""); ids are unique.
 #   - No org entry points at the holding's own hq.
 #   - No credentials, tokens or passwords appear anywhere in the file.
 #   - The holding never writes to any listed path (portfolio-brief reads only).
