@@ -1,0 +1,93 @@
+# Schema: org.yaml (`org/1`)
+#
+# Instance configuration of one org. Lives at the hq root. Annotated example below
+# is itself valid YAML. Owner: the CoS, changed only by a normal hq commit.
+#
+# Required keys: schema, framework_version, org, ceo, language, models,
+#                departments, gates, accounts
+# Optional keys: policy (company level only; null when unused)
+#
+# Allowed values and rules
+#   schema                  exactly "org/1"
+#   framework_version       framework version the instance was generated from
+#   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
+#   org.name                free text
+#   org.level               company | holding
+#   ceo.role_id             role id for the CEO (default "ceo"); a role, not a person
+#   ceo.display_name        optional free text, may be ""
+#   language.chat           language the CoS uses with the CEO (ISO 639-1 code)
+#   language.files          language of every file in hq (ISO 639-1 code)
+#   models.tiers            list, most to least capable
+#   models.cos              one of models.tiers
+#   models.departments      one of models.tiers; default for departments
+#   models.workers          "one-down" (one tier below the parent; never escalate)
+#   departments             list, zero items is valid; item fields:
+#     id                    kebab-case; files .claude/agents/<id>.md and
+#                           departments/<id>/charter.md
+#     from_catalog          a catalog id (engineering, design-brand, business,
+#                           growth-social, legal, finance, tax, operations)
+#                           or "custom"
+#     display_name          role name by default; a persona name is optional
+#     model                 one of models.tiers
+#     connectors            MCP tool patterns granted to this department only,
+#                           e.g. mcp__github__*; [] for none
+#   gates                   three lists of action ids, see gates/default.md;
+#                           every action id appears in exactly one list
+#   accounts.forbidden_connectors   connector patterns no agent of this org may use
+#   policy                  null, or a mapping:
+#     source                holding hq git remote
+#     local                 CEO's local clone of the holding hq, read-only
+#     path                  folder in the holding hq holding the policy, e.g. policies/
+#     pin                   commit sha of the holding hq the policy is read from
+
+schema: org/1
+framework_version: 0.1.0
+org:
+  id: ACME
+  name: Acme
+  level: company
+ceo:
+  role_id: ceo
+  display_name: ""
+language:
+  chat: en
+  files: en
+models:
+  tiers: [opus, sonnet, haiku]
+  cos: opus
+  departments: opus
+  workers: one-down
+departments:
+  - id: engineering
+    from_catalog: engineering
+    display_name: Engineering
+    model: opus
+    connectors: []
+gates:
+  free: [issues-and-labels, comments, drafts, open-pr, research, hq-write]
+  notice: [push-non-deploy-branch, hq-commit, dispatch-pushing-department]
+  ok: [merge, deploy, publish, contact-people, spend-money, rotate-secrets, delete-data, org-or-repo-settings, change-brand-rules, change-policy-rules, file-or-sign, make-payment]
+accounts:
+  forbidden_connectors: []
+policy: null
+# Example of a policy block (company only):
+# policy:
+#   source: <holding hq git remote>
+#   local: ~/path/to/holding-hq
+#   path: policies/
+#   pin: <commit sha>
+
+# Validation checklist
+#   - Parses as YAML; all required keys present; schema is "org/1".
+#   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
+#   - org.level is company or holding; policy is null when level is holding.
+#   - models.cos, models.departments and every department model are in models.tiers.
+#   - models.workers is one-down; no worker model is more capable than its parent.
+#   - Department ids are unique kebab-case; each has a matching charter and agent file.
+#   - No connector pattern appears both in a department connectors list and in
+#     accounts.forbidden_connectors.
+#   - Every gate action id is known (see gates/default.md) and listed exactly once.
+#   - Advisory departments (legal, finance, tax) never have file-or-sign or
+#     make-payment outside the ok list.
+#   - framework_version equals the version in company/state.md frontmatter, unless a
+#     migration is pending.

@@ -1,0 +1,8 @@
+schema: portfolio/1
+stale_after_days: 14
+orgs: []
+# Item shape:
+#  - id: ACME
+#    name: Acme
+#    path: ~/work/acme-hq     # local clone
+#    remote: <git remote>

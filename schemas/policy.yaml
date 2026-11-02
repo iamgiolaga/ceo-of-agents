@@ -1,0 +1,55 @@
+# Schema: policies/policy.yaml (`policy/1`)
+#
+# Holding only. Minimum rules companies must respect. Companies may only tighten:
+# move an action to a stricter tier, add restrictions, add requirements, lower
+# ceilings. A company CoS reads this file from the pinned holding commit; see
+# gates/default.md for the tighten-only check.
+#
+# Required keys: schema, gates, accounts, language, models
+#   schema                       exactly "policy/1"
+#   gates                        free / notice / ok lists of action ids; the tier an
+#                                action is in is its MINIMUM tier for companies
+#   accounts.forbidden_connectors connector patterns no company agent may use
+#   language.files               required file language, or null for no requirement
+#   models.ceiling.departments   most capable model a company department may use
+#   models.ceiling.workers       most capable model a company worker may use
+
+schema: policy/1
+gates:
+  free: [issues-and-labels, comments, drafts, open-pr, research, hq-write]
+  notice: [push-non-deploy-branch, hq-commit, dispatch-pushing-department]
+  ok: [merge, deploy, publish, contact-people, spend-money, rotate-secrets, delete-data, org-or-repo-settings, change-brand-rules, change-policy-rules, file-or-sign, make-payment]
+accounts:
+  forbidden_connectors: []
+language:
+  files: en
+models:
+  ceiling:
+    departments: opus
+    workers: sonnet
+
+# Tighten-only check (company CoS at session start; read files only). Read the pinned
+# commit read-only: `git -C <local> show <pin>:<path>policy.yaml`. Compare with org.yaml:
+#   1. Gates: for every action in the holding file, the company tier must be at or above
+#      the holding tier. An action absent from the company gates inherits the holding
+#      tier (fine).
+#   2. Connectors: any holding forbidden_connectors entry present in any department's
+#      connectors is a loosening.
+#   3. Language: holding language.files set and different from the company
+#      language.files is a loosening.
+#   4. Models: models.cos, models.departments or any department model more capable than
+#      models.ceiling.departments, or a worker model (one tier below its parent) more
+#      capable than models.ceiling.workers, is a loosening.
+# Report: `Policy check (pin <short sha>): OK` or `Policy check: N loosening(s)` with one
+# line each; add an A item; never fix silently; `Policy check skipped: <reason>` if the
+# pin cannot be read.
+#
+# Validation checklist
+#   - Parses as YAML; schema is "policy/1"; all four sections present.
+#   - Gate action ids are known (see gates/default.md) and appear in one list only.
+#   - Tier order is free < notice < ok; an action absent here inherits the framework
+#     default for companies (no extra restriction from the holding).
+#   - Model ceilings are concrete tier names from models.tiers (e.g. opus, sonnet,
+#     haiku), never the rule name one-down.
+#   - Changing this file is a holding hq commit approved by the CEO
+#     (action change-policy-rules, tier ok); companies pick it up by moving their pin.

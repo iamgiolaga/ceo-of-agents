@@ -6,7 +6,33 @@ Organizations come in two levels: a holding (the CEO as entrepreneur) and one co
 
 ## Status
 
-Design draft. Nothing is implemented yet.
+v0.1.0, early. Design and schemas are in place; see the roadmap in the design spec.
+
+## Install
+
+```
+claude plugin marketplace add <owner>/<repo>
+claude plugin install ceo-of-agents@ceo-of-agents
+```
+
+To test locally: `claude --plugin-dir <path-to-this-repo>`.
+
+## Quick start
+
+Create an empty directory, start Claude Code in it and run `/ceo-of-agents:init-org`. The wizard asks for level, name, languages, departments, gates, connectors and models, then generates the hq.
+
+## Plugin layout
+
+```
+.claude-plugin/   plugin.json, marketplace.json
+templates/        instance and department templates
+catalog/          starting department catalog (charter + agent each)
+skills/           init-org, intake, record-decision, weekly-brief, portfolio-brief
+schemas/          state, org, portfolio, policy, handoff, decision card/record
+gates/            default approval-gate table
+migrations/       how upgrades ship
+docs/             design spec
+```
 
 ## The problem
 

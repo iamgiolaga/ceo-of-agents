@@ -1,0 +1,13 @@
+schema: policy/1
+gates:                 # minimum tier per action; companies may only move actions to a stricter tier
+  free: {{GATES_FREE}}
+  notice: {{GATES_NOTICE}}
+  ok: {{GATES_OK}}
+accounts:
+  forbidden_connectors: {{FORBIDDEN_CONNECTORS}}
+language:
+  files: {{FILE_LANGUAGE}}   # required file language, or null
+models:
+  ceiling:
+    departments: {{CEILING_DEPARTMENTS}}   # most capable model a company department may use (a name from the tiers)
+    workers: {{CEILING_WORKERS}}           # most capable model a company worker may use (a name from the tiers)
