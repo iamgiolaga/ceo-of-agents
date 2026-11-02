@@ -178,7 +178,7 @@ Run them and fix what fails; report the results:
 - `grep -rnE '\{\{|<!-- (IF|END IF)|# (IF|END IF)' .` finds nothing (ignore `.git`).
 - `org.yaml` parses. Try `python3 -c "import yaml,sys; yaml.safe_load(open('org.yaml'))"`; on ImportError try `ruby -ryaml -e 'YAML.load_file(ARGV[0])' org.yaml`; if neither is available, check it carefully by reading and say explicitly in the final report that YAML was checked by reading only.
 - Every expected `.claude/agents/<id>.md` exists (one per department in `org.yaml`). If any is missing, stop and tell the CEO clearly, listing the missing files and the likely cause (`.claude/` write permission, see Generation); never report success with missing agent files.
-- `company/state.md` matches `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`: frontmatter fields, exact H2 headings in order.
+- Mandatory, never skipped: compare `company/state.md` against `${CLAUDE_PLUGIN_ROOT}/schemas/state.md` item by item: frontmatter keys and values, the 5 H2 headings in exact order, the line formats, and `- none` in every empty section. List the result of each item in the final report. A skipped or partial check is reported as a failure, not as done.
 - Every `.claude/agents/*.md` has an explicit `tools:` list in its frontmatter, and its `name` equals its file name.
 - The files in `departments/` match the departments in `org.yaml`, and the display names appear in `CLAUDE.md`.
 
