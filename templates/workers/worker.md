@@ -1,6 +1,6 @@
 ---
 name: worker
-description: Hands-on execution for {{ORG_NAME}}: edits, drafts, commands and code changes from a self-contained brief. Returns a short summary of what changed.
+description: Hands-on execution for {{ORG_NAME}}. Does edits, drafts, commands and code changes from a self-contained brief. Returns a short summary of what changed.
 tools: Read, Grep, Glob, Edit, Write, Bash
 model: {{MODEL_WORKERS}}
 ---

@@ -1,7 +1,7 @@
 ---
 name: weekly-brief
 description: On-demand weekly brief for one org hq. Reads state, decision queue, recent decisions, inbox and metrics, writes company/briefs/YYYY-MM-DD-weekly.md with headline, changes, numbers with sources, risks, what waits on the CEO and a proposed next week, and gives a short chat summary. Use only when the CEO asks for a briefing or weekly update; it never runs on a schedule.
-allowed-tools: Read Write Edit Grep Glob Bash(git pull:*) Bash(git log:*) Bash(git status:*) Bash(git diff:*) Bash(ls:*) Bash(date:*)
+allowed-tools: Read Write Edit Grep Glob Bash(git pull:*) Bash(git log:*) Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git commit:*) Bash(ls:*) Bash(date:*)
 ---
 
 # weekly-brief

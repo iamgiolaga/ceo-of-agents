@@ -16,6 +16,7 @@ Read `org.yaml`. If `org.level` is not `holding`, stop and say that this skill o
 
 - The holding is a registry. Never write to a company hq. Never commit in a company hq. Never run any git command in a company hq that changes its working tree, its index, its branches or its commits. The only git commands allowed there are `fetch` (it updates only remote-tracking refs, never the working tree), `show`, `status`, `branch --show-current` and `symbolic-ref`. Read its state only with `git show` on the fetched ref (or on the local default branch when there is no remote). A dirty clone or a clone on another branch never blocks the brief and is never touched.
 - Read only `<path>/company/state.md` of each company. Do not read its decisions, departments or inbox.
+- Run one git command per Bash call, as `git -C <absolute path> <subcommand>`. Do not use `cd`, shell variables, `&&`, `;` or pipes: the `allowed-tools` patterns match a single command, and a compound command is refused.
 - Store no credentials. Fetches use the CEO's own git credentials already on the machine.
 - The pending list is a view. Items are answered and recorded in the owning org by its own chief of staff, never here.
 

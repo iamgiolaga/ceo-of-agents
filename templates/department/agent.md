@@ -1,6 +1,6 @@
 ---
 name: {{DEPT_ID}}
-description: {{DISPLAY_NAME}} department of {{ORG_NAME}}. {{DEPT_CORE_JOB}} Use for {{DEPT_TRIGGERS_LINE}}. Not for {{DEPT_EXCLUSIONS_LINE}}.
+description: {{ROLE_NAME}} department of {{ORG_NAME}}. {{DEPT_CORE_JOB}} Use for {{DEPT_TRIGGERS_LINE}}. Not for {{DEPT_EXCLUSIONS_LINE}}.
 tools: Read, Grep, Glob, Edit, Write, Agent(reader){{CONNECTORS}}
 model: {{MODEL}}
 ---
