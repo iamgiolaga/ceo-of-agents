@@ -1,5 +1,7 @@
 # ceo-of-agents: design spec (draft v0)
 
+Status: v0.1.0 implemented (phase 0). Sections updated where implementation diverged.
+
 ## 1. Problem
 
 One person, many organizations. A solo founder may run a product company, a second venture, and their own affairs as an entrepreneur (accounting, tax, personal legal, portfolio, personal brand). Context for each lives in separate places, shared context has no structure, and the CEO checks many queues to learn what needs them.
@@ -39,7 +41,7 @@ The pattern was proven in one running instance (the reference instance, the auth
 | Decision card | A pending question: context, options, recommendation, and who proposes it (or "needs analysis by <department>") |
 | Decision record | A numbered, immutable file in `decisions/` recording an answered card |
 | Approval gate | A rule saying which actions are free, need notice, or need the CEO's explicit OK |
-| CEO pending list | The one list of what waits on the CEO: actions (`A`) and decisions (`D`), with codes |
+| CEO pending list | The one list of what waits on the CEO: actions (`A`) and decisions (`D`), with codes. Lives in `company/state.md` under "Waiting on the CEO" |
 
 ## 4. Framework vs instance
 
@@ -49,14 +51,18 @@ The framework is a versioned Claude Code plugin. An instance is an hq repo per o
 
 ```
 ceo-of-agents/
-  .claude-plugin/plugin.json
-  agents/            chief-of-staff template, department templates
+  .claude-plugin/    plugin.json, marketplace.json
+  templates/
+    instance/        CoS CLAUDE.md template and all hq files, with placeholders
+    department/      custom department: charter + agent
   catalog/           department catalog (charter + agent template each)
   skills/            init-org, intake, record-decision, weekly-brief, portfolio-brief
-  schemas/           state.md, org.yaml, handoff, decision card/record
+  schemas/           state.md, org.yaml, portfolio.yaml, policy.yaml, handoff, decision card, decision record
   gates/             default approval-gate table
   migrations/        vN-to-vN+1 diffs
 ```
+
+There is no `agents/` dir: Claude Code auto-registers every `.md` under a plugin's `agents/` as a live subagent, so templates with placeholders cannot live there.
 
 **Instance (hq) layout**
 
@@ -69,14 +75,17 @@ ceo-of-agents/
     state.md                    living snapshot, fixed schema (see 5)
     decision-queue.md           open decision cards
     briefs/                     dated briefs
+  decisions/README.md           index of decision records
   decisions/NNNN-<slug>.md      numbered decision records
   inbox/                        handoffs, deleted once processed
   departments/<dept>/charter.md
   metrics/README.md             metric definitions, sources, dates
   .claude/agents/<dept>.md      department agents with tool allowlists
+  portfolio.yaml                holding only
+  policies/policy.yaml          holding only
 ```
 
-A holding instance is an org like any other whose specific job is to be a registry: `portfolio.yaml` lists references to company hqs, which may live in separate code orgs. It also holds `policies/`. Its departments are chosen at setup like in any org, and may be none.
+A holding instance is an org like any other whose specific job is to be a registry: `portfolio.yaml` lists references to company hqs, which may live in separate code orgs. It also holds `policies/` (`policies/policy.yaml`). Its departments are chosen at setup like in any org, and may be none.
 
 ## 5. Cross-org context
 
@@ -88,25 +97,33 @@ Each instance exposes `company/state.md` as its standard interface, with a fixed
 
 ```yaml
 ---
+schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
 framework_version: 0.1.0
+next_action: 1
+next_decision: 1
 ---
 ```
 
-Fixed sections, in order: Products and status; Key numbers (each with source and date); Risks; Open decisions; Waiting on the CEO.
+Fixed sections, in order: Products and status; Key numbers (each with source and date); Risks; Open decisions; Waiting on the CEO. Line formats live in `schemas/state.md`.
+
+Codes are written namespaced in every file (`ACME-D12`, `ACME-A3`), are monotonic per org and never reused; `next_action` and `next_decision` hold the next numbers. Every decision card carries its own D code.
 
 The holding keeps `portfolio.yaml`:
 
 ```yaml
+schema: portfolio/1
+stale_after_days: 14
 orgs:
   - id: ACME
+    name: Acme
     path: ~/work/acme-hq        # local clone
     remote: <git remote>        # for pull
 ```
 
-The holding CoS runs `git pull` on each registered hq and reads `state.md` read-only. It never writes to a company hq. Staleness is visible from `last_updated`. Reads use the CEO's own git credentials (the CEO is a member of every org); the holding stores no credentials and nothing is shared between orgs.
+The holding CoS runs `git pull --ff-only` on each registered hq and reads `state.md` read-only. On pull failure it reads the local copy and marks the org "pull failed". It never writes to a company hq. Staleness is visible from `last_updated` against `stale_after_days`. Reads use the CEO's own git credentials (the CEO is a member of every org); the holding stores no credentials and nothing is shared between orgs.
 
 ### Downward: holding to company
 
@@ -119,16 +136,17 @@ Policy layering: framework defaults < holding policies < company overrides. A co
 | Language | Add a requirement | Files must be in a stated language |
 | Models | Lower a ceiling | Cap workers to the cheapest tier |
 
-A company hq references holding policies from `org.yaml`:
+The holding's policy lives in `policies/policy.yaml` (schema `policy/1`): minimum gate tiers, forbidden connectors, required file language, model ceilings. A company hq references it from `org.yaml`:
 
 ```yaml
 policy:
   source: <holding hq remote>
+  local: <path>                 # CEO's local clone of the holding hq, read-only
   path: policies/
   pin: <commit sha>
 ```
 
-The CoS compares gates and policies against the pinned version at session start and reports any company setting that loosens a holding rule. Moving the pin is an explicit commit the CEO approves.
+At session start the company CoS runs `git -C <local> show <pin>:policies/policy.yaml` and compares four areas: gates (company tier at least as strict as the holding minimum), connectors (no holding-forbidden connector granted to any department), language (file language matches the required one), models (no company model above the holding ceilings). It reports `Policy check: OK` or one line per loosening, and adds an `A` item. It never fixes silently. If the policy is unreadable it says "skipped: <reason>". Moving the pin is an explicit commit the CEO approves.
 
 ### Aggregated CEO pending list
 
@@ -140,7 +158,7 @@ When a company decision touches money, personal liability or the portfolio, the 
 
 ## 6. Setup wizard
 
-`/init-org` runs in an empty directory and asks:
+`/ceo-of-agents:init-org` runs in an empty directory and asks:
 
 1. Level: holding or company.
 2. Org name and short id (used in codes).
@@ -150,9 +168,9 @@ When a company decision touches money, personal liability or the portfolio, the 
 6. Approval-gate table: accept defaults or edit.
 7. Allowed connectors per department.
 8. Model tiers for the CoS, departments and workers.
-9. For a company: holding policy source and pin (optional).
+9. For a company: holding policy source and pin (optional). If a policy is given, the tighten-only check runs before anything is generated.
 
-It generates `CLAUDE.md`, `org.yaml`, `operating-model.md`, the `company/` files with empty schema-valid state, one charter and one agent file per department, `inbox/README.md`, `metrics/README.md` and an initial decision record (`0001`) capturing the setup answers.
+It generates `CLAUDE.md`, `org.yaml`, `operating-model.md`, the `company/` files with empty schema-valid state, one charter and one agent file per department (file names use the department id), `decisions/README.md`, `inbox/README.md`, `metrics/README.md` and an initial decision record (`0001`) capturing the setup answers. A holding also gets `portfolio.yaml` and `policies/`. Optionally it writes `.claude/settings.json` enabling the plugin, only with the CEO's OK. It never pushes and asks before the first commit.
 
 **Starting department catalog**
 
@@ -171,7 +189,15 @@ Catalog entries are templates, not defaults: each org decides its own structure.
 
 ## 7. Approval gates
 
-Default table, configurable per org in `org.yaml`.
+Default table (`gates/default.md`), configurable per org: `org.yaml` holds `gates: {free, notice, ok}` lists of stable action ids.
+
+| Tier | Action ids |
+|---|---|
+| free | `issues-and-labels`, `comments`, `drafts`, `open-pr`, `research`, `hq-write` |
+| notice | `push-non-deploy-branch`, `hq-commit`, `dispatch-pushing-department` |
+| ok | `merge`, `deploy`, `publish`, `contact-people`, `spend-money`, `rotate-secrets`, `delete-data`, `org-or-repo-settings`, `change-brand-rules`, `change-policy-rules`, `file-or-sign`, `make-payment` |
+
+Tier order: free < notice < ok.
 
 | Tier | Rule | Examples |
 |---|---|---|
@@ -179,7 +205,7 @@ Default table, configurable per org in `org.yaml`.
 | With notice | One line before acting (what, where, content) | Pushes to a non-deploying branch, hq commits, dispatching a department that will push |
 | Explicit CEO OK | Narrow, exact request, batched | Merge, deploy, publish, contacting people, spending money, rotating secrets, deleting data, org or repo settings, changing brand or policy rules |
 
-Principles: do not ask for OKs the table does not require; batch the asks into the pending list; run the exact approved action, nothing broader. Advisory departments cannot move any filing, signing or payment into a lower tier.
+Principles: do not ask for OKs the table does not require; batch the asks into the pending list; run the exact approved action, nothing broader. Advisory departments (legal, finance, tax) never do `file-or-sign` or `make-payment` at all; no config can lower them.
 
 ## 8. Models and cost
 
@@ -195,8 +221,9 @@ Rules: workers never escalate to a more capable model than their parent. Departm
 
 - Each department has an explicit `tools:` allowlist; connectors are granted per department, not globally.
 - Never mix accounts: credentials and connectors for org A are not used for org B, and work-employer accounts are never used for any org's affairs.
-- The holding holds the most sensitive data (tax, personal legal, finances). Its repo stays private, and company agents never get access to it.
-- Cross-org reads happen only through the holding CoS, read-only, through `state.md`. Sensitive detail stays out of `state.md`.
+- The holding holds the most sensitive data (tax, personal legal, finances). Its repo stays private.
+- Upward, cross-org reads happen only through the holding CoS, read-only, through `state.md`. Sensitive detail stays out of `state.md`.
+- Downward, the only cross-org read is the company CoS reading `policies/` at the pinned commit. Departments never read it. Nothing else in the holding repo is read.
 - Numbers always carry source and date. If unknown, say so. Never invent a metric.
 
 ## 10. Roadmap
@@ -212,9 +239,11 @@ Migrating the reference instance onto the framework happens only after v0 exists
 
 ## 11. Open questions
 
-1. `state.md` schema versioning: how are breaking schema changes announced, and how long does the holding read older versions?
+1. `state.md` schema versioning: `schema: state/1` exists; the announcement and compatibility policy (how breaking changes are announced, how long older versions are read) is still open (see `migrations/README.md`).
 2. More than one human per org (a partner, a read-only professional): out of scope for v0. To keep the door open, "CEO" is a role with an id in `org.yaml`, not a hard-coded person.
 3. License: resolved, MIT.
 4. Migration UX: how much of an upgrade can be applied automatically while still arriving as a reviewable diff?
-5. Policy enforcement: is "tighten only" checked by the CoS reading files, or by a deterministic validator script?
-6. Pending-list staleness: how does the holding flag an org whose `state.md` has not been updated for too long?
+5. Policy enforcement: v0: the CoS reads files at session start; a validator script stays open.
+6. Pending-list staleness: v0: `stale_after_days` in `portfolio.yaml` (default 14) flags stale orgs; open: what to do beyond flagging.
+7. Holding policy repo separation: a holding may later publish policies from a separate repo, so company sessions need no clone of the private holding repo.
+8. Whether `allowed-tools` patterns for `git -C` in skills behave as intended (unverified).
