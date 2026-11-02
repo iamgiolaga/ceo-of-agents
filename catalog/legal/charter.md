@@ -25,10 +25,9 @@ Spot legal risk early and explain it plainly, with options, so the CEO can decid
 - Handoff notes in `inbox/`
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `research`, `drafts`, `comments`
-- Explicit CEO OK (ask through the CoS): `contact-people`, `spend-money`, `file-or-sign` (never performed by this department; the CEO or a professional does it)
-- Note: No configuration may lower `file-or-sign` for this department.
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `research`, `drafts`, `comments`, `contact-people`, `spend-money`, `file-or-sign`
+- Note: This department never performs `file-or-sign`, regardless of `org.yaml`; the CEO or a professional does it.
 
 ## Handoff
 - At the end of every piece of work, leave a note in `inbox/` named `YYYY-MM-DD-{{DEPT_ID}}-to-cos-<slug>.md`.

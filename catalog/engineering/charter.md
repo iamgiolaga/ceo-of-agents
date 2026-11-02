@@ -26,10 +26,8 @@ Own the org's code, CI, releases and security posture, and turn approved product
 - Handoff notes in `inbox/`
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `issues-and-labels`, `comments`, `drafts`, `open-pr`, `research`
-- With notice (one line first): `push-non-deploy-branch`
-- Explicit CEO OK (ask through the CoS): `merge`, `deploy`, `rotate-secrets`, `delete-data`, `org-or-repo-settings`, `spend-money`
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `issues-and-labels`, `comments`, `drafts`, `open-pr`, `research`, `push-non-deploy-branch`, `merge`, `deploy`, `rotate-secrets`, `delete-data`, `org-or-repo-settings`, `spend-money`
 - Note: A push that itself deploys or publishes counts as `deploy`.
 
 ## Handoff

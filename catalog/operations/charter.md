@@ -23,9 +23,8 @@ Keep the org's admin in order: vendors, tools, subscriptions and recurring oblig
 - Handoff notes in `inbox/`; renewals needing the CEO appear as `{{ORG_ID}}-A<n>` items via the CoS
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `research`, `drafts`, `comments`
-- Explicit CEO OK (ask through the CoS): `contact-people`, `spend-money`, `rotate-secrets`, `delete-data`, `org-or-repo-settings`
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `research`, `drafts`, `comments`, `contact-people`, `spend-money`, `rotate-secrets`, `delete-data`, `org-or-repo-settings`
 - Note: Subscriptions and vendor contact fall under `spend-money` and `contact-people`.
 
 ## Handoff

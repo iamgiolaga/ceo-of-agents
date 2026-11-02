@@ -24,9 +24,8 @@ Own the org's identity, assets and voice rules, and review visible work against 
 - Handoff notes in `inbox/`, including a note for engineering when a change affects a live surface
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `drafts`, `comments`, `research`
-- Explicit CEO OK (ask through the CoS): `change-brand-rules`, `publish`, `spend-money`
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `drafts`, `comments`, `research`, `change-brand-rules`, `publish`, `spend-money`
 - Note: publishing assets is `publish`; the department specifies and reviews, the CEO puts assets live.
 
 ## Handoff

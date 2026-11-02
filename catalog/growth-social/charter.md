@@ -23,9 +23,8 @@ Plan and draft the org's public communication so the CEO can publish it in minut
 - Handoff notes in `inbox/`
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `drafts`, `research`, `comments`
-- Explicit CEO OK (ask through the CoS): `publish`, `contact-people`, `spend-money`
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `drafts`, `research`, `comments`, `publish`, `contact-people`, `spend-money`
 - Note: publishing posts is `publish`; replies and outreach to people are `contact-people`. The CEO publishes by hand.
 
 ## Handoff

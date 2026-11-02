@@ -40,8 +40,8 @@ Read `org.yaml`. If `org.level` is not `holding`, stop and say that this skill o
 7. Write `company/briefs/YYYY-MM-DD-portfolio.md` in the holding (today's date), sections:
    - `## Headline`
    - `## Organizations`: one status line per org: `ID name: last_updated YYYY-MM-DD, stale: yes|no, pull: ok|failed (<reason>), schema: state/1`.
-   - `## Pending list`: the composed list, table `Code | Org | Urgency | Item | Since | Holding advice`.
-   - `## Risks and key numbers by org`: risks and key numbers from each state (with their source and date as written).
+   - `## Pending list`: the composed list, table with exactly these columns: `Code | Org | Urgency | Item | Since | Holding advice`. `Holding advice` is filled only for items marked `[escalate: holding]` (the holding CoS's advice on tax, personal legal or cash across orgs, or `pending: <what analysis is needed>`); every other item has `—` there. The holding's own Waiting-on-the-CEO items are included (`Org` = the holding id).
+   - `## Risks and key numbers by org`: risks and key numbers from each state (with their source and date as written), one labelled subsection per registered org plus one for the holding itself (labelled as the holding).
    - `## Notes`: pull failures, unknown schemas, stale orgs.
    Open the pending list with this statement: "This list is a view. Answer each item in its owning org; the owning chief of staff records it there."
 

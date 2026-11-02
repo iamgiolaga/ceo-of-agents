@@ -26,10 +26,9 @@ Keep the org's tax position and deadlines visible so nothing is missed and a pro
 - Deadlines surface as `{{ORG_ID}}-A<n>` items via the CoS
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `research`, `drafts`, `comments`
-- Explicit CEO OK (ask through the CoS): `contact-people`, `spend-money`, `file-or-sign` (never performed by this department; the CEO or a professional does it), `make-payment` (never performed here)
-- Note: No configuration may lower `file-or-sign` or `make-payment` for this department.
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `research`, `drafts`, `comments`, `contact-people`, `spend-money`, `file-or-sign`, `make-payment`
+- Note: This department never performs `file-or-sign` or `make-payment`, regardless of `org.yaml`; the CEO or a professional does it.
 
 ## Handoff
 - At the end of every piece of work, leave a note in `inbox/` named `YYYY-MM-DD-{{DEPT_ID}}-to-cos-<slug>.md`.

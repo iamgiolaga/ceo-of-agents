@@ -24,9 +24,8 @@ Find out whether and how the org becomes sustainable, and keep positioning evide
 - Handoff notes in `inbox/`
 
 ## Gates
-Action ids and tiers follow the `gates:` block in `org.yaml` (summarized in the "Approval gates" section of `CLAUDE.md`). The tiers below are this department's notes on top of that table.
-- Free (do and mention): `research`, `drafts`, `comments`
-- Explicit CEO OK (ask through the CoS): `contact-people`, `spend-money`
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
+- Relevant actions: `research`, `drafts`, `comments`, `contact-people`, `spend-money`
 - Note: Adopting a pricing or business model is a CEO decision: propose it as a card, do not apply it.
 
 ## Handoff

@@ -88,6 +88,8 @@ After the last group, show a compact summary: level, name and id, languages, dep
 
 Only after confirmation.
 
+Before generating, tell the CEO that the wizard writes into `.claude/` (`.claude/agents/*.md` and optionally `.claude/settings.json`), which Claude Code protects, so a permission prompt may appear and must be approved. For headless runs, start Claude Code with `--allowedTools "Edit(.claude/**)"` (`Write(...)` path rules are not accepted as allow rules; `Edit(path)` covers writes). Generate every file directly with your own tools; do not delegate file writes to sub-agents, which may lack the permissions.
+
 1. List `${CLAUDE_PLUGIN_ROOT}/templates/instance/` and copy every file to the same relative path in the current directory, rendering as below.
 2. Placeholders: render every `{{NAME}}` using the "Placeholder reference" below. Every placeholder used in `templates/` and `catalog/` is listed there.
 3. Conditional blocks: render them as described under "Conditional markers" below.
@@ -100,7 +102,7 @@ Only after confirmation.
    Render the department placeholders from the reference below. Make sure the department file name equals the `name:` in its frontmatter.
 8. Create `departments/` only if there is at least one department. `company/briefs/.gitkeep` and `inbox/` come from the template.
 9. Decision `decisions/0001-setup.md`, from the template, following `${CLAUDE_PLUGIN_ROOT}/schemas/decision-record.md`: record all answers in Context and Decision (level, name and id, languages, departments with models and connectors, gate changes, forbidden connectors, model tiers, policy pin and check result). `Card: none`, `Decided by: ceo`. Add its row to `decisions/README.md`.
-10. `company/state.md`: empty schema-valid state from the template (`schema: state/1`, the five fixed H2 sections, `- none` in empty sections, `next_action: 1`, `next_decision: 1`). If the policy check reported loosenings the CEO chose to keep, add them as `<ORG_ID>-A1` in "Waiting on the CEO" and set `next_action: 2`.
+10. `company/state.md`: empty schema-valid state from the template (`schema: state/1`, the five fixed H2 sections, `- none` in empty sections, `next_action: 1`, `next_decision: 1`). If the policy check reported loosenings the CEO chose to keep, seed one A item per kept loosening, in the exact "Waiting on the CEO" line format of `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`: `- <ORG_ID>-A<n> [high]: <exact action> (since YYYY-MM-DD)` with urgency `high`, `since` = today (`date +%F`), and the text an exact action, for example `In org.yaml move \`merge\` from notice back to ok, or approve a holding policy change; see decision 0001`. Number them from 1 and set `next_action` to the last number plus one (`2` for a single item). Never use `normal` or omit the `since` date. Also keep the rest of `state.md` consistent: Risks and Open decisions stay `- none` unless the CEO says otherwise (the A item is the only record, and decision 0001 holds the details).
 11. If the CEO agreed, write `.claude/settings.json` enabling the plugin, for example:
     ```json
     { "enabledPlugins": { "ceo-of-agents@ceo-of-agents": true } }
@@ -127,7 +129,7 @@ Render with plain string replacement. Values are single-line unless stated. Neve
 | `{{MODEL_COS}}` | Tier chosen for the CoS (question 8) |
 | `{{MODEL_DEPARTMENTS}}` | Tier chosen as the default for departments |
 | `{{MODEL_WORKERS}}` | The concrete model one tier below `{{MODEL_COS}}` in `models.tiers` (the same tier if `{{MODEL_COS}}` is the last). Used only in prose (`CLAUDE.md`, `decisions/0001-setup.md`). `org.yaml` keeps the literal rule `workers: one-down`, never a model name |
-| `{{DEPARTMENTS_TABLE}}` | Markdown table `Agent id \| Role \| Use for`, one row per department: `Agent id` = the department id (`name` in its agent file), `Role` = display name, `Use for` = the charter's `Purpose` line shortened to one line. Used inside the `departments` condition only (for none, the `no-departments` block applies) |
+| `{{DEPARTMENTS_TABLE}}` | Markdown table `Agent id \| Name \| Role \| Use for`, one row per department: `Agent id` = the department id (`name` in its agent file), `Name` = display name (persona or role name), `Role` = the catalog role name (for example Business; the one in the agent file's intro line) or, for a custom department, the custom department's role name as given when it was defined, `Use for` = a short routing phrase of at most 12 words derived from the charter's `Purpose` line (never the full sentence). Used inside the `departments` condition only (for none, the `no-departments` block applies) |
 | `{{GATES_TABLE}}` | Markdown table `Tier \| Rule \| Action ids`, exactly three rows (free, notice, ok) in that order. `Rule` is the short rule from `${CLAUDE_PLUGIN_ROOT}/gates/default.md` (free: do it and mention it; notice: one line before acting; ok: the CEO's explicit OK). `Action ids` are the final action ids of that tier, in backticks, comma-separated |
 | `{{DEPARTMENTS_YAML}}` | `[]` for no departments. Otherwise the value starts with a newline and is a block list indented two spaces under `departments:`; each item has `id`, `from_catalog` (catalog id or `custom`), `display_name`, `model`, `connectors` (inline list such as `[mcp__github__*]`, or `[]`) |
 | `{{GATES_FREE}}` `{{GATES_NOTICE}}` `{{GATES_OK}}` | Final action ids of that tier as an inline YAML list: `[a, b, c]` (`[]` if the tier is empty). Each action id is in exactly one tier |
@@ -148,7 +150,7 @@ Table cell values (`SETUP_*`) must not contain `|` or newlines.
 | Placeholder | Value |
 |---|---|
 | `{{DEPT_ID}}` | Department id (kebab-case) |
-| `{{DISPLAY_NAME}}` | Display name (question 5) |
+| `{{DISPLAY_NAME}}` | Display name (question 5). The agent intro renders as "You are {{DISPLAY_NAME}}, the <Role> department of {{ORG_NAME}}." With the default (display name equal to the role name) it reads "You are Business, the Business department of Acme."; this repetition is accepted, keep it. In a custom department's agent file replace the literal `<Role>` with the custom department's role name |
 | `{{ORG_NAME}}`, `{{ORG_ID}}` | As above |
 | `{{MODEL}}` | The department's model tier |
 | `{{WORKER_MODEL}}` | The tier one below `{{MODEL}}` in `models.tiers` (the same tier if it is already the last) |
@@ -174,7 +176,8 @@ Markdown: `<!-- IF x -->` ... `<!-- END IF -->`. YAML: `# IF x` ... `# END IF`. 
 
 Run them and fix what fails; report the results:
 - `grep -rnE '\{\{|<!-- (IF|END IF)|# (IF|END IF)' .` finds nothing (ignore `.git`).
-- `org.yaml` parses (for example `python3 -c "import yaml,sys; yaml.safe_load(open('org.yaml'))"`; if PyYAML is missing, read it carefully instead and say so).
+- `org.yaml` parses. Try `python3 -c "import yaml,sys; yaml.safe_load(open('org.yaml'))"`; on ImportError try `ruby -ryaml -e 'YAML.load_file(ARGV[0])' org.yaml`; if neither is available, check it carefully by reading and say explicitly in the final report that YAML was checked by reading only.
+- Every expected `.claude/agents/<id>.md` exists (one per department in `org.yaml`). If any is missing, stop and tell the CEO clearly, listing the missing files and the likely cause (`.claude/` write permission, see Generation); never report success with missing agent files.
 - `company/state.md` matches `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`: frontmatter fields, exact H2 headings in order.
 - Every `.claude/agents/*.md` has an explicit `tools:` list in its frontmatter, and its `name` equals its file name.
 - The files in `departments/` match the departments in `org.yaml`, and the display names appear in `CLAUDE.md`.
