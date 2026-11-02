@@ -1,7 +1,7 @@
 ---
 name: portfolio-brief
-description: Holding-only, on-demand portfolio brief. Pulls each registered company hq read-only, reads its company/state.md, composes one pending list across the holding and all companies (urgency, then level, then age), and writes company/briefs/YYYY-MM-DD-portfolio.md. Use when the CEO asks for a portfolio brief or a view across orgs. Refuses to run in a company hq.
-allowed-tools: Read Write Edit Grep Glob Bash(git -C * pull --ff-only) Bash(git -C * log:*) Bash(git -C * status:*) Bash(git pull:*) Bash(git status:*) Bash(git add:*) Bash(git commit:*) Bash(ls:*) Bash(date:*)
+description: Holding-only, on-demand portfolio brief. Fetches each registered company hq read-only (no change to its working tree), reads its company/state.md from the fetched default branch, composes one pending list across the holding and all companies (urgency, then level, then age), and writes company/briefs/YYYY-MM-DD-portfolio.md. Use when the CEO asks for a portfolio brief or a view across orgs. Refuses to run in a company hq.
+allowed-tools: Read Write Edit Grep Glob Bash(git -C * fetch *) Bash(git -C * show *) Bash(git -C * status *) Bash(git -C * branch *) Bash(git -C * symbolic-ref *) Bash(git add *) Bash(git commit *) Bash(ls *) Bash(date *)
 ---
 
 # portfolio-brief (holding only)
@@ -14,16 +14,21 @@ Read `org.yaml`. If `org.level` is not `holding`, stop and say that this skill o
 
 ## Hard rules
 
-- The holding is a registry. Never write to a company hq. Never commit in a company hq. Never run any git command in a company hq that changes it, other than the single `git -C <path> pull --ff-only` below. Read its files only through the Read tool or read-only git.
+- The holding is a registry. Never write to a company hq. Never commit in a company hq. Never run any git command in a company hq that changes its working tree, its index, its branches or its commits. The only git commands allowed there are `fetch` (it updates only remote-tracking refs, never the working tree), `show`, `status`, `branch --show-current` and `symbolic-ref`. Read its state only with `git show` on the fetched ref (or on the local default branch when there is no remote). A dirty clone or a clone on another branch never blocks the brief and is never touched.
 - Read only `<path>/company/state.md` of each company. Do not read its decisions, departments or inbox.
-- Store no credentials. Pulls use the CEO's own git credentials already on the machine.
+- Store no credentials. Fetches use the CEO's own git credentials already on the machine.
 - The pending list is a view. Items are answered and recorded in the owning org by its own chief of staff, never here.
 
 ## Steps
 
-1. Read `portfolio.yaml` (schema `portfolio/1`: `stale_after_days`, `orgs` with `id`, `name`, `path`, `remote`). Expand `~` in paths. If `orgs` is empty, say so and still write a brief with the holding's own items.
+1. Read `portfolio.yaml` (schema `portfolio/1`: `stale_after_days`, `orgs` with `id`, `name`, `path`, `remote`; `remote` may be `""` for a company with no remote). Expand `~` in paths. If `orgs` is empty, say so and still write a brief with the holding's own items.
 
-2. For each org: run `git -C <path> pull --ff-only`. If it fails (offline, diverged, missing path), record `pull failed: <reason>`, read the local copy if it exists, and mark the org. Then read `<path>/company/state.md`. If it is missing, record `state.md missing`.
+2. For each org, read it without touching its working tree (use `ls` to check the path exists; if it is missing, record `path missing` and go on):
+   - `git -C <path> fetch origin`. If it fails (offline, no remote, never fetched), record `fetch failed: <reason>` and continue with the last fetched ref; if there is no remote-tracking ref at all, record `never fetched`.
+   - Default branch: `git -C <path> symbolic-ref --short refs/remotes/origin/HEAD` (gives `origin/<default>`). If it fails, use `origin/main`.
+   - State: `git -C <path> show origin/<default>:company/state.md`. If it fails, record `state.md missing`.
+   - No remote fallback: if there is no remote-tracking ref (the entry has `remote: ""`, the clone has no remote, or it was never fetched), read the local default branch instead. Find it with `git -C <path> symbolic-ref --short HEAD` (the checked-out branch; use `main` if that fails), then run `git -C <path> show <default>:company/state.md`. Record the read as `read: local <default> (no remote, may include unpushed changes)`. This is the only wording for a local read. Still read-only: `show` never touches the working tree.
+   - Clone checks, read-only: `git -C <path> status --porcelain` (any output means `clone: dirty`, else `clean`) and `git -C <path> branch --show-current` (record `branch: <name>` only when it differs from `<default>`). These are information only: the brief reads `origin/<default>` (or the local default branch in the no-remote fallback) anyway.
 
 3. Validate each state file: the frontmatter must have `schema: state/1`, `org_id`, `level`, `last_updated`, `framework_version`, `next_action`, `next_decision`, and the five H2 sections in order (see `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`). An unknown schema version: report `unknown schema <value>` for that org and do not guess its content; skip its items and say so. A known schema with problems: report the problem, use what parses.
 
@@ -39,12 +44,12 @@ Read `org.yaml`. If `org.level` is not `holding`, stop and say that this skill o
 
 7. Write `company/briefs/YYYY-MM-DD-portfolio.md` in the holding (today's date), sections:
    - `## Headline`: write it last, after the `## Pending list` table is composed. Compute every count it states (total items, high-urgency items, items per org) from the rows of that final table, not from the source states or from memory. Re-count the rows and compare with the Headline numbers before writing the file; fix any mismatch.
-   - `## Organizations`: one status line per org: `ID name: last_updated YYYY-MM-DD, stale: yes|no, pull: ok|failed (<reason>), schema: state/1`.
+   - `## Organizations`: one status line per org: `ID name: last_updated YYYY-MM-DD, stale: yes|no, fetch: ok|failed (<reason>)|never, clone: clean|dirty, schema: state/1`, with `, branch: <name>` added only when the clone is on a branch other than the default. Add `, read: local <default> (no remote, may include unpushed changes)` when the local fallback was used; otherwise the state shown is the one on `origin/<default>`.
    - `## Pending list`: the composed list, table with exactly these columns: `Code | Org | Urgency | Item | Since | Holding advice`. `Holding advice` is filled only for items marked `[escalate: holding]` (the holding CoS's advice on tax, personal legal or cash across orgs, or `pending: <what analysis is needed>`); every other item has `—` there. The holding's own Waiting-on-the-CEO items are included (`Org` = the holding id).
    - `## Risks and key numbers by org`: risks and key numbers from each state (with their source and date as written), one labelled subsection per registered org plus one for the holding itself (labelled as the holding).
-   - `## Notes`: pull failures, unknown schemas, stale orgs.
+   - `## Notes`: fetch failures or never-fetched orgs (the state shown may be old), dirty clones, clones on a non-default branch (local changes are not in the brief), unknown schemas, stale orgs.
    Open the pending list with this statement: "This list is a view. Answer each item in its owning org; the owning chief of staff records it there."
 
-8. Update the holding's `company/state.md` `last_updated`. The brief and this edit are an hq commit with gate "notice": write one line to the CEO and commit in the holding with `docs: portfolio brief YYYY-MM-DD` and the attribution lines required by the session. Never push unless the CEO asks.
+8. Get today's date with `date +%F`. Update the holding's `company/state.md` `last_updated`. The brief and this edit are an hq commit with gate "notice": write one line to the CEO and commit in the holding with `docs: portfolio brief YYYY-MM-DD` and the attribution lines required by the session. Never push unless the CEO asks.
 
 9. Chat summary in the chat language, at most 10 lines: orgs read, stale or failed ones, the top pending codes in order, and a reminder that the CEO answers each in the owning org. Give the brief's path.
