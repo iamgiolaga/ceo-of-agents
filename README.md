@@ -31,7 +31,11 @@ Nothing important happens without your OK. Status: early; see the [design spec](
 
 ## In practice
 
-ceo-of-agents grew out of the setup that runs [partitelle](https://github.com/partitelle), a Telegram bot that organizes weekly team games among friends: sign-ups, teams and reminders. There, a chief of staff acts as the CEO's second brain, with one agent per department.
+ceo-of-agents grew out of the setup that runs [partitelle](https://github.com/partitelle), a Telegram bot that organizes weekly team games among friends: sign-ups, teams and reminders. There, a chief of staff acts as the CEO's second brain, with one agent per department:
+
+<p align="center">
+  <img src="assets/partitelle-org-chart.png" width="100%" alt="partitelle's org chart: the CEO, a chief of staff (Giulia) and five departments (Mike, Alpha, Kyle, Fanny, Lara)">
+</p>
 
 ## Get started in 30 seconds
 
