@@ -7,6 +7,8 @@
 # reads it from the pinned commit of that repo; see gates/default.md for the
 # tighten-only check.
 #
+# A job hq (`org.purpose: job`) never pins a policy; its optional `employer_rules` pointer takes that place.
+#
 # Required keys: schema, gates, accounts, language, models
 #   schema                       exactly "policy/1"
 #   gates                        free / notice / ok lists of action ids; the tier an

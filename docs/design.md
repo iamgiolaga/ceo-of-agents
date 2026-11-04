@@ -1,6 +1,6 @@
 # ceo-of-agents: design spec (draft v0)
 
-Status: v0.1.1 implemented (phase 0 plus review fixes). Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments.
+Status: v0.2.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility.
 
 ## 1. Problem
 
@@ -34,6 +34,7 @@ The pattern was proven in one running instance (the reference instance, the auth
 | Framework | The versioned, reusable part: templates, catalog, skills, schemas, wizard |
 | Instance | One org's hq repo, generated from the framework and owned by the CEO |
 | Level | `holding` (the CEO as entrepreneur) or `company` (one per product, with its own code org and hq repo) |
+| Purpose | What the fleet is for: job (the CEO's own work at an employer), product, startup or company. Set by the first wizard question; drives suggested departments, account rules and holding eligibility (see 6) |
 | Chief of staff (CoS) | The CEO's single point of contact per org. Frames, routes, records, challenges. Owns hq. Does no deep execution |
 | Department | A vertical specialist agent with a charter, a tool allowlist and a model tier |
 | Charter | A short file stating a department's scope, what it never does, its inputs and outputs, and its gates |
@@ -71,7 +72,7 @@ There is no `agents/` dir: Claude Code auto-registers every `.md` under a plugin
 ```
 <org>-hq/
   CLAUDE.md                     CoS instructions (generated)
-  org.yaml                      level, id, language, models, gates, policy pin (company) or policies_repo (holding)
+  org.yaml                      level, purpose, id, CoS name, language, models, gates, policy pin (company) or policies_repo (holding)
   operating-model.md            how the CEO works with this org
   company/
     state.md                    living snapshot, fixed schema (see 5)
@@ -104,7 +105,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.1.1
+framework_version: 0.2.0
 next_action: 1
 next_decision: 1
 ---
@@ -128,9 +129,11 @@ orgs:
 
 The holding CoS never pulls. For each registered hq it runs `git -C <path> fetch`, then `git -C <path> show origin/<default-branch>:company/state.md`, so the clone's working tree is never touched. The Organizations line records when a clone is dirty, on another branch or not fetched (the last fetched copy is then read, and marked). It never writes to a company hq. Staleness is visible from `last_updated` against `stale_after_days`. Reads use the CEO's own git credentials (the CEO is a member of every org); the holding stores no credentials and nothing is shared between orgs.
 
+A job hq (`org.purpose: job`) is never registered; the portfolio brief skips one if listed, reading only `org.purpose` from its `org.yaml`.
+
 ### Downward: holding to company
 
-Policy layering: framework defaults < holding policies < company overrides. A company may tighten a holding policy, never loosen it.
+Policy layering: framework defaults < holding policies < company overrides. A company may tighten a holding policy, never loosen it. A job hq never pins a policy.
 
 | Policy area | "Tighten" means | Example |
 |---|---|---|
@@ -162,19 +165,30 @@ When a company decision touches money, personal liability or the portfolio, the 
 
 `/ceo-of-agents:init-org` runs in an empty directory and asks:
 
-1. Level: holding or company.
+1. Purpose and level: what the fleet is for (job, product, startup, company); level (holding or company) is asked only for company, and job, product and startup are company-level hqs.
 2. Org name and short id (used in codes).
 3. Language for chat with the CEO, and language for files.
 4. Departments: nothing is preselected. Pick from the catalog, define custom ones, or none. For every custom department the wizard asks scope, triggers, exclusions and the single core job, so no placeholder is left in its files.
-5. Names or personas per agent (optional; the role name or a persona, the CEO's choice).
+5. Names or personas per agent, including the chief of staff's name (the role name or a persona, the CEO's choice; the CoS name is required).
 6. Approval-gate table: take the framework table as listed or edit it.
 7. Allowed connectors per department. Advisory departments (legal, finance, tax) get read-only connector tools only, named one by one (no server wildcard); the wizard refuses tools that file, pay, send, publish or write.
 8. Model tiers for the CoS, departments and workers.
-9. For a company: the holding's policies repo (remote), the local clone and the pin (optional). If a policy is given, the tighten-only check runs before anything is generated. A holding skips this question.
+9. For a company with purpose not job: the holding's policies repo (remote), the local clone and the pin (optional). If a policy is given, the tighten-only check runs before anything is generated. For a job hq: an optional pointer to the employer's rules on data, AI tools and accounts. A holding skips this question.
 
-The wizard also offers an optional remote for the hq, added with `git remote add` and never pushed. Without a remote, the CoS skips pull and push and says once "No remote: pull and push skipped". A holding additionally creates its policies repo at a path the CEO gives (outside the hq; the only write outside the current directory): `git init`, renders `policy.yaml` and `README.md` from `templates/policies-repo/`, asks before its first commit, and offers an optional remote the same way.
+The wizard also offers an optional remote for the hq, added with `git remote add` and never pushed. Without a remote, the CoS skips pull and push and says once "No remote: pull and push skipped". A holding additionally creates its policies repo at a path the CEO gives (outside the hq; the only write outside the current directory): `git init`, renders `policy.yaml` and `README.md` from `templates/policies-repo/`, asks before its first commit, and offers an optional remote the same way. For a job hq the wizard also asks where the remote lives (a personal or an employer account) without imposing one, and reminds the CEO of the employer's rules.
 
 It generates `CLAUDE.md`, `org.yaml`, `operating-model.md`, the `company/` files with empty schema-valid state, one charter and one agent file per department (file names use the department id), `decisions/README.md`, `inbox/README.md`, `metrics/README.md` and an initial decision record (`0001`) capturing the setup answers. It also generates `.claude/agents/reader.md` and `.claude/agents/worker.md`. A holding also gets `portfolio.yaml` and the separate policies repo. Optionally it writes `.claude/settings.json` enabling the plugin, only with the CEO's OK. It never pushes and asks before the first commit.
+
+**Fleet purpose**
+
+| Purpose | Level | Account rule | Holding |
+|---|---|---|---|
+| job | company (not asked) | The employer's accounts and connectors used for this job are this org's accounts; the CEO's personal accounts and other orgs' accounts are kept out | Never registered, never pins a policy; an optional `employer_rules` pointer instead |
+| product | company (not asked) | Employer accounts kept out | May be registered, may pin a policy |
+| startup | company (not asked) | Employer accounts kept out | May be registered, may pin a policy |
+| company | asked: company or holding | Employer accounts kept out | Company: may be registered, may pin a policy. Holding: is the registry |
+
+Suggested departments per purpose are in `catalog/README.md`, section "Suggestions by purpose". They are suggestions only; nothing is preselected.
 
 **Starting department catalog**
 
@@ -228,7 +242,7 @@ Rules: workers never escalate to a more capable model than their parent. Departm
 ## 9. Separation and privacy
 
 - Each department has an explicit `tools:` allowlist; connectors are granted per department, not globally.
-- Never mix accounts: credentials and connectors for org A are not used for org B, and other accounts (for example an employer's) are never used for any org's affairs.
+- Never mix accounts: credentials and connectors for org A are not used for org B. Use only this org's accounts: in a job hq (`org.purpose: job`) the employer's accounts used for that job are this org's accounts and the CEO's personal accounts are kept out; in every other org other accounts (for example an employer's) are never used.
 - Advisory departments (legal, finance, tax) get read-only connector tools only, named one by one.
 - The holding holds the most sensitive data (tax, personal legal, finances). Its repo stays private.
 - Upward, cross-org reads happen only through the holding CoS, read-only, through `state.md`. Sensitive detail stays out of `state.md`.

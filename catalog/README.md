@@ -20,7 +20,19 @@ The catalog holds starting templates for departments. Each entry has two files:
 
 - Entries are templates, not defaults. Nothing is preselected; the setup wizard asks and zero departments is a valid answer.
 - Picking the same entry in two orgs creates two independent departments, each with its own charter, agent file and memory. Nothing is shared between them.
-- The wizard fills the placeholders (`{{DEPT_ID}}`, `{{DISPLAY_NAME}}`, `{{ORG_NAME}}`, `{{ORG_ID}}`, `{{MODEL}}`, `{{WORKER_MODEL}}`) and replaces `{{CONNECTORS}}` with `, mcp__<name>__*` entries granted to that department only, or removes it.
+- The wizard fills the placeholders (`{{DEPT_ID}}`, `{{DISPLAY_NAME}}`, `{{ORG_NAME}}`, `{{ORG_ID}}`, `{{MODEL}}`, `{{WORKER_MODEL}}`, `{{OTHER_ACCOUNTS_EXAMPLE}}` (the account example, set by the org's purpose)) and replaces `{{CONNECTORS}}` with `, mcp__<name>__*` entries granted to that department only, or removes it.
 - Once generated, the files belong to the org and can be edited freely. Gates in a generated hq live in `org.yaml`; advisory departments never file, sign or pay.
 - Each agent file may name generic categories of optional external plugins. Nothing is vendored or installed by the framework; the CEO decides whether to add any.
 - For a department not in the catalog, use `templates/department/`.
+
+## Suggestions by purpose
+
+Suggestions only. The wizard shows the line for the chosen purpose next to the list above; nothing is preselected and the CEO still picks each department or none. This table is the single source the wizard reads.
+
+| Purpose and level | Suggested departments |
+|---|---|
+| `job` (company level) | `operations` (recurring obligations and work tools); `engineering` (only if the job is technical); custom departments that mirror the CEO's own work streams. Not suggested: `business`, `growth-social`, `legal`, `finance`, `tax` (they speak for the employer or cover the employer's own functions). |
+| `product` (company level) | `engineering`, `design-brand`, `growth-social`, `business` |
+| `startup` (company level) | `engineering`, `business`, `design-brand`, `growth-social`, `legal`, `finance` |
+| `company` (company level) | `engineering`, `business`, `legal`, `finance`, `tax`, `operations` |
+| `company` (holding level) | None. Departments are optional for a holding; do not suggest any. |

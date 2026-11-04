@@ -1,12 +1,15 @@
-schema: org/1
+schema: org/2
 framework_version: {{FRAMEWORK_VERSION}}
 org:
   id: {{ORG_ID}}
   name: {{ORG_NAME}}
   level: {{LEVEL}}              # company | holding
+  purpose: {{PURPOSE}}          # job | product | startup | company
 ceo:
   role_id: {{CEO_ROLE_ID}}      # the CEO is a role, not a hard-coded person
   display_name: "{{CEO_DISPLAY_NAME}}"   # optional
+cos:
+  display_name: "{{COS_DISPLAY_NAME}}"   # role name or persona, the CEO's choice
 language:
   chat: {{CHAT_LANGUAGE}}       # language the CoS uses with the CEO
   files: {{FILE_LANGUAGE}}      # language of every file in hq
@@ -28,13 +31,20 @@ gates:                          # action ids from the framework gate table
   ok: {{GATES_OK}}
 accounts:
   forbidden_connectors: {{FORBIDDEN_CONNECTORS}}   # never usable by any agent of this org
-# IF company
+# IF portfolio-company
 policy: {{POLICY_YAML}}
 # Either `null` (no holding policy) or:
 #  repo: <git remote of the holding's policies repo>
 #  local: <path to the CEO's local clone of the policies repo, read-only>
 #  pin: <commit sha>
 policies_repo: null
+employer_rules: null
+# END IF
+# IF job
+policy: null                    # a job hq is never governed by a holding
+policies_repo: null
+employer_rules: {{EMPLOYER_RULES}}
+# null, or "<url or path of the employer's rules on data, AI tools and accounts>"
 # END IF
 # IF holding
 policy: null
@@ -42,4 +52,5 @@ policies_repo: {{POLICIES_REPO_YAML}}
 # A mapping:
 #  local: <path to the policies repo on the CEO's machine, outside this hq>
 #  remote: <git remote, or "" when none yet>
+employer_rules: null
 # END IF

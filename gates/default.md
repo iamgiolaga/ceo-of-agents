@@ -60,6 +60,8 @@ gates:
 
 ## Tighten-only rule against a holding policy
 
+A job hq (`org.purpose: job`) never sets `policy`: it is never governed by a holding, and its optional `employer_rules` pointer takes that place.
+
 When a company sets `policy` in `org.yaml`, the company CoS checks it at session start (read files only; no script). It reads only `policy.yaml` from the pinned commit of the holding's separate policies repo, read-only: an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`. It never reads a clone of the holding hq, and departments never read the policies repo. Compare with org.yaml:
 
 1. Gates: for every action in the holding file, the company tier must be at or above the holding tier. An action absent from the company gates inherits the holding tier (fine).

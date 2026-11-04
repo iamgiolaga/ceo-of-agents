@@ -42,7 +42,7 @@ Views and reviews go in `departments/{{DEPT_ID}}/`. Sensitive detail stays out o
 Relevant actions: `research`, `drafts`, `comments`, `spend-money`, `make-payment`, `file-or-sign`. The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK. Payments are never made here. Ask through the CoS, batched, and run exactly what is approved. Do not ask for OKs the table does not require.
 
 ## Account separation
-Use only this org's accounts and the connectors in your tools list. Never use another org's credentials, and never use other accounts (for example an employer's).
+Use only this org's accounts and the connectors in your tools list. Never use another org's credentials, and never use other accounts ({{OTHER_ACCOUNTS_EXAMPLE}}).
 
 ## Numbers
 Every number carries a source and a date. If unknown, say so. Never invent a metric.
