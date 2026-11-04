@@ -26,7 +26,7 @@ Then:
 - Equal: report nothing.
 - Behind: build the chain of migrations. Start at the hq version and look for `${CLAUDE_PLUGIN_ROOT}/migrations/<from>-to-<to>.md` (use `ls` on the folder). Follow each file's `<to>` as the next `<from>`, until the installed version. For a one-line description of each step, use "Current status" in `${CLAUDE_PLUGIN_ROOT}/migrations/README.md`. If a step is missing, say from which version no migration exists and that this part must be done by hand with the CEO. Never guess edits. Put one line in the status, for example: `hq on 0.5.0, plugin 0.7.0: 2 updates to apply (0.5.0-to-0.6.0: product repos and roadmap; 0.6.0-to-0.7.0: agents named after personas, version check).`
   Then add one A item to "Waiting on the CEO", unless an open A item for the hq update already exists, in the exact line format of `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`: `- <ORG_ID>-A<n> [normal]: approve updating hq from <hq> to <installed> (migrations <list>, in the plugin's migrations/ folder) (since YYYY-MM-DD)`. Increment `next_action`. If an open item has an older target, update its text instead of adding another.
-- Ahead: say `hq on X is newer than the installed plugin Y: update the plugin (/plugin, Installed tab, Update now).` and continue.
+- Ahead: say `hq on X is newer than the installed plugin Y: update the plugin (/plugin, Installed tab, Update now). If it is already up to date, a second, older install at another scope may be the one loaded: check /plugin, Installed tab, and remove the extra copy (for example claude plugin uninstall ceo-of-agents@ceo-of-agents --scope user).` and continue.
 - Unknown: say `Version check skipped: <reason>` and continue.
 
 Never edit any other hq file during the check.

@@ -39,14 +39,16 @@ Nothing important happens without your OK. Status: early; see the [design notes]
 
 **You need:** Claude Code (signed in), git, a GitHub account ([details](#2-what-you-need)).
 
-**1. Install** (inside Claude Code):
+**1. Install** (open Claude Code in an empty folder: it becomes your hq):
 
 ```
 /plugin marketplace add iamgiolaga/ceo-of-agents
 /plugin install ceo-of-agents@ceo-of-agents
 ```
 
-**2. Start** (open Claude Code in an empty folder):
+When asked where to install, pick project scope.
+
+**2. Start** (same folder):
 
 ```
 /ceo-of-agents:init-fleet
@@ -78,23 +80,27 @@ Not needed: coding skills, servers, extra API keys or scheduled jobs. Nothing ru
 
 ## 3. Install
 
-Inside Claude Code:
+Install the plugin in the folder that will become your hq, not for your whole computer. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then:
 
 ```
 /plugin marketplace add iamgiolaga/ceo-of-agents
 /plugin install ceo-of-agents@ceo-of-agents
 ```
 
-Or from your shell:
+When asked where to install, pick project scope.
+
+Or from your shell, inside that folder:
 
 ```
 claude plugin marketplace add iamgiolaga/ceo-of-agents
-claude plugin install ceo-of-agents@ceo-of-agents
+claude plugin install ceo-of-agents@ceo-of-agents --scope project
 ```
+
+The plugin is then turned on in the folder's `.claude/settings.json`, so it loads only in your hq. Install it once, at project scope only: a second copy at another scope can stay on an older version and be the one that loads. On another computer, run the same commands inside your hq's clone.
 
 ## 4. First run
 
-1. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab).
+1. Open the same folder in Claude Code, if it is not open already.
 2. Run the setup command:
 
    ```
@@ -142,7 +148,9 @@ Use the name you gave the department, in lowercase (for example `mike`), or its 
 
 ## 6. Update
 
-Update from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
+Update from `/plugin` (Installed tab, **Update now**) or, inside your hq folder, with `claude plugin update ceo-of-agents@ceo-of-agents --scope project`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
+
+If you also installed the plugin for your whole computer (user scope), check `/plugin`, Installed tab, and remove the extra copy with `claude plugin uninstall ceo-of-agents@ceo-of-agents --scope user`; otherwise an older copy may be the one that loads. Install it at project scope in each of your hqs first.
 
 Updates never touch your hq.
 
