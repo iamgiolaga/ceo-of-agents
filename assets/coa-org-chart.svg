@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="830" viewBox="0 0 1600 830" role="img" aria-labelledby="oc-title oc-desc">
+  <title id="oc-title">ceo-of-agents org chart</title>
+  <desc id="oc-desc">The CEO, the human founder, decides and approves. Giulia, the chief of staff, reports to the CEO and owns hq: she frames, routes, records and challenges. Two departments report to Giulia: Mike, engineering (code, CI, releases, PRs), and Alpha, design and brand (identity, assets, voice, reviews). The CEO can also talk to a department directly. Department handoffs and the chief of staff's decisions land as commits on the hq git line.</desc>
+
+  <!-- Solid background: identical in GitHub light and dark mode (brand rules, record 0008) -->
+  <rect x="0.5" y="0.5" width="1599" height="829" rx="24" fill="#0F172A" stroke="#334155"/>
+
+  <!-- Title -->
+  <text x="64" y="84" font-size="32" font-weight="700">
+    <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" fill="#2DD4BF">ceo-of-agents</tspan>
+    <tspan font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-weight="400" fill="#94A3B8" dx="6">org chart</tspan>
+  </text>
+
+  <!-- Departments group -->
+  <rect x="300" y="478" width="1000" height="190" rx="22" fill="none" stroke="#334155" stroke-width="1.5"/>
+  <rect x="1148" y="466" width="136" height="24" fill="#0F172A"/>
+  <text x="1272" y="484" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="17" fill="#94A3B8">departments</text>
+
+  <!-- CEO can also talk to a department directly (violet = the CEO) -->
+  <path d="M570 165 H400 Q380 165 380 185 V494" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-dasharray="8 8"/>
+
+  <!-- Reports to -->
+  <g fill="none" stroke="#64748B" stroke-width="3">
+    <line x1="800" y1="210" x2="800" y2="270"/>
+    <line x1="800" y1="400" x2="800" y2="450"/>
+    <path d="M550 500 V450 H1050 V500"/>
+  </g>
+
+  <!-- Lands in hq: branches end as commits on the hq line (motif, record 0008) -->
+  <g fill="none" stroke="#2DD4BF" stroke-width="2">
+    <line x1="550" y1="640" x2="550" y2="707"/>
+    <line x1="800" y1="452" x2="800" y2="707"/>
+    <line x1="1050" y1="640" x2="1050" y2="707"/>
+  </g>
+  <line x1="170" y1="716" x2="1536" y2="716" stroke="#2DD4BF" stroke-width="3"/>
+  <g fill="#0F172A" stroke-width="3">
+    <circle cx="550" cy="716" r="9" stroke="#2DD4BF"/>
+    <circle cx="800" cy="716" r="9" stroke="#A78BFA"/>
+    <circle cx="1050" cy="716" r="9" stroke="#2DD4BF"/>
+  </g>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace">
+    <text x="64" y="723" font-size="20" font-weight="700" fill="#2DD4BF">hq repo</text>
+    <g font-size="17" fill="#94A3B8" text-anchor="middle">
+      <text x="550" y="750">handoff</text>
+      <text x="800" y="750">decision</text>
+      <text x="1050" y="750">handoff</text>
+    </g>
+  </g>
+
+  <!-- CEO card -->
+  <rect x="570" y="120" width="460" height="90" rx="18" fill="#1E293B" stroke="#A78BFA" stroke-width="2.5"/>
+  <!-- Chief of staff card -->
+  <rect x="520" y="270" width="560" height="130" rx="18" fill="#2DD4BF"/>
+  <!-- Department cards -->
+  <g fill="#1E293B" stroke="#64748B" stroke-width="2">
+    <rect x="340" y="500" width="420" height="140" rx="16"/>
+    <rect x="840" y="500" width="420" height="140" rx="16"/>
+  </g>
+  <circle cx="380" cy="500" r="6" fill="#A78BFA"/>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <!-- CEO -->
+    <text x="800" y="158" text-anchor="middle" font-size="28" font-weight="700" fill="#A78BFA">CEO</text>
+    <text x="800" y="190" text-anchor="middle" font-size="18" fill="#94A3B8">the human founder · decides, approves</text>
+
+    <!-- Chief of staff -->
+    <text x="556" y="318" font-size="32" font-weight="700" fill="#0F172A">Giulia</text>
+    <text x="556" y="352" font-size="20" font-weight="600" fill="#0F172A">chief of staff</text>
+    <text x="556" y="381" font-size="17" fill="#0F172A">owns hq: frames, routes, records, challenges</text>
+
+    <!-- Mike -->
+    <text x="372" y="546" font-size="28" font-weight="700" fill="#F8FAFC">Mike</text>
+    <text x="372" y="580" font-size="19" fill="#F8FAFC">engineering</text>
+    <text x="372" y="612" font-size="17" fill="#94A3B8">code, CI, releases, PRs</text>
+
+    <!-- Alpha -->
+    <text x="872" y="546" font-size="28" font-weight="700" fill="#F8FAFC">Alpha</text>
+    <text x="872" y="580" font-size="19" fill="#F8FAFC">design and brand</text>
+    <text x="872" y="612" font-size="17" fill="#94A3B8">identity, assets, voice, reviews</text>
+  </g>
+
+  <!-- Legend -->
+  <line x1="64" y1="789" x2="112" y2="789" stroke="#64748B" stroke-width="3"/>
+  <line x1="260" y1="789" x2="312" y2="789" stroke="#A78BFA" stroke-width="2.5" stroke-dasharray="8 8"/>
+  <line x1="850" y1="789" x2="898" y2="789" stroke="#2DD4BF" stroke-width="3"/>
+  <circle cx="874" cy="789" r="7" fill="#0F172A" stroke="#2DD4BF" stroke-width="3"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" fill="#94A3B8">
+    <text x="126" y="795">reports to</text>
+    <text x="326" y="795">the CEO can also talk to a department directly</text>
+    <text x="912" y="795">lands in hq as a commit</text>
+  </g>
+</svg>

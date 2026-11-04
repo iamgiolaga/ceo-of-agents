@@ -29,14 +29,6 @@ Nothing important happens without your OK. Status: early; see the [design spec](
   <img src="assets/setup.gif" width="100%" alt="Animation: you run /ceo-of-agents:init-fleet and pick what the fleet is for; then your org takes shape: you, the CEO; your chief of staff; departments branching out one by one; and every state update, decision and brief landing as a commit in your hq repo.">
 </p>
 
-## In practice
-
-ceo-of-agents grew out of the setup that runs [partitelle](https://github.com/partitelle), a Telegram bot that organizes weekly team games among friends: sign-ups, teams and reminders. There, a chief of staff acts as the CEO's second brain, with one agent per department:
-
-<p align="center">
-  <img src="assets/partitelle-org-chart.png" width="100%" alt="partitelle's org chart: the CEO, a chief of staff (Giulia) and five departments (Mike, Alpha, Kyle, Fanny, Lara)">
-</p>
-
 ## Get started in 30 seconds
 
 <p align="center">
@@ -164,3 +156,19 @@ It leaves a handoff in `inbox/` for the CoS. Its decisions become official only 
 Update from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
 
 Updates never touch your hq. When a release changes hq files, it ships a migration in [`migrations/`](migrations/README.md): ask your CoS to apply it, then review and approve the commit. Coming from 0.2.0 (`init-org`)? Follow [`migrations/0.2.0-to-0.3.0.md`](migrations/0.2.0-to-0.3.0.md).
+
+## 7. Built with ceo-of-agents
+
+### <img src="assets/partitelle-app-icon.svg" width="56" height="56" align="absmiddle" alt="partitelle logo">&nbsp; [partitelle](https://github.com/partitelle)
+
+Organize your weekly game without the group-chat chaos: sign-ups, teams and reminders, all handled for you.
+
+Run by a CEO, a chief of staff and five departments: engineering and product, design and brand, business, growth and social, and legal (advisory).
+
+<img src="assets/partitelle-org-chart.png" width="100%" alt="partitelle org chart: the CEO, then Giulia the chief of staff, then five departments: Mike (engineering and product), Alpha (design and brand), Kyle (business), Fanny (growth and social) and Lara (legal, advisory)">
+
+### ceo-of-agents
+
+This plugin is built by its own fleet: a chief of staff and two departments, with the same structure.
+
+<img src="assets/coa-org-chart.svg" width="100%" alt="ceo-of-agents org chart: the CEO, then Giulia the chief of staff, then two departments: Mike (engineering) and Alpha (design and brand). Handoffs and decisions land as commits in hq">
