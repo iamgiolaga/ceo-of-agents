@@ -35,16 +35,8 @@ A department agent skips it (see the last section).
 - **Pull.** If `git remote` is empty, skip pull and push and say once in the status: "No remote: pull and push skipped". Otherwise `git pull` the hq (the CEO may work from several computers; the remote main branch is the reference). If the pull fails, say so in the status and continue with the local copy.
 - **Read.** `org.yaml`, `company/vision.md`, `company/strategy.md`, `company/state.md`, `company/decision-queue.md`, `accounts.local.yaml`, and list `inbox/`.
 - **Plugin version.** Use the `hq-version` skill to compare this hq's `framework_version` (in `org.yaml` and `company/state.md`) with the installed plugin version. If the hq is behind, say so in one line of the status, list the migrations to apply in order, and add one A item asking the CEO's OK (unless one is already open). Apply them only after that OK, with the same skill: it shows a short summary of what changes, then commits with notice. Never migrate silently. If the hq is ahead of the plugin or a version is unknown (for example where the plugin is not loaded), say so in one line and continue.
-- **Accounts on this machine.** `accounts.local.yaml` is per machine and not tracked by git: the same connector name can mean a different account on another machine (a claude.ai connector follows the claude.ai account signed in there). If the file is missing (the first session of this hq, a new machine or a fresh clone), run this check before the status: list the connectors (MCP servers) visible in this session, grouped by server, with a plain name and what each seems to do, mark the ones granted to departments in `org.yaml`, and ask the CEO once which belong to another account that no agent of this org may use on this machine.
-<!-- IF not-job -->
-  Other accounts are, for example, an employer's or another org's.
-<!-- END IF -->
-<!-- IF job -->
-  Other accounts are, for example, the CEO's personal accounts or another org's; the employer's accounts used for this job are this org's accounts.
-<!-- END IF -->
-  Write the answer to `accounts.local.yaml`, keeping any other key already there such as `repo_paths` (keys `checked: YYYY-MM-DD` and `forbidden_connectors:`, a list of `pattern` and `account` items, where `pattern` is `mcp__<server>__*` or a single tool name and `account` is a short label such as "work account", never an email address). If no connector is visible, write an empty list without asking. Add one deny rule per entry to `permissions.deny` in `.claude/settings.local.json` (`mcp__<server>` for a whole server, or the exact tool name) so Claude Code blocks it for every agent; a permission prompt may appear. Never commit either file. A connector that means the same account on every machine can also go in `accounts.forbidden_connectors` in `org.yaml`, through a decision card. Where files do not persist between sessions (Claude Code on the web), ask once per session.
 <!-- IF not-holding -->
-- **Repos on this machine.** If `repos` in `org.yaml` lists a repo other than the hq itself (role `hq`) that has no entry under `repo_paths` in `accounts.local.yaml`, ask the CEO once for its local clone path on this machine, or "not cloned here". Write the answers to `repo_paths:` in that file (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Do not repeat the connector question when only paths are missing.
+- **Repos on this machine.** If `repos` in `org.yaml` lists a repo other than the hq itself (role `hq`) that has no entry under `repo_paths` in `accounts.local.yaml`, ask the CEO once for its local clone path on this machine, or "not cloned here". Write the answers to `repo_paths:` in that file, creating it if missing (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Clone paths differ per computer, so git does not track `accounts.local.yaml`: never commit it.
 <!-- END IF -->
 <!-- IF policy -->
 - **Policy check (tighten-only).** Read the pinned holding policy read-only. Read `local` and `pin` from the `policy:` block in `org.yaml`, then run `git -C <local> fetch` (optional; it may fail offline) and `git -C <local> show <pin>:policy.yaml`. `local` is a clone of the holding's separate policies repo. Read only `policy.yaml`, nothing else, and never a clone of the holding hq. No other agent reads it. Ceilings and all other limits come only from the policies repo `policy.yaml`, never from `org.yaml`: `org.yaml` has no `models.ceiling`, so never report a missing ceiling there. Compare the policy with `org.yaml`:
@@ -109,7 +101,7 @@ Each department has a charter in `departments/<id>/charter.md` and an agent in `
 This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card: scope, tool allowlist, model tier and gate notes. Adding a department means a decision record, a charter (`departments/<id>/charter.md`), an agent file (`.claude/agents/<agent>.md`, named after its persona in lowercase, or its id without one) and a routing row here.
 <!-- END IF -->
 
-A department gets no connector unless a decision grants it (least privilege). Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. Never grant a connector listed in `accounts.forbidden_connectors` or in `accounts.local.yaml`. An advisory department (legal, finance, tax) gets only read-only connector tools, named one by one, never a whole server. Once the CEO approves, add the grant to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
+A department gets no connector unless a decision grants it (least privilege). Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. Never grant a connector listed in `accounts.forbidden_connectors`. An advisory department (legal, finance, tax) gets only read-only connector tools, named one by one, never a whole server. Once the CEO approves, add the grant to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
 
 ## Orchestration
 
@@ -208,7 +200,7 @@ Principles:
 - The employer's rules on data, AI tools and accounts come first. Pointer: `employer_rules` in `org.yaml` (`null` when none was given). When a request touches employer data, AI tool use, accounts or where hq is pushed, re-read it and follow the stricter rule. Keep in hq only what those rules allow.
 - This hq is never registered in a holding portfolio and pins no holding policy.
 <!-- END IF -->
-- Connectors forbidden for this org are listed under `accounts.forbidden_connectors` in `org.yaml` (on every machine) and in `accounts.local.yaml` (on this machine only; see Session start).
+- Connectors forbidden for this org are listed under `accounts.forbidden_connectors` in `org.yaml` (empty at setup; an entry is added only through a decision card).
 <!-- IF portfolio-company -->
 
 ## Escalation to the holding
@@ -244,7 +236,6 @@ This org is a holding: a registry, not a product company.
 |---|---|
 | Org setup, gates, models | `org.yaml` |
 | Vision, stage and current focus | `company/vision.md`, `company/strategy.md` |
-| Connectors forbidden on this machine (not tracked) | `accounts.local.yaml` |
 <!-- IF not-holding -->
 | Product repos and roadmap tracker | `repos:` and `tracker:` in `org.yaml`; local clones under `repo_paths` in `accounts.local.yaml` |
 <!-- END IF -->

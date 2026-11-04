@@ -50,12 +50,8 @@
 #                           connectors are granted later, through a decision
 #   gates                   three lists of action ids, see gates/default.md;
 #                           every action id appears in exactly one list
-#   accounts.forbidden_connectors   connector patterns no agent of this org may use, on
-#                           every machine. A name that can mean a different account on
-#                           another machine (for example a claude.ai connector) goes in
-#                           accounts.local.yaml instead: per machine, not tracked by git,
-#                           written by the CoS at the first session and on every new
-#                           machine. The wizard writes []; entries are added later,
+#   accounts.forbidden_connectors   optional list of connector patterns no agent of this
+#                           org may use. The wizard writes []; entries are added later,
 #                           through a decision
 #   repos                   registry of the org's product repos; [] for none (always [] in
 #                           a holding). Charters, agents and skills read this list and
@@ -92,7 +88,7 @@
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
 schema: org/4
-framework_version: 0.7.0
+framework_version: 0.8.0
 org:
   id: ACME
   name: Acme
