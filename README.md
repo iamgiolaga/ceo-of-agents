@@ -26,7 +26,7 @@ The freedom stays with you. You set the rules, you decide how your agents improv
 Nothing important happens without your OK. Status: early; see the [design spec](docs/design.md).
 
 <p align="center">
-  <img src="assets/diagram.svg" width="100%" alt="How it works: you ask your chief of staff in plain language and get back a status and codes to approve. The chief of staff routes work to departments (engineering, design and brand, legal and finance, the last two advisory). Everything is written to the hq repo: state, decision records and approval gates (free, notice, ok).">
+  <img src="assets/setup.gif" width="100%" alt="Animation: you run /ceo-of-agents:init-fleet and pick what the fleet is for; then your org takes shape: you, the CEO; your chief of staff; departments branching out one by one; and every state update, decision and brief landing as a commit in your hq repo.">
 </p>
 
 ## In practice
