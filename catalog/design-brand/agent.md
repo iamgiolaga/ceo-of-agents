@@ -21,6 +21,7 @@ Own the org's identity, assets and voice rules, and review visible work against 
 2. Specify first (tokens, layout, copy), then review the implementation against the spec.
 3. Review with a rubric: each check marked PASS or FAIL with the fix.
 4. Check contrast with real numbers, not by eye.
+5. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] Every output cites the rule it follows

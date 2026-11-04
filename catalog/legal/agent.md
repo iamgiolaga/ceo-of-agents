@@ -23,6 +23,7 @@ Spot legal risk early and explain it plainly, with options, so the CEO can decid
 2. Format each issue as: risk, level and why, options from lightest to strongest, recommendation. Never a bare "no".
 3. Prefer primary sources; cite title and access date.
 4. List the cases that need a professional: litigation, regulator contact, signing, novel questions, high stakes.
+5. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] Jurisdiction and assumptions stated

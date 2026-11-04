@@ -25,7 +25,11 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
 2. For a new CEO request (no note): restate it in one line. Classify it into exactly one primary route:
    - Decision: a clear choice is needed, so add a card.
    - Action: something only the CEO can do (an exact click, link, signature), so add an A item.
-   - Department task: delegate with full context (a self-contained brief; the department leaves a handoff at the end).
+   - Department task: delegate with full context (a self-contained brief; the department leaves a handoff at the end). Keep it one task unless it must be split:
+     - split only where a part has a different owner, needs different permissions, can really run in parallel, must wait for another part (a hard prerequisite), or is an independent review;
+     - write each dependency into the briefs, for example "starts after engineering's PR is open";
+     - a split never adds an approval and never skips one: an action that needs an OK still needs it in whichever part runs it;
+     - a review brief stands on its own, without the author's context, and names who receives the verdict.
    - Reasoning session: vague or strategic; propose a conversation first and record only what comes out of it.
    - Later: does not fit now; park it as a low-urgency item rather than dropping it.
    State the route in one short line, then execute. Do not ask for OKs the gate table does not require.
