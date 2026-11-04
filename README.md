@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="#2-install"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-2DD4BF?style=flat-square&labelColor=0F172A"></a>
+  <a href="#3-install"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-2DD4BF?style=flat-square&labelColor=0F172A"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/iamgiolaga/ceo-of-agents?style=flat-square&labelColor=0F172A&color=94A3B8"></a>
   <img alt="Version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fiamgiolaga%2Fceo-of-agents%2Fmain%2F.claude-plugin%2Fplugin.json&query=%24.version&label=version&style=flat-square&labelColor=0F172A&color=A78BFA">
   <img alt="Status: early" src="https://img.shields.io/badge/status-early-94A3B8?style=flat-square&labelColor=0F172A">
@@ -17,14 +17,24 @@
 
 ## What it is
 
-- **You talk to one agent, your chief of staff (CoS).** It frames each request, routes it to a department agent (engineering, design, legal, finance and more) and pushes back when it should.
-- **Everything is written down in a git repo you own, the hq:** the current state, what waits on you, and immutable decision records. It is plain markdown and YAML, so every decision, number and risk has one written home.
-- **Nothing important happens without you.** Approval gates hold merges, publishing, spending and the like until you OK them by code.
+It is more than a tool: it is a shift in how you work. You become the CEO of a micro-company that works toward your goal.
 
-Use it for your job, a product, a startup or a company. Status: early; see the [design spec](docs/design.md) for the roadmap.
+You get a fast setup: a chief of staff (CoS) you talk to, departments it routes work to, and a git repo you own (the hq) where every decision is written down. You work in a more organized way, with less context switching.
+
+The freedom stays with you. You set the rules, you decide how your agents improve, and you decide what to call them. A suggestion: give each one a name, so you stay intentional about your work.
+
+Nothing important happens without your OK. Status: early; see the [design spec](docs/design.md).
 
 <p align="center">
-  <img src="assets/diagram.svg" width="100%" alt="How it works: you ask your chief of staff in plain language and get back a status and codes to approve. The chief of staff routes work to departments (engineering, design and brand, legal and finance, the last two advisory). Everything is written to the hq repo: state, decision records and approval gates (free, notice, ok).">
+  <img src="assets/setup.gif" width="100%" alt="Animation: you run /ceo-of-agents:init-fleet and pick what the fleet is for; then your org takes shape: you, the CEO; your chief of staff; departments branching out one by one; and every state update, decision and brief landing as a commit in your hq repo.">
+</p>
+
+## In practice
+
+ceo-of-agents grew out of the setup that runs [partitelle](https://github.com/partitelle), a Telegram bot that organizes weekly team games among friends: sign-ups, teams and reminders. There, a chief of staff acts as the CEO's second brain, with one agent per department:
+
+<p align="center">
+  <img src="assets/partitelle-org-chart.png" width="100%" alt="partitelle's org chart: the CEO, a chief of staff (Giulia) and five departments (Mike, Alpha, Kyle, Fanny, Lara)">
 </p>
 
 ## Get started in 30 seconds
@@ -33,7 +43,7 @@ Use it for your job, a product, a startup or a company. Status: early; see the [
   <img src="assets/quickstart.svg" width="100%" alt="Four steps: 1. You need Claude Code, git and a GitHub account. 2. Install the plugin with two commands inside Claude Code. 3. In an empty folder run /ceo-of-agents:init-fleet and say what the fleet is for. 4. Talk to your chief of staff in plain language and approve by code.">
 </p>
 
-**You need:** Claude Code (signed in), git, a GitHub account ([details](#1-what-we-assume-you-have)).
+**You need:** Claude Code (signed in), git, a GitHub account ([details](#2-what-you-need)).
 
 **1. Install** (inside Claude Code):
 
@@ -48,23 +58,33 @@ Use it for your job, a product, a startup or a company. Status: early; see the [
 /ceo-of-agents:init-fleet
 ```
 
-**3. Talk.** That is the only command you type. From then on, talk to your chief of staff in plain language.
+**3. Talk.** No more commands: talk to your chief of staff in plain language.
 
-Full steps: [Install](#2-install) · [First run](#3-first-run) · [Daily use](#4-daily-use)
+Full steps: [Install](#3-install) · [First run](#4-first-run) · [Daily use](#5-daily-use)
 
-## 1. What we assume you have
+## 1. The four purposes
 
-- **Claude Code**, installed and signed in: the CLI, the desktop app's Code tab, or the VS Code extension.
-- **git**.
-- **A GitHub account**, to host the hq as a private repo (you can also start with no remote and add one later).
-- **`gh` (GitHub CLI)**, optional: needed only if a department works on GitHub from the terminal (for example engineering opening pull requests).
-- **An empty folder** for the hq.
+| Purpose | What changes |
+|---|---|
+| **job** | Your work at an employer. The employer's accounts count as this org's; personal accounts stay out. Optional pointer to the employer's rules on data and AI. Never joins a holding. |
+| **product** | One product. Suggested departments: engineering, design and brand, growth and social, business. Employer accounts stay out. Can join a holding. |
+| **startup** | A venture. Suggests legal and finance too. Same rules as product. |
+| **company** | A company, or a **holding**: it reads its companies' state read-only, gives you one pending list across them, and keeps shared policies (gates, model limits) in a repo the companies pin. |
 
-Not needed: coding skills, a server, a database, an extra API key, hosting, or any scheduled job. Nothing runs unless you open a session.
+You pick each department, or none.
 
-## 2. Install
+## 2. What you need
 
-In a Claude Code session:
+- **Claude Code** on your own machine, signed in: the terminal, the desktop app, or an IDE extension such as VS Code or JetBrains.
+- **git** and an **empty folder** for the hq.
+- **A GitHub account** to host the hq as a private repo (you can add the remote later).
+- **`gh` (GitHub CLI)**, optional: only if a department works on GitHub, for example to open pull requests.
+
+Not needed: coding skills, servers, extra API keys or scheduled jobs. Nothing runs unless you open a session.
+
+## 3. Install
+
+Inside Claude Code:
 
 ```
 /plugin marketplace add iamgiolaga/ceo-of-agents
@@ -78,34 +98,23 @@ claude plugin marketplace add iamgiolaga/ceo-of-agents
 claude plugin install ceo-of-agents@ceo-of-agents
 ```
 
-## 3. First run
+## 4. First run
 
-1. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open the folder in the Code tab).
-2. Run the setup command. It is the only command you ever type:
+1. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab).
+2. Run the setup command:
 
    ```
    /ceo-of-agents:init-fleet
    ```
 
-3. Answer the wizard. It asks, in order:
-   1. **Purpose**: job, product, startup or company (company also asks: company or holding).
-   2. **Name** of the org and a short id used in codes (for example `ACME`).
-   3. **Languages**: one for chatting with you, one for files.
-   4. **Departments**: pick from the catalog, define your own, or none. Nothing is preselected.
-   5. **Names**: your CoS's name and, optionally, a persona name per department.
-   6. **Approval gates**: keep the default table or change it.
-   7. **Connectors**: which tools each department may use, and which no agent may ever use.
-   8. **Models**: for the CoS, departments and workers.
-   9. **Policy**: a holding's policy to follow (company), or a pointer to your employer's rules (job). A holding skips it.
-   10. **Repo**: an optional git remote for the hq.
-4. Check the summary and confirm. The wizard generates the hq:
+3. Answer the wizard: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval gates, connectors each department may use, models, policy, and an optional git remote.
+4. Confirm the summary. The wizard writes the hq:
    - `CLAUDE.md` (your CoS), `org.yaml` (setup, gates, models), `operating-model.md`;
-   - `company/state.md` (state and the list of what waits on you), `company/decision-queue.md`;
-   - `decisions/` with the first record (your setup answers), `inbox/`, `metrics/`;
-   - one charter in `departments/<id>/` and one agent in `.claude/agents/<id>.md` per department, plus generic `reader` and `worker` agents.
-5. Approve the permission prompt when the wizard writes into `.claude/agents/`, then approve the first commit. The wizard never pushes: push when you are ready.
+   - `company/state.md` (state and pending list), `company/decision-queue.md`, `decisions/`, `inbox/`, `metrics/`;
+   - per department, a charter in `departments/<id>/` and an agent in `.claude/agents/<id>.md`, plus generic `reader` and `worker` agents.
+5. Approve the permission prompt for `.claude/agents/`, then the first commit. The wizard never pushes.
 
-## 4. Daily use
+## 5. Daily use
 
 <p align="center">
   <img src="assets/exchange.svg" width="100%" alt="A typical exchange. You say: I have an idea, a referral program for early users. The chief of staff frames it, checks for duplicates, picks the route and runs it. You say: Decide whether we keep the free tier. It writes a decision card and adds ACME-D3 to your list. You say: ACME-D3, option b. It records the decision, clears the card and updates the state. You say: Pass to engineering, why did the last release fail? It forwards it, returns engineering's answer and adds its view.">
@@ -113,20 +122,20 @@ claude plugin install ceo-of-agents@ceo-of-agents
 
 ### Open a session
 
-Open Claude Code in the hq folder. The CoS pulls the latest hq, processes department handoffs, and gives you a 3-5 line status with the codes of what waits on you.
+Open Claude Code in the hq folder. The CoS pulls the latest hq, processes handoffs and gives you a short status with the codes of what waits on you.
 
 ### Talk in plain language
 
 | You say | What happens |
 |---|---|
-| "I have an idea: a referral program for early users." | The CoS frames it, checks for duplicates, and routes it: a decision card, a task for a department, or a note. |
-| "Decide whether we keep the free tier." | A decision card with its own code (for example `ACME-D3`): context, options, a recommendation. It goes on the pending list. |
-| "Approve ACME-A2." or "ACME-D3: b." | The CoS runs exactly what you approved, or records your decision as a permanent record, and clears the item. |
-| "Brief." | A dated brief in `company/briefs/`: what changed, numbers with sources, risks, what waits on you. |
-| "Pass to engineering: why did the last release fail?" | The CoS forwards your text verbatim and returns the department's answer verbatim, then its own comment. |
-| "Resume." | The CoS picks up from the state, the latest brief and the inbox, and proposes the next step. |
+| "I have an idea: a referral program for early users." | The CoS frames it, checks for duplicates and routes it: a decision card, a department task or a note. |
+| "Decide whether we keep the free tier." | A decision card with a code (for example `ACME-D3`), options and a recommendation, added to your pending list. |
+| "Approve ACME-A2." or "ACME-D3: b." | The CoS runs exactly that, or records your decision, and clears the item. |
+| "Brief." | A dated brief in `company/briefs/`: changes, sourced numbers, risks, pending items. |
+| "Pass to engineering: why did the last release fail?" | The CoS forwards your text, returns the answer verbatim and adds its comment. |
+| "Resume." | The CoS picks up from the state, the latest brief and the inbox, and proposes a next step. |
 
-You never type the CoS's procedures: they ship with the plugin, hidden from the `/` menu, and the CoS uses them on its own.
+The CoS runs its own procedures; they are hidden from the `/` menu.
 
 ### Approvals and gates
 
@@ -138,66 +147,20 @@ Every action has a tier, set in `org.yaml`:
 | notice | One line before acting | Committing to the hq, pushing a branch |
 | ok | Your explicit OK | Merge, deploy, publish, spend money, contact people |
 
-Asks that need your OK are batched on the pending list with a code, so you can clear several in one pass.
+Asks that need your OK wait on the pending list with a code, so you clear several in one pass.
 
 ### Direct session with one department
 
-For long work inside one department, skip the CoS and open that department directly, from the hq folder:
+For long work in one department, open it directly from the hq folder:
 
 ```
 claude --agent <department-id>
 ```
 
-The department leaves a handoff in `inbox/`; the CoS processes it at your next CoS session. Decisions taken there become official only when the CoS records them.
+It leaves a handoff in `inbox/` for the CoS. Its decisions become official only when the CoS records them.
 
-### Several computers
+## 6. Update
 
-The hq is a git repo. Clone it on each computer and install the plugin there too. The CoS pulls at the start of every session and pushes after its commits, so the remote stays the reference.
+Update from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
 
-## 5. The four purposes
-
-| Purpose | What changes |
-|---|---|
-| **job** | Your own work at an employer. The employer's accounts used for the job count as this org's; your personal accounts stay out. An optional pointer to the employer's rules on data and AI. Never joins a holding. |
-| **product** | One product. Suggested departments: engineering, design and brand, growth and social, business. Employer accounts stay out; can join a holding. |
-| **startup** | A venture building a business. Suggested departments add legal and finance. Same account rules as product; can join a holding. |
-| **company** | A company, or a **holding** that reads its companies' state read-only and gives you one list of what waits on you across all of them. A holding keeps shared policies (gates, model limits) in a separate repo that companies pin. |
-
-Suggestions are only suggestions: you pick each department, or none.
-
-## 6. Where it runs
-
-| Surface | Support |
-|---|---|
-| Claude Code on your own machine: the CLI, the desktop app's Code tab, VS Code, JetBrains (through its terminal) | Full |
-| Claude Code on the web (claude.ai/code) | Partial. Marketplace plugins are not loaded there, so the setup and the CoS procedures are unavailable. The hq's `CLAUDE.md` and `.claude/agents/` still load. |
-| Claude chat apps and Cowork | Not suited: no repo and no `CLAUDE.md` |
-
-If you are not used to the terminal, use the **Code tab of the Claude desktop app**.
-
-Sources, checked 2026-11-04: [Discover plugins](https://code.claude.com/docs/en/discover-plugins.md), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web.md), [Plugin platform support](https://claude.com/docs/plugins/platform-support.md).
-
-## 7. Update
-
-Update the plugin from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces like this one; you can turn it on in `/plugin`, Marketplaces tab.
-
-Updating the plugin never touches your hq. When a release changes hq files, it ships a migration in [`migrations/`](migrations/README.md): ask your CoS to apply it, review the diff, approve the commit. Version 0.3.0 renamed the setup command from `init-org` to `init-fleet`; existing hqs follow [`migrations/0.2.0-to-0.3.0.md`](migrations/0.2.0-to-0.3.0.md).
-
-## Plugin layout
-
-```
-.claude-plugin/   plugin.json, marketplace.json
-skills/           init-fleet (setup) and the CoS procedures: intake, record-decision, weekly-brief, portfolio-brief
-templates/        hq, department, worker and policies-repo templates
-catalog/          starting department catalog (charter + agent each)
-schemas/          state, org, portfolio, policy, handoff, decision card/record
-gates/            default approval-gate table
-migrations/       how upgrades reach existing hqs
-docs/             design spec
-```
-
-To try a local copy: `claude --plugin-dir <path-to-this-repo>`.
-
-## License
-
-MIT, see [LICENSE](LICENSE).
+Updates never touch your hq. When a release changes hq files, it ships a migration in [`migrations/`](migrations/README.md): ask your CoS to apply it, then review and approve the commit. Coming from 0.2.0 (`init-org`)? Follow [`migrations/0.2.0-to-0.3.0.md`](migrations/0.2.0-to-0.3.0.md).
