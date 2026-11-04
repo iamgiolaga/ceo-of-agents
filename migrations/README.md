@@ -23,3 +23,5 @@ Migrations are documents, not scripts. Framework version `0.1.0` was the first r
 Version `0.1.1` changes the `org.yaml` `policy` block (`repo`, `local` and `pin`; `path` removed), adds `policies_repo`, adds `models.ceiling.cos` to the holding `policy.yaml`, moves holding policies to a separate repo, and adds `.claude/agents/reader.md` and `worker.md`. No migration ships because no `0.1.0` instance is supported for upgrade yet.
 
 Version `0.2.0` bumps `org.yaml` to `org/2` (fleet purpose `org.purpose`, chief of staff name `cos.display_name`, `employer_rules` for job hqs) and ships the first migration: `0.1.1-to-0.2.0.md`.
+
+Version `0.3.0` renames the setup wizard to `init-fleet` and hides the four CoS procedures from the `/` menu; no schema changes. Migration: `0.2.0-to-0.3.0.md` (wording in `CLAUDE.md` and `operating-model.md`, the account-separation line for custom departments).

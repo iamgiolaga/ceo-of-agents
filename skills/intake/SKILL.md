@@ -1,6 +1,7 @@
 ---
 name: intake
 description: Process handoff notes in inbox/ and new CEO requests or ideas in a ceo-of-agents hq. Updates state.md, adds decision cards and action items with namespaced codes, flags escalations to the holding, deletes processed notes in the same hq commit. Use at session start when inbox/ has notes, or when the CEO brings a new idea, request or finding.
+user-invocable: false
 allowed-tools: Read Grep Glob Edit Write Bash(git pull:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git rm:*) Bash(ls:*) Bash(date:*)
 ---
 
@@ -50,6 +51,6 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
 
 - hq is the single source of truth: whatever the CEO says that matters ends up written down before you reply.
 - One card = one D code, shown in both `decision-queue.md` and `state.md`.
-- Do not record a decision the CEO has not taken. Intake adds questions, not answers; answers go through `/ceo-of-agents:record-decision`.
+- Do not record a decision the CEO has not taken. Intake adds questions, not answers; answers go through the `record-decision` skill.
 - Keep recommendations honest: the card names who proposes (`proposed_by:`), or says `needs analysis by: <dept-id>` instead. In `state.md` the matching "Open decisions" line reads `proposed by <dept-id|cos>` or `needs analysis by <dept-id>`.
 - If a note is malformed (missing frontmatter), process what is clear and list what you assumed.

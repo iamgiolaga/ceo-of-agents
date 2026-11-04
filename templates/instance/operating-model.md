@@ -29,7 +29,7 @@ No scheduled automation, no hooks. Nothing runs unless the CEO opens a session.
 
 | Rhythm | What | How |
 |---|---|---|
-| Weekly brief | What changed, numbers, decisions needed | The CEO asks for a brief; the CoS runs `/ceo-of-agents:weekly-brief` and writes `company/briefs/YYYY-MM-DD-weekly.md`. |
+| Weekly brief | What changed, numbers, decisions needed | The CEO asks for a brief; the CoS runs its `weekly-brief` procedure and writes `company/briefs/YYYY-MM-DD-weekly.md`. |
 | Batched approvals | Several OKs in one pass | Departments prepare, the CoS lists the codes in "Waiting on the CEO", the CEO approves by code. |
 | Review | Risks, metrics trend, charters | On request. |
 
@@ -65,15 +65,18 @@ A department leaves one file per handoff in `inbox/` (format in `inbox/README.md
 
 ## Working surfaces
 
-Anything that opens this folder with the plugin enabled works: a terminal session, a desktop app, a web code session linked to the repo. Chat-only surfaces without repo write access are read-only; their output comes back as files in `inbox/`.
+Full support: Claude Code on your own machine with the plugin enabled (terminal, the desktop app's Code tab, VS Code, JetBrains through its terminal). Claude Code on the web loads this hq's `CLAUDE.md` and `.claude/agents/` but not the plugin, so the CoS procedures are unavailable there. Chat-only surfaces without repo write access are read-only; their output comes back as files in `inbox/`.
 
 ## Plugin requirement
 
-The `ceo-of-agents` plugin must be enabled in this hq. The skills (`/ceo-of-agents:intake`, `record-decision`, `weekly-brief`) come from it.
+The `ceo-of-agents` plugin must be enabled in this hq. The CoS procedures (`intake`, `record-decision`, `weekly-brief`) come from it. They are hidden from the `/` menu: the CEO never types them, the CoS invokes them.
 <!-- IF holding -->
-The holding also uses `/ceo-of-agents:portfolio-brief`.
+The holding also uses the `portfolio-brief` procedure.
 <!-- END IF -->
 
 ## How to start
 
-Open a Claude Code session in the hq folder and say what you need. The CoS opens with a short status and the pending list. Say "brief" for the weekly brief, or just describe an idea.
+Open a Claude Code session in the hq folder and say what you need in plain language. The CoS opens with a short status and the pending list. For example: describe an idea, say "decide X", "brief" or "approve {{ORG_ID}}-A1".
+<!-- IF departments -->
+To talk to a department through the CoS, say "pass to <department>: <text>".
+<!-- END IF -->

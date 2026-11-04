@@ -1,6 +1,7 @@
 ---
 name: record-decision
 description: Record a decision the CEO took, either by answering a decision card by code (for example ACME-D3) or by deciding in chat. Creates the immutable decision record, updates the index, the queue and the pending list, handles supersession, dispatches follow-ups, and commits with notice. Use when the CEO answers a card, says "decision", or confirms a direction.
+user-invocable: false
 argument-hint: "[card code, e.g. ACME-D3, optional]"
 allowed-tools: Read Grep Glob Edit Write Bash(git pull:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(ls:*) Bash(date:*)
 ---

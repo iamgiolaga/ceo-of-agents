@@ -1,6 +1,7 @@
 ---
 name: weekly-brief
 description: On-demand weekly brief for one org hq. Reads state, decision queue, recent decisions, inbox and metrics, writes company/briefs/YYYY-MM-DD-weekly.md with headline, changes, numbers with sources, risks, what waits on the CEO and a proposed next week, and gives a short chat summary. Use only when the CEO asks for a briefing or weekly update; it never runs on a schedule.
+user-invocable: false
 allowed-tools: Read Write Edit Grep Glob Bash(git pull:*) Bash(git log:*) Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git commit:*) Bash(ls:*) Bash(date:*)
 ---
 
@@ -12,7 +13,7 @@ On demand only: no scheduled automation. Never invent numbers; every number carr
 
 ## Steps
 
-1. `git pull` (if there is a remote; if it fails, say so and continue with the local copy). Read `org.yaml`, `company/state.md`, `company/decision-queue.md`, `inbox/` (list and read the notes; do not process or delete them, that is `/ceo-of-agents:intake`), `metrics/README.md`, and the latest file in `company/briefs/` if any.
+1. `git pull` (if there is a remote; if it fails, say so and continue with the local copy). Read `org.yaml`, `company/state.md`, `company/decision-queue.md`, `inbox/` (list and read the notes; do not process or delete them, that is the `intake` skill), `metrics/README.md`, and the latest file in `company/briefs/` if any.
 
 2. Find what changed since the last brief: use the date of the latest brief, or, if none, 7 days ago. Read `git log --since=<date> --name-status` and the decision records created since then (`decisions/`). Also read the new handoffs in `inbox/`.
 
@@ -31,4 +32,4 @@ On demand only: no scheduled automation. Never invent numbers; every number carr
 
 6. The brief and state edits are an hq commit: gate "notice". Write one line to the CEO and commit with `docs: weekly brief YYYY-MM-DD` and the attribution lines required by the session, or leave the changes uncommitted if the CEO prefers. Never push unless the CEO asks.
 
-7. Chat summary in the chat language, at most 10 lines: the headline, the top changes, and the pending codes in urgency order, then ask which decisions to take now (answers go through `/ceo-of-agents:record-decision`). Give the path of the brief.
+7. Chat summary in the chat language, at most 10 lines: the headline, the top changes, and the pending codes in urgency order, then ask which decisions to take now (answers go through the `record-decision` skill). Give the path of the brief.
