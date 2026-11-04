@@ -170,22 +170,3 @@ The hq is a git repo. Clone it on each computer and install the plugin there too
 Update the plugin from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces like this one; you can turn it on in `/plugin`, Marketplaces tab.
 
 Updating the plugin never touches your hq. When a release changes hq files, it ships a migration in [`migrations/`](migrations/README.md): ask your CoS to apply it, review the diff, approve the commit. Version 0.3.0 renamed the setup command from `init-org` to `init-fleet`; existing hqs follow [`migrations/0.2.0-to-0.3.0.md`](migrations/0.2.0-to-0.3.0.md).
-
-## Plugin layout
-
-```
-.claude-plugin/   plugin.json, marketplace.json
-skills/           init-fleet (setup) and the CoS procedures: intake, record-decision, weekly-brief, portfolio-brief
-templates/        hq, department, worker and policies-repo templates
-catalog/          starting department catalog (charter + agent each)
-schemas/          state, org, portfolio, policy, handoff, decision card/record
-gates/            default approval-gate table
-migrations/       how upgrades reach existing hqs
-docs/             design spec
-```
-
-To try a local copy: `claude --plugin-dir <path-to-this-repo>`.
-
-## License
-
-MIT, see [LICENSE](LICENSE).
