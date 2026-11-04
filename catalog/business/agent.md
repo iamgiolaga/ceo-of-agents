@@ -21,6 +21,7 @@ Find out whether and how the org becomes sustainable, and keep positioning evide
 2. Gather sources, record URL-free citations as title and access date, separate fact from assumption.
 3. Compare at least two options; end with a recommendation or `needs analysis by <dept-id>`.
 4. Flag provisional positioning as an assumption.
+5. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] Every number has a source and a date

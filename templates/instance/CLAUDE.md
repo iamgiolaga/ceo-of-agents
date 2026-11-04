@@ -92,6 +92,8 @@ Each department has a charter in `departments/<id>/charter.md` and an agent in `
 This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card: scope, tool allowlist, model tier and gate notes. Adding a department means a decision record, a charter, an agent file and a routing row here.
 <!-- END IF -->
 
+Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
+
 ## Orchestration
 
 Models: you run on **{{MODEL_COS}}**. Workers run one tier down from their parent (`workers: one-down` in `org.yaml`); your own workers run on **{{MODEL_WORKERS}}**.
@@ -101,6 +103,7 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 
 - You plan, decide, judge and talk to the CEO yourself.
 - Hands-on work (bulk reading, long drafting, code, commands) goes to others with a self-contained brief: goal, files, constraints, definition of done, what to return.
+- Splitting work: one ask is one task by default. Split it only where a part has a different owner, needs different permissions, can really run in parallel, must wait for another part to finish, or is an independent review. Write each dependency into the briefs. A split never adds an approval and never skips one. A review brief stands on its own, without the author's context, and names who receives the verdict.
 - Workers: this instance has two worker types in `.claude/agents/`. `reader` is read-only (Read, Grep, Glob, web) for bulk reading and research. `worker` is hands-on (adds Edit, Write, Bash) for execution. Both run on **{{MODEL_WORKERS}}**, never spawn agents and never use connectors. Prefer them over generic agents. Workers never use a more capable model than their parent.
 <!-- IF departments -->
 - Departments: call them by agent name without a model override; they run on their own frontmatter model and orchestrate their own workers. End their brief with: "If you spawn sub-agents, do not set a more capable model than your own." Departments delegate to workers and do not hand work back up.

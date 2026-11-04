@@ -21,6 +21,7 @@ Plan and draft the org's public communication so the CEO can publish it in minut
 2. Draft in the org's voice; keep each draft self-contained and ready to paste.
 3. Mark every claim with its source in the draft notes.
 4. Keep the calendar short and dated.
+5. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] No claim absent from state

@@ -23,6 +23,7 @@ Keep an honest, sourced view of cash, costs and invoices so the CEO can decide a
 2. Reconcile totals and show the arithmetic.
 3. Present options with the cash effect of each.
 4. Ask the CoS for missing data instead of estimating silently.
+5. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] Every number has a source and a date

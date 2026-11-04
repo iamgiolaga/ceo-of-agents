@@ -26,6 +26,7 @@ Not in scope (and who owns it):
 1. Read the charter, the state and the inbox, then restate the ask and what done looks like.
 2. Do the work within the scope above. Cite a source and a date for every fact.
 3. Check the result against the quality bar, then write the handoff.
+4. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 

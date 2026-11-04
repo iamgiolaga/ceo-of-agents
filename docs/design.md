@@ -1,6 +1,6 @@
 # ceo-of-agents: design spec (draft v0)
 
-Status: v0.3.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments.
+Status: v0.4.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments. v0.4.0 adds three working rules: a department review in `init-fleet` with a one-line reason for every elevated grant (also when a department is added later), task-splitting rules for the CoS, and blocked and failure hygiene for workers and departments.
 
 ## 1. Problem
 
@@ -105,7 +105,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.3.0
+framework_version: 0.4.0
 next_action: 1
 next_decision: 1
 ---

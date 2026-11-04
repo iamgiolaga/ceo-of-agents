@@ -25,3 +25,5 @@ Version `0.1.1` changes the `org.yaml` `policy` block (`repo`, `local` and `pin`
 Version `0.2.0` bumps `org.yaml` to `org/2` (fleet purpose `org.purpose`, chief of staff name `cos.display_name`, `employer_rules` for job hqs) and ships the first migration: `0.1.1-to-0.2.0.md`.
 
 Version `0.3.0` renames the setup wizard to `init-fleet` and hides the four CoS procedures from the `/` menu; no schema changes. Migration: `0.2.0-to-0.3.0.md` (wording in `CLAUDE.md` and `operating-model.md`, the account-separation line for custom departments).
+
+Version `0.4.0` adds three working rules: a reason for every elevated grant (department review in `init-fleet`, and a paragraph in `CLAUDE.md` for departments added later), task-splitting rules for the CoS, and blocked and failure hygiene in the worker and department agent files. No schema changes. Migration: `0.3.0-to-0.4.0.md`.

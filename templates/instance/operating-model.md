@@ -15,6 +15,7 @@ The CEO talks to the chief of staff (CoS). The CoS frames, routes, records every
 | Departments | Vertical specialists with a charter, a tool allowlist and a model tier. See `org.yaml` and `departments/`. |
 | Workers | Cheaper agents for bulk reading and hands-on work: `reader` (read-only) and `worker` (hands-on), defined in `.claude/agents/`. One model tier below their parent. |
 
+<!-- IF departments -->
 ## Talking to departments
 
 The CEO may talk to anyone; everything that matters comes back to hq and the CoS records it.
@@ -23,6 +24,13 @@ The CEO may talk to anyone; everything that matters comes back to hq and the CoS
 - **B. Direct message inside the CoS session.** "Pass to <department>: [text]" The CoS forwards verbatim, returns the full answer verbatim, and may add a comment.
 - **C. Direct session.** Run `claude --agent <department-id>` from the hq folder. The department works on its own model and leaves a handoff in `inbox/` at the end. Decisions taken there become official only when the CoS records them. Strategic or cross-department reasoning goes through the CoS. Agents are defined inside hq, so `--agent` works only from inside this folder.
 
+<!-- END IF -->
+<!-- IF no-departments -->
+## Talking to departments
+
+This org has no departments yet. The CoS proposes one through a decision card when the same kind of work keeps coming back (see `CLAUDE.md`, section "Departments").
+
+<!-- END IF -->
 ## Rhythms (on demand only)
 
 No scheduled automation, no hooks. Nothing runs unless the CEO opens a session.

@@ -23,6 +23,7 @@ Keep the org's tax position and deadlines visible so nothing is missed and a pro
 2. Build the deadline list with the exact date, what is due and what is needed.
 3. Cite official sources with access dates.
 4. Recommend a professional for anything complex, uncertain or high stakes.
+5. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] Jurisdiction and year stated
