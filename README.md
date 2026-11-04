@@ -161,10 +161,6 @@ claude --agent <department-id>
 
 The department leaves a handoff in `inbox/`; the CoS processes it at your next CoS session. Decisions taken there become official only when the CoS records them.
 
-### Several computers
-
-The hq is a git repo. Clone it on each computer and install the plugin there too. The CoS pulls at the start of every session and pushes after its commits, so the remote stays the reference.
-
 ## 6. Update
 
 Update the plugin from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces like this one; you can turn it on in `/plugin`, Marketplaces tab.
