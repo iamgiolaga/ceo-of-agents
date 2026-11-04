@@ -33,7 +33,7 @@ Each question offered the framework's listed choices or a custom answer. The ans
 - hq was generated with the structure described in `CLAUDE.md` and `operating-model.md`.
 - Changing any of these answers later is a new decision record plus the matching edit in `org.yaml`.
 - Every department starts with no connectors. A connector is granted later through a decision card with a one-line reason.
-- No connector is forbidden in `org.yaml` at setup. At the first session, and on every new machine or fresh clone, the CoS asks which visible connectors belong to another account and records them in `accounts.local.yaml`, which git does not track.
+- No connector is forbidden in `org.yaml` at setup. One is added to `accounts.forbidden_connectors` later only through a decision card. Agents never use another account's connectors for this org.
 - Gates can only be moved to a stricter tier where a holding policy applies.
 <!-- IF not-holding -->
 - Product repos and the roadmap tracker live in `repos:` and `tracker:` in `org.yaml`. They are facts, not decisions: the CoS keeps them current with a one-line confirmation and no new record, and asks for the local clone paths on each machine (`accounts.local.yaml`).

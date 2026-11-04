@@ -1,3 +1,3 @@
-# Per-machine files: the same connector name can mean a different account on another machine.
+# Per-computer files, never committed: local clone paths and Claude Code's local settings.
 accounts.local.yaml
 .claude/settings.local.json

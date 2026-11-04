@@ -31,7 +31,7 @@ gates:                          # action ids from the framework gate table
   notice: {{GATES_NOTICE}}
   ok: {{GATES_OK}}
 accounts:
-  forbidden_connectors: []   # same account on every machine, added through a decision; per machine: accounts.local.yaml
+  forbidden_connectors: []   # optional: connectors no agent of this org may use; added only through a decision
 # Product repos, read by charters, agents and skills (never copied). [] for none. Item shape:
 #  - slug: owner/name           # full GitHub slug; owners may differ
 #    role: code                 # short: code, site, docs or hq
