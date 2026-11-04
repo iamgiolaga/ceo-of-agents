@@ -1,6 +1,6 @@
 # ceo-of-agents: design spec (draft v0)
 
-Status: v0.5.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments. v0.4.0 adds three working rules: a department review in `init-fleet` with a one-line reason for every elevated grant (also when a department is added later), task-splitting rules for the CoS, and blocked and failure hygiene for workers and departments. v0.5.0 makes the wizard ask what the org is about (generating `company/vision.md` and `company/strategy.md`), rewrites the gates question in plain language, drops the connectors question (every department starts with none; the CoS checks connectors of other accounts at the first session and writes them to an untracked `accounts.local.yaml`), and makes every CoS procedure check for a remote before pulling.
+Status: v0.6.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments. v0.4.0 adds three working rules: a department review in `init-fleet` with a one-line reason for every elevated grant (also when a department is added later), task-splitting rules for the CoS, and blocked and failure hygiene for workers and departments. v0.5.0 makes the wizard ask what the org is about (generating `company/vision.md` and `company/strategy.md`), rewrites the gates question in plain language, drops the connectors question (every department starts with none; the CoS checks connectors of other accounts at the first session and writes them to an untracked `accounts.local.yaml`), and makes every CoS procedure check for a remote before pulling. v0.6.0 adds schema `org/3`: a registry of the org's product repos (`repos:`, GitHub slug, role, visibility, issues home; local clone paths per machine in `accounts.local.yaml`) and an optional roadmap tracker (`tracker:`, a GitHub Project). A standing rule in `CLAUDE.md` makes every change check and update the tracker and its issues; those writes are free. `intake` gains an issue route, `record-decision` creates and updates issues and Project fields, `weekly-brief` reads the tracker, issues and PRs read-only, and engineering carries tracker hygiene. No hooks or schedules: the rules run when a session runs.
 
 ## 1. Problem
 
@@ -25,7 +25,7 @@ The pattern was proven in one running instance (the reference instance, the auth
 - No scheduled automation by default. Rhythms (weekly brief, reviews) run on demand.
 - Agents never take outward-facing or irreversible actions without passing the gate.
 - Finance, tax and legal departments are advisory. They never file, sign or submit anything and are not a substitute for professionals.
-- Not a project-management tool. Issue trackers stay where they are; hq links to them.
+- Not a project-management tool. Issues and the roadmap stay in GitHub (the repos and Project registered in `org.yaml`); hq links to them, and the agents keep them current as they work.
 
 ## 3. Core concepts
 
@@ -105,7 +105,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.5.0
+framework_version: 0.6.0
 next_action: 1
 next_decision: 1
 ---

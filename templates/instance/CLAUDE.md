@@ -41,7 +41,10 @@ A department agent skips it (see the last section).
 <!-- IF job -->
   Other accounts are, for example, the CEO's personal accounts or another org's; the employer's accounts used for this job are this org's accounts.
 <!-- END IF -->
-  Write the answer to `accounts.local.yaml` (keys `checked: YYYY-MM-DD` and `forbidden_connectors:`, a list of `pattern` and `account` items, where `pattern` is `mcp__<server>__*` or a single tool name and `account` is a short label such as "work account", never an email address). If no connector is visible, write an empty list without asking. Add one deny rule per entry to `permissions.deny` in `.claude/settings.local.json` (`mcp__<server>` for a whole server, or the exact tool name) so Claude Code blocks it for every agent; a permission prompt may appear. Never commit either file. A connector that means the same account on every machine can also go in `accounts.forbidden_connectors` in `org.yaml`, through a decision card. Where files do not persist between sessions (Claude Code on the web), ask once per session.
+  Write the answer to `accounts.local.yaml`, keeping any other key already there such as `repo_paths` (keys `checked: YYYY-MM-DD` and `forbidden_connectors:`, a list of `pattern` and `account` items, where `pattern` is `mcp__<server>__*` or a single tool name and `account` is a short label such as "work account", never an email address). If no connector is visible, write an empty list without asking. Add one deny rule per entry to `permissions.deny` in `.claude/settings.local.json` (`mcp__<server>` for a whole server, or the exact tool name) so Claude Code blocks it for every agent; a permission prompt may appear. Never commit either file. A connector that means the same account on every machine can also go in `accounts.forbidden_connectors` in `org.yaml`, through a decision card. Where files do not persist between sessions (Claude Code on the web), ask once per session.
+<!-- IF not-holding -->
+- **Repos on this machine.** If `repos` in `org.yaml` lists a repo other than the hq itself (role `hq`) that has no entry under `repo_paths` in `accounts.local.yaml`, ask the CEO once for its local clone path on this machine, or "not cloned here". Write the answers to `repo_paths:` in that file (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Do not repeat the connector question when only paths are missing.
+<!-- END IF -->
 <!-- IF policy -->
 - **Policy check (tighten-only).** Read the pinned holding policy read-only. Read `local` and `pin` from the `policy:` block in `org.yaml`, then run `git -C <local> fetch` (optional; it may fail offline) and `git -C <local> show <pin>:policy.yaml`. `local` is a clone of the holding's separate policies repo. Read only `policy.yaml`, nothing else, and never a clone of the holding hq. No other agent reads it. Ceilings and all other limits come only from the policies repo `policy.yaml`, never from `org.yaml`: `org.yaml` has no `models.ceiling`, so never report a missing ceiling there. Compare the policy with `org.yaml`:
   - Gates: for every action in the holding file, this org's tier must be equal or stricter (free < notice < ok). An action absent here inherits the holding tier (fine).
@@ -61,10 +64,10 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 | The CEO says | You do |
 |---|---|
 <!-- IF departments -->
-| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, task for a worker or department, or a note), confirm the route in one line, then execute. |
+| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, issue in a product repo, task for a worker or department, or a note), confirm the route in one line, then execute. |
 <!-- END IF -->
 <!-- IF no-departments -->
-| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, task for a worker, or a note), confirm the route in one line, then execute. |
+| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, issue in a product repo, task for a worker, or a note), confirm the route in one line, then execute. |
 <!-- END IF -->
 | "Decide X" / "should we X?" | Write a decision card in `company/decision-queue.md` (own D code, context, options, recommendation, and exactly one of `proposed_by: <dept-id|cos>` or `needs analysis by: <dept-id>`; skeleton at the top of the queue file; full schema: `schemas/decision-card.md` in the ceo-of-agents plugin). Add it to "Waiting on the CEO". |
 <!-- IF departments -->
@@ -142,6 +145,18 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 - hq never holds secrets or personal data. Sensitive detail (tax, personal legal, personal finance) stays out of `company/state.md`.
 - Decision records are immutable: to change a decision, write a new record and update only the status line of the old one.
 
+<!-- IF not-holding -->
+## Product repos and roadmap
+
+`repos:` in `org.yaml` lists the org's product repos (GitHub slug, role, visibility, and the issues home for cross-cutting issues); `tracker:` names the roadmap, a GitHub Project, or `none`. Local clones are per machine, under `repo_paths` in `accounts.local.yaml`. Everyone reads the registry there: no charter, agent file or note copies the list. The registry is a list of facts, not a decision: when the CEO names a new repo or a roadmap, confirm the entry in one line, edit `org.yaml` and commit with notice. While `repos` is `[]` and `tracker` is `none`, this section does not apply.
+
+- **The roadmap stays current.** Every change checks and updates the tracker and its issues: when work is asked, starts, ships or is dropped, when a decision is recorded, when a PR opens or merges. Each piece of work has an issue in the repo it touches (cross-cutting work: in the issues home), the issue is on the tracker, its `status_field` matches reality, and stale issues are closed with a one-line note. With `tracker: none`, keep the issues current and skip the Project steps.
+- **Tracking writes are free.** Creating, editing and closing issues, adding Project items and setting their fields, labels, milestones and comments are free (`issues-and-labels`, `comments`): do them and mention them in one line. Changing a Project's or a repo's settings, including its built-in workflows, is `org-or-repo-settings`.
+- **Tools.** Use `gh` with `-R <slug>` for a repo and `gh project <subcommand> --owner <owner>` for the tracker. If `gh` is missing, not signed in, or lacks the `project` scope, say so once, add an A item with the exact command for the CEO (for example `gh auth refresh -s project`) unless one is already open, and carry on without tracker writes. Never guess what the tracker holds.
+- **Product repos own their technical facts.** Before any work or analysis in a repo, read its own `CLAUDE.md` and `CONTRIBUTING` (if present) and use its latest default branch. They win over hq on stack, commands, conventions and release flow; do not restate them in hq.
+- **Public repos stay clean.** A repo with `visibility: public` receives nothing from hq: no internal names (personas, department names), no `{{ORG_ID}}-` codes, no hq content. Write its issues, PRs and comments as an outside contributor would, and link the other way: the hq record or note holds the issue or PR URL. A private repo, or an issues home that is the hq, may carry the code (for example `Decision: {{ORG_ID}}-D3`).
+
+<!-- END IF -->
 ## Approval gates
 
 Source of truth: the `gates:` block in `org.yaml`. Tier order is free < notice < ok. The table lists each tier, its rule and the action ids in it.
@@ -227,6 +242,9 @@ This org is a holding: a registry, not a product company.
 | Org setup, gates, models | `org.yaml` |
 | Vision, stage and current focus | `company/vision.md`, `company/strategy.md` |
 | Connectors forbidden on this machine (not tracked) | `accounts.local.yaml` |
+<!-- IF not-holding -->
+| Product repos and roadmap tracker | `repos:` and `tracker:` in `org.yaml`; local clones under `repo_paths` in `accounts.local.yaml` |
+<!-- END IF -->
 | How the CEO works with this org | `operating-model.md` |
 | Current state and the pending list | `company/state.md` |
 | Open decision cards | `company/decision-queue.md` |

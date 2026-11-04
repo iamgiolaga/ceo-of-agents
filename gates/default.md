@@ -16,7 +16,7 @@ The setup wizard shows the meaning and the example to the CEO, never the id. The
 
 | Action id | Meaning | Example |
 |---|---|---|
-| `issues-and-labels` | Create or edit tracker issues, project items, fields, labels, milestones | open an issue for a bug found in review |
+| `issues-and-labels` | Create, edit or close issues, GitHub Project items and their fields (such as status), labels and milestones | open an issue for a bug found in review and add it to the roadmap |
 | `comments` | Comment on issues, PRs and tracker items | reply to a pull request with review notes |
 | `drafts` | Prepare drafts of documents, posts, emails or messages without sending or publishing them | draft a launch post without posting it |
 | `open-pr` | Open a pull request (the review and merge are the gate) | propose a code change for you to review |
@@ -43,7 +43,7 @@ The setup wizard shows the meaning and the example to the CEO, never the id. The
 1. Do not ask for OKs the table does not require.
 2. Batch asks into the pending list (`A` items); do not interrupt per action.
 3. Run exactly the approved action, nothing broader.
-4. Tracking writes and PR creation are free; the review and merge are the control point.
+4. Tracking writes (issues, Project items and fields, labels, milestones, comments) and PR creation are free; the review and merge are the control point. Changing a Project's or a repo's settings, including its built-in workflows, is `org-or-repo-settings`.
 
 ## Advisory departments
 

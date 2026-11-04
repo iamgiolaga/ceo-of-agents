@@ -12,7 +12,7 @@ How framework upgrades reach an instance (an org's hq repo).
 
 ## Schema versions
 
-Each schema carries its own version in the file (`state/1`, `org/2`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
+Each schema carries its own version in the file (`state/1`, `org/3`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
 
 How long a holding keeps reading the previous schema version of a company `state.md` is an open question (design spec, section 11). Until resolved, a reader should accept the version it knows and report any other as "unreadable schema" rather than guess.
 
@@ -29,3 +29,5 @@ Version `0.3.0` renames the setup wizard to `init-fleet` and hides the four CoS 
 Version `0.4.0` adds three working rules: a reason for every elevated grant (department review in `init-fleet`, and a paragraph in `CLAUDE.md` for departments added later), task-splitting rules for the CoS, and blocked and failure hygiene in the worker and department agent files. No schema changes. Migration: `0.3.0-to-0.4.0.md`.
 
 Version `0.5.0` adds `company/vision.md` and `company/strategy.md`, moves machine-specific forbidden connectors to an untracked `accounts.local.yaml`, rewrites the wizard's gates question in plain language, and drops its connectors question (departments start with none; the CoS checks other accounts' connectors at the first session). No schema changes. Migration: `0.4.0-to-0.5.0.md`.
+
+Version `0.6.0` bumps `org.yaml` to `org/3`: a registry of product repos (`repos:`) and an optional roadmap tracker (`tracker:`, a GitHub Project), with local clone paths per machine in `accounts.local.yaml`. A standing rule keeps issues and the tracker current; `intake`, `record-decision` and `weekly-brief` gain tracker steps, and the engineering catalog gains tracker hygiene. Migration: `0.5.0-to-0.6.0.md`.

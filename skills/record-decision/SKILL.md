@@ -1,9 +1,9 @@
 ---
 name: record-decision
-description: Record a decision the CEO took, either by answering a decision card by code (for example ACME-D3) or by deciding in chat. Creates the immutable decision record, updates the index, the queue and the pending list, handles supersession, dispatches follow-ups, and commits with notice. Use when the CEO answers a card, says "decision", or confirms a direction.
+description: Record a decision the CEO took, either by answering a decision card by code (for example ACME-D3) or by deciding in chat. Creates the immutable decision record, updates the index, the queue and the pending list, handles supersession, creates or updates issues and tracker fields in registered product repos, dispatches follow-ups, and commits with notice. Use when the CEO answers a card, says "decision", or confirms a direction.
 user-invocable: false
 argument-hint: "[card code, e.g. ACME-D3, optional]"
-allowed-tools: Read Grep Glob Edit Write Bash(git remote:*) Bash(git pull:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(ls:*) Bash(date:*)
+allowed-tools: Read Grep Glob Edit Write Bash(git remote:*) Bash(git pull:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(ls:*) Bash(date:*) Bash(gh issue list:*) Bash(gh issue create:*) Bash(gh issue edit:*) Bash(gh issue comment:*) Bash(gh issue close:*) Bash(gh project view:*) Bash(gh project field-list:*) Bash(gh project item-list:*) Bash(gh project item-add:*) Bash(gh project item-edit:*)
 ---
 
 # record-decision
@@ -55,9 +55,16 @@ Never record a decision the CEO did not take. An answer must come from the CEO i
    - dispatch a department with a self-contained brief (goal, files, constraints, definition of done, what to return; end it with: "If you spawn sub-agents, do not set a more capable model than your own"), or leave a note for it. Respect the gate table: a dispatch to a department that will push is "notice" (one line before); anything at the "ok" tier needs the CEO's explicit OK and goes in the pending list first.
    - If the decision touches a rule that needs a later check (gates, brand, policy), say which item will carry it.
 
-9. Commit. The gate for `hq-commit` is "notice": write one line to the CEO (what, where; for example "Committing to hq main: record 0007 for ACME-D3, queue and state updated."), then commit with a message like `docs: record decision NNNN <slug>` and the attribution lines required by the session. Do not wait for an OK. Never push unless the CEO asks, and never without a remote.
+9. Issues and tracker. Skip this step entirely when `repos` in `org.yaml` is `[]` or absent (an `org/2` file); skip only the Project part when `tracker` is `none` or absent. These writes are free: do them, then report them.
+   - For each consequence that is work in a registered repo, find its issue (`gh issue list -R <slug> --search "<words>"`) or create one (`gh issue create -R <slug> --title "<title>" --body "<body>"`) in that repo, or in the issues home (`issues_home: true`) when the work spans repos. The body holds acceptance criteria. Link the decision: in a private repo (or an issues home that is the hq) write `<ORG_ID>-D<n>` and record `NNNN`; in a repo with `visibility: public` write no internal names, codes or hq content.
+   - Update issues the decision changes (`gh issue edit`, `gh issue comment`) and close the ones it makes obsolete, with a one-line comment saying why (`gh issue close -R <slug> <number> --comment "<why>"`).
+   - Add each new issue to the tracker and set `tracker.status_field` to match the decision (`gh project item-list` to find an existing item; `gh project item-add`, `gh project view`, `gh project field-list` and `gh project item-edit` to add and set, as in the `intake` skill's issue route).
+   - Put every issue URL in the new record's Links before the commit (the record is immutable once committed).
+   - If `gh` fails (not installed, not signed in, no `project` scope), say so, add an A item with the exact command for the CEO (for example `gh auth refresh -s project`) unless one is already open, list the intended issue changes in the report, and commit the rest.
 
-10. Report in chat language, briefly: record created (number and title), what moved in the queue and pending list, follow-ups with codes, and anything superseded.
+10. Commit. The gate for `hq-commit` is "notice": write one line to the CEO (what, where; for example "Committing to hq main: record 0007 for ACME-D3, queue and state updated."), then commit with a message like `docs: record decision NNNN <slug>` and the attribution lines required by the session. Do not wait for an OK. Never push unless the CEO asks, and never without a remote.
+
+11. Report in chat language, briefly: record created (number and title), what moved in the queue and pending list, issues created, updated or closed and the status set (with links), follow-ups with codes, and anything superseded.
 
 ## Notes
 
