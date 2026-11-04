@@ -22,7 +22,7 @@ The CEO may talk to anyone; everything that matters comes back to hq and the CoS
 
 - **A. Through the CoS.** The CoS briefs the department, checks the result and summarizes.
 - **B. Direct message inside the CoS session.** "Pass to <department>: [text]" The CoS forwards verbatim, returns the full answer verbatim, and may add a comment.
-- **C. Direct session.** Run `claude --agent <department-id>` from the hq folder. The department works on its own model and leaves a handoff in `inbox/` at the end. Decisions taken there become official only when the CoS records them. Strategic or cross-department reasoning goes through the CoS. Agents are defined inside hq, so `--agent` works only from inside this folder.
+- **C. Direct session.** Run `claude --agent <agent>` from the hq folder, where `<agent>` is the department's agent name from the routing table in `CLAUDE.md`: its persona in lowercase (for example `claude --agent mike`), or its id when it has no persona. Inside a session you can also type `@` and pick the agent by that name. The department works on its own model and leaves a handoff in `inbox/` at the end. Decisions taken there become official only when the CoS records them. Strategic or cross-department reasoning goes through the CoS. Agents are defined inside hq, so `--agent` works only from inside this folder.
 
 <!-- END IF -->
 <!-- IF no-departments -->

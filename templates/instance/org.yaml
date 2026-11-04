@@ -1,4 +1,4 @@
-schema: org/3
+schema: org/4
 framework_version: {{FRAMEWORK_VERSION}}
 org:
   id: {{ORG_ID}}
@@ -19,7 +19,8 @@ models:
   departments: {{MODEL_DEPARTMENTS}}   # applies to departments unless overridden below
   workers: one-down             # a rule, not a model: one tier below the parent; never escalate
 # Zero departments is valid. Item shape:
-#  - id: engineering            # kebab-case; files .claude/agents/<id>.md, departments/<id>/charter.md
+#  - id: engineering            # kebab-case; departments/<id>/charter.md, cards and handoffs
+#    agent: mike                # agent name: persona in lowercase, or the id; file .claude/agents/<agent>.md
 #    from_catalog: engineering  # catalog id or "custom"
 #    display_name: Engineering  # role name or persona, the CEO's choice
 #    model: opus

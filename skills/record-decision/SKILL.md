@@ -52,7 +52,7 @@ Never record a decision the CEO did not take. An answer must come from the CEO i
 
 8. Follow-ups: for each consequence that needs work, either
    - add an A item to "Waiting on the CEO" when only the CEO can do it (`- <ORG_ID>-A<n> [urgency]: <exact action> (since YYYY-MM-DD)`, increment `next_action`), or
-   - dispatch a department with a self-contained brief (goal, files, constraints, definition of done, what to return; end it with: "If you spawn sub-agents, do not set a more capable model than your own"), or leave a note for it. Respect the gate table: a dispatch to a department that will push is "notice" (one line before); anything at the "ok" tier needs the CEO's explicit OK and goes in the pending list first.
+   - dispatch a department, by its agent name (`agent` in `org.yaml`, or its id when `agent` is missing), with a self-contained brief (goal, files, constraints, definition of done, what to return; end it with: "If you spawn sub-agents, do not set a more capable model than your own"), or leave a note for it. Respect the gate table: a dispatch to a department that will push is "notice" (one line before); anything at the "ok" tier needs the CEO's explicit OK and goes in the pending list first.
    - If the decision touches a rule that needs a later check (gates, brand, policy), say which item will carry it.
 
 9. Issues and tracker. Skip this step entirely when `repos` in `org.yaml` is `[]` or absent (an `org/2` file); skip only the Project part when `tracker` is `none` or absent. These writes are free: do them, then report them.

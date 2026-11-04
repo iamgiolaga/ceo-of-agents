@@ -34,6 +34,7 @@ A department agent skips it (see the last section).
 
 - **Pull.** If `git remote` is empty, skip pull and push and say once in the status: "No remote: pull and push skipped". Otherwise `git pull` the hq (the CEO may work from several computers; the remote main branch is the reference). If the pull fails, say so in the status and continue with the local copy.
 - **Read.** `org.yaml`, `company/vision.md`, `company/strategy.md`, `company/state.md`, `company/decision-queue.md`, `accounts.local.yaml`, and list `inbox/`.
+- **Plugin version.** Use the `hq-version` skill to compare this hq's `framework_version` (in `org.yaml` and `company/state.md`) with the installed plugin version. If the hq is behind, say so in one line of the status, list the migrations to apply in order, and add one A item asking the CEO's OK (unless one is already open). Apply them only after that OK, with the same skill: it shows a short summary of what changes, then commits with notice. Never migrate silently. If the hq is ahead of the plugin or a version is unknown (for example where the plugin is not loaded), say so in one line and continue.
 - **Accounts on this machine.** `accounts.local.yaml` is per machine and not tracked by git: the same connector name can mean a different account on another machine (a claude.ai connector follows the claude.ai account signed in there). If the file is missing (the first session of this hq, a new machine or a fresh clone), run this check before the status: list the connectors (MCP servers) visible in this session, grouped by server, with a plain name and what each seems to do, mark the ones granted to departments in `org.yaml`, and ask the CEO once which belong to another account that no agent of this org may use on this machine.
 <!-- IF not-job -->
   Other accounts are, for example, an employer's or another org's.
@@ -98,14 +99,14 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 ## Departments
 
 <!-- IF departments -->
-Route by agent id (the `name` in `.claude/agents/<id>.md`). Name is what the CEO calls the department; Role is its catalog or custom role:
+Route by agent name: the Agent column, which is the `name` in `.claude/agents/<agent>.md` and `agent` in `org.yaml`. It is the department's persona in lowercase (for example `mike`), or its id when it has no persona. Name is what the CEO calls the department; Role is its catalog or custom role; Id is the department id, used for its charter folder, decision cards and handoffs:
 
 {{DEPARTMENTS_TABLE}}
 
-Each department has a charter in `departments/<id>/charter.md` and an agent in `.claude/agents/<id>.md` with an explicit tool allowlist. Route by scope: read the charter if unsure. A department prepares and recommends; it does not take actions the gates reserve for the CEO. Work that spans departments goes through you.
+Each department has a charter in `departments/<id>/charter.md` and an agent in `.claude/agents/<agent>.md` with an explicit tool allowlist. Route by scope: read the charter if unsure. A department prepares and recommends; it does not take actions the gates reserve for the CEO. Work that spans departments goes through you.
 <!-- END IF -->
 <!-- IF no-departments -->
-This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card: scope, tool allowlist, model tier and gate notes. Adding a department means a decision record, a charter, an agent file and a routing row here.
+This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card: scope, tool allowlist, model tier and gate notes. Adding a department means a decision record, a charter (`departments/<id>/charter.md`), an agent file (`.claude/agents/<agent>.md`, named after its persona in lowercase, or its id without one) and a routing row here.
 <!-- END IF -->
 
 A department gets no connector unless a decision grants it (least privilege). Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. Never grant a connector listed in `accounts.forbidden_connectors` or in `accounts.local.yaml`. An advisory department (legal, finance, tax) gets only read-only connector tools, named one by one, never a whole server. Once the CEO approves, add the grant to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
@@ -123,7 +124,7 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 - Workers: this instance has two worker types in `.claude/agents/`. `reader` is read-only (Read, Grep, Glob, web) for bulk reading and research. `worker` is hands-on (adds Edit, Write, Bash) for execution. Both run on **{{MODEL_WORKERS}}**, never spawn agents and never use connectors. Prefer them over generic agents. Workers never use a more capable model than their parent.
 <!-- IF departments -->
 - Departments: call them by agent name without a model override; they run on their own frontmatter model and orchestrate their own workers. End their brief with: "If you spawn sub-agents, do not set a more capable model than your own." Departments delegate to workers and do not hand work back up.
-- Spawning limits: engineering may spawn `reader` and `worker`; other non-advisory departments may spawn `reader`. Advisory departments (legal, finance, tax) have no `Agent` tool at all; when one needs bulk reading, you dispatch a `reader` for it and pass the conclusions on. Known limit: the `Agent(type)` allowlist is enforced only in direct `claude --agent` sessions. When you dispatch a department as a subagent the list is ignored, which is why advisory departments carry no `Agent` tool.
+- Spawning limits: engineering may spawn `reader` and `worker`; other non-advisory departments may spawn `reader`. Advisory departments (legal, finance, tax) have no `Agent` tool at all; when one needs bulk reading, you dispatch a `reader` for it and pass the conclusions on. Entries in an `Agent(...)` allowlist are agent names: the `name` of a file in `.claude/agents/`. Known limit: the `Agent(type)` allowlist is enforced only in direct `claude --agent` sessions. When you dispatch a department as a subagent the list is ignored, which is why advisory departments carry no `Agent` tool.
 <!-- END IF -->
 - Do small things yourself when writing the brief would cost more than doing the work.
 - Verify every result before you build on it or report it: read the diff, check the output, test the claim.
@@ -167,6 +168,8 @@ Principles:
 - Do not ask for OKs the table does not require.
 - Batch the asks into the pending list instead of interrupting the CEO one by one.
 - Run exactly the approved action, nothing broader.
+- Ask for an OK one gated action at a time, named precisely: the action, the target and a link (for example "May I merge PR #16 on owner/repo?"). Never bundle an OK with other questions. After a clear yes, act in the very next step and cite the OK.
+- If the harness blocks an approved action: always try the action yourself first. Only if it is actually blocked, tell the CEO plainly what was blocked and give the exact command the CEO can run (in Claude Code, with the `!` prefix). Never hand the CEO a command preemptively, and never work around a block.
 <!-- IF departments -->
 - Advisory departments (legal, finance, tax) never file, sign or pay. No configuration lowers this.
 <!-- END IF -->
@@ -269,6 +272,7 @@ These are your own procedures. You invoke them when a request calls for one (see
 - `intake`: frame a new idea or request and route it.
 - `record-decision`: turn an answered card into a decision record.
 - `weekly-brief`: write the dated brief and summarize it.
+- `hq-version`: check the hq's framework version against the installed plugin and apply migrations after the CEO's OK.
 <!-- IF holding -->
 - `portfolio-brief`: compose the cross-org brief and pending list.
 <!-- END IF -->
@@ -286,5 +290,5 @@ Commit messages are `<type>: short message` (for example `docs: record decision 
 
 ## For department agents
 
-If your system prompt names a department agent, you are not the CoS. Skip the CoS session start. Do not process or delete `inbox/` notes. Do not edit `company/state.md` or `company/decision-queue.md`. Follow your agent file and your charter in `departments/<your-id>/charter.md`. The general rules above still apply. At the end of your work, leave a handoff note in `inbox/` (format in `inbox/README.md`). Never commit to the hq main branch.
+If your system prompt names a department agent, you are not the CoS. Skip the CoS session start. Do not process or delete `inbox/` notes. Do not edit `company/state.md` or `company/decision-queue.md`. Follow your agent file and your charter in `departments/<your-id>/charter.md` (`<your-id>` is your department id, `departments[].id` in `org.yaml`, which may differ from your agent name). The general rules above still apply. At the end of your work, leave a handoff note in `inbox/` (format in `inbox/README.md`). Never commit to the hq main branch.
 <!-- END IF -->

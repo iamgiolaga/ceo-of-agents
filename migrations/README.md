@@ -9,10 +9,11 @@ How framework upgrades reach an instance (an org's hq repo).
 - Each upgrade that needs changes to instance files ships as `migrations/<from>-to-<to>.md`, for example `0.1.0-to-0.2.0.md`. It describes an explicit, reviewable diff: which files change, the exact edits, and why.
 - The chief of staff (CoS) reads the migration, shows the diff to the CEO, and applies it as a normal hq commit only after the CEO approves. The commit also bumps `framework_version` in `org.yaml` and `state.md`.
 - Migrations are applied in order, one version step at a time; none is skipped.
+- From `0.7.0`, the CoS checks the version at session start with the hidden `hq-version` procedure and proposes the migrations (an older hq gets the check through `intake`). It still applies them only after the CEO's OK.
 
 ## Schema versions
 
-Each schema carries its own version in the file (`state/1`, `org/3`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
+Each schema carries its own version in the file (`state/1`, `org/4`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
 
 How long a holding keeps reading the previous schema version of a company `state.md` is an open question (design spec, section 11). Until resolved, a reader should accept the version it knows and report any other as "unreadable schema" rather than guess.
 
@@ -31,3 +32,5 @@ Version `0.4.0` adds three working rules: a reason for every elevated grant (dep
 Version `0.5.0` adds `company/vision.md` and `company/strategy.md`, moves machine-specific forbidden connectors to an untracked `accounts.local.yaml`, rewrites the wizard's gates question in plain language, and drops its connectors question (departments start with none; the CoS checks other accounts' connectors at the first session). No schema changes. Migration: `0.4.0-to-0.5.0.md`.
 
 Version `0.6.0` bumps `org.yaml` to `org/3`: a registry of product repos (`repos:`) and an optional roadmap tracker (`tracker:`, a GitHub Project), with local clone paths per machine in `accounts.local.yaml`. A standing rule keeps issues and the tracker current; `intake`, `record-decision` and `weekly-brief` gain tracker steps, and the engineering catalog gains tracker hygiene. Migration: `0.5.0-to-0.6.0.md`.
+
+Version `0.7.0` bumps `org.yaml` to `org/4`: each department gets an `agent` name, its persona in lowercase or its id, which names its agent file and is used to route and open it. A new hidden skill, `hq-version`, checks the hq against the installed plugin at session start and proposes the pending migrations. Migration: `0.6.0-to-0.7.0.md`.
