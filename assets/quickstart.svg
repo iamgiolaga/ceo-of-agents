@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="220" viewBox="0 0 1200 220" role="img" aria-labelledby="qs-title qs-desc">
+  <title id="qs-title">Get started in four steps</title>
+  <desc id="qs-desc">1. What you need: Claude Code signed in, git, a GitHub account. 2. Install the plugin with two commands inside Claude Code, listed below the image. 3. In an empty folder, run /ceo-of-agents:init-fleet and answer what the fleet is for. 4. Talk to your chief of staff in plain language; it shows what waits on you and you approve by code, for example "Approve ACME-A2."</desc>
+
+  <!-- Solid background: identical in GitHub light and dark mode -->
+  <rect x="0.5" y="0.5" width="1199" height="219" rx="20" fill="#0F172A" stroke="#334155"/>
+
+  <!-- Cards -->
+  <g fill="#1E293B" stroke="#334155" stroke-width="1.5">
+    <rect x="36" y="24" width="264" height="172" rx="14"/>
+    <rect x="324" y="24" width="264" height="172" rx="14"/>
+    <rect x="612" y="24" width="264" height="172" rx="14"/>
+    <rect x="900" y="24" width="264" height="172" rx="14"/>
+  </g>
+
+  <!-- Chevrons between steps -->
+  <g fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M307 100 L317 110 L307 120"/>
+    <path d="M595 100 L605 110 L595 120"/>
+    <path d="M883 100 L893 110 L883 120"/>
+  </g>
+
+  <!-- Step numbers -->
+  <g fill="#2DD4BF">
+    <circle cx="72" cy="68" r="18"/>
+    <circle cx="360" cy="68" r="18"/>
+    <circle cx="648" cy="68" r="18"/>
+    <circle cx="936" cy="68" r="18"/>
+  </g>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#0F172A" text-anchor="middle">
+    <text x="72" y="74">1</text>
+    <text x="360" y="74">2</text>
+    <text x="648" y="74">3</text>
+    <text x="936" y="74">4</text>
+  </g>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <!-- Headings -->
+    <g font-size="17" font-weight="700" fill="#F8FAFC">
+      <text x="100" y="75">What you need</text>
+      <text x="388" y="75">Install the plugin</text>
+      <text x="676" y="75">Start your hq</text>
+      <text x="964" y="75">Talk to your CoS</text>
+    </g>
+    <g font-size="15">
+      <!-- 1 -->
+      <text x="60" y="122" fill="#F8FAFC">Claude Code, signed in</text>
+      <text x="60" y="146" fill="#F8FAFC">git</text>
+      <text x="60" y="170" fill="#F8FAFC">a GitHub account</text>
+      <!-- 2 -->
+      <text x="348" y="122" fill="#F8FAFC">two commands inside</text>
+      <text x="348" y="146" fill="#F8FAFC">Claude Code</text>
+      <text x="348" y="170" fill="#94A3B8">copy them below</text>
+      <!-- 3 -->
+      <text x="636" y="122" fill="#F8FAFC">in an empty folder, run</text>
+      <text x="636" y="170" fill="#94A3B8">and say what it is for</text>
+      <!-- 4 -->
+      <text x="924" y="122" fill="#F8FAFC">plain language, any day</text>
+      <text x="924" y="146" fill="#94A3B8">approve by code:</text>
+    </g>
+  </g>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" fill="#2DD4BF">
+    <text x="636" y="146">/ceo-of-agents:init-fleet</text>
+    <text x="924" y="170">"Approve ACME-A2."</text>
+  </g>
+</svg>
