@@ -1,21 +1,31 @@
-# Schema: org.yaml (`org/1`)
+# Schema: org.yaml (`org/2`)
 #
 # Instance configuration of one org. Lives at the hq root. Annotated example below
 # is itself valid YAML. Owner: the CoS, changed only by a normal hq commit.
 #
-# Required keys: schema, framework_version, org, ceo, language, models,
+# Required keys: schema, framework_version, org, ceo, cos, language, models,
 #                departments, gates, accounts
-# Optional keys: policy (company level only; null when unused),
-#                policies_repo (holding level only; null for a company)
+# Optional keys: policy (company level with purpose not job; null when unused),
+#                policies_repo (holding level only; null for a company),
+#                employer_rules (job only; null otherwise)
 #
 # Allowed values and rules
-#   schema                  exactly "org/1"
+#   schema                  exactly "org/2"
 #   framework_version       framework version the instance was generated from
 #   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
 #   org.name                free text
 #   org.level               company | holding
+#   org.purpose             job | product | startup | company
+#                             job: the CEO's own work at an employer
+#                             product: one product the CEO builds
+#                             startup: a startup the CEO is founding or running
+#                             company: a company the CEO runs; at holding level, the
+#                             CEO's affairs as an entrepreneur across their orgs
 #   ceo.role_id             role id for the CEO (for example "ceo"); a role, not a person
 #   ceo.display_name        optional free text, may be ""
+#   cos.display_name        required, non-empty; the role name ("Chief of staff") or a
+#                           persona name, the CEO's choice (same rule as department
+#                           display names)
 #   language.chat           language the CoS uses with the CEO (ISO 639-1 code)
 #   language.files          language of every file in hq (ISO 639-1 code)
 #   models.tiers            list, most to least capable
@@ -35,7 +45,7 @@
 #   gates                   three lists of action ids, see gates/default.md;
 #                           every action id appears in exactly one list
 #   accounts.forbidden_connectors   connector patterns no agent of this org may use
-#   policy                  company only; null, or a mapping:
+#   policy                  company level, purpose not job; null, or a mapping:
 #     repo                  git remote URL of the holding's policies repo, or "" when
 #                           it has no remote yet (the CoS reads only local and pin)
 #     local                 CEO's local clone of the policies repo, read-only
@@ -44,16 +54,23 @@
 #     local                 path to the policies repo on the CEO's machine
 #                           (a separate repo outside the hq)
 #     remote                its git remote, or "" when none yet
+#   employer_rules          optional; null, or a quoted string: URL or local path of the
+#                           employer's rules on data, AI tools and accounts. Job only;
+#                           null for every other purpose and for a holding. Informational
+#                           pointer: the CoS reads it on demand, nothing is copied into hq
 
-schema: org/1
-framework_version: 0.1.1
+schema: org/2
+framework_version: 0.2.0
 org:
   id: ACME
   name: Acme
   level: company
+  purpose: product
 ceo:
   role_id: ceo
   display_name: ""
+cos:
+  display_name: Chief of staff
 language:
   chat: en
   files: en
@@ -76,6 +93,7 @@ accounts:
   forbidden_connectors: []
 policy: null
 policies_repo: null
+employer_rules: null
 # Example of a policy block (company only):
 # policy:
 #   repo: <policies repo git remote>
@@ -85,12 +103,20 @@ policies_repo: null
 # policies_repo:
 #   local: ~/path/to/policies-repo
 #   remote: <git remote, or "" when none yet>
+# Example of employer_rules (job only; then policy is null):
+# employer_rules: "https://intranet.example.com/rules-on-data-and-ai"
 
 # Validation checklist
-#   - Parses as YAML; all required keys present; schema is "org/1".
+#   - Parses as YAML; all required keys present; schema is "org/2".
 #   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
 #   - org.level is company or holding; policy is null when level is holding;
 #     policies_repo is null when level is company.
+#   - org.purpose is job, product, startup or company. Level holding requires purpose
+#     company; purpose job, product or startup requires level company.
+#   - Purpose job requires policy null (a job hq is never governed by a holding) and
+#     is never registered in a holding portfolio.yaml.
+#   - cos.display_name is present and non-empty.
+#   - employer_rules is null unless org.purpose is job.
 #   - models.cos, models.departments and every department model are in models.tiers.
 #   - models.workers is one-down; no worker model is more capable than its parent.
 #   - Department ids are unique kebab-case; each has a matching charter and agent file.
@@ -101,3 +127,5 @@ policies_repo: null
 #     make-payment outside the ok list.
 #   - framework_version equals the version in company/state.md frontmatter, unless a
 #     migration is pending.
+#   - An `org/1` file is read as purpose company with the CoS name unset until migrated
+#     (see migrations/0.1.1-to-0.2.0.md).

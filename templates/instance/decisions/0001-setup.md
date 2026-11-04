@@ -17,15 +17,15 @@ Each question offered the framework's listed choices or a custom answer. The ans
 
 | # | Question | Answer |
 |---|---|---|
-| 1 | Level | {{LEVEL}} |
+| 1 | Purpose and level | {{PURPOSE}} / {{LEVEL}} |
 | 2 | Org name and id | {{ORG_NAME}} / {{ORG_ID}} |
 | 3 | Chat language / file language | {{CHAT_LANGUAGE}} / {{FILE_LANGUAGE}} |
 | 4 | Departments | {{SETUP_DEPARTMENTS}} |
-| 5 | Names or personas | {{SETUP_PERSONAS}} |
+| 5 | Names or personas (CoS, departments, CEO) | {{SETUP_PERSONAS}} |
 | 6 | Approval gates | {{SETUP_GATES}} |
 | 7 | Connectors per department | {{SETUP_CONNECTORS}} |
 | 8 | Models (CoS / departments / workers) | {{MODEL_COS}} / {{MODEL_DEPARTMENTS}} / one-down (CoS workers: {{MODEL_WORKERS}}) |
-| 9 | Holding policy: repo, local clone and pin (companies only) | {{SETUP_POLICY}} |
+| 9 | Holding policy (companies) or employer rules (job) | {{SETUP_POLICY}} |
 | 10 | Repositories | {{SETUP_REPOS}} |
 
 ## Consequences

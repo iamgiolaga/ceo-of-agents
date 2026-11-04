@@ -19,7 +19,7 @@ A decision card is one pending question for the CEO. Every card has its own D co
 - since: YYYY-MM-DD
 - urgency: high | normal | low
 - proposed_by: <dept-id|cos>        # or: needs analysis by <dept-id>
-- escalate: no                      # company only: no | holding
+- escalate: no                      # company level, purpose not job: no | holding
 ### Context
 ### Options
 - (a) ...
@@ -36,7 +36,7 @@ A decision card is one pending question for the CEO. Every card has its own D co
 | `since` | `YYYY-MM-DD` |
 | `urgency` | `high`, `normal` or `low` |
 | `proposed_by` | a department id or `cos`; or replace the line with `- needs analysis by: <dept-id>` when nobody has proposed an option yet |
-| `escalate` | `no` or `holding`; present for company orgs only (omit at holding level) |
+| `escalate` | `no` or `holding`; present for company orgs whose purpose is not job only (omit at holding level and in a job hq) |
 | Context | enough that the CEO can decide without opening other files |
 | Options | lettered `(a)`, `(b)`, ...; at least two |
 | Recommendation | names who proposes it, or says `needs analysis by <dept-id>` |

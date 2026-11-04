@@ -11,7 +11,7 @@ The CEO talks to the chief of staff (CoS). The CoS frames, routes, records every
 | Role | What it does |
 |---|---|
 | CEO (`{{CEO_ROLE_ID}}`) | Sets direction, answers decision cards, gives the OKs the gates require. |
-| CoS | Single point of contact. Frames, routes, records, challenges. Owns hq. Does no deep execution. |
+| CoS ({{COS_DISPLAY_NAME}}) | Single point of contact. Frames, routes, records, challenges. Owns hq. Does no deep execution. |
 | Departments | Vertical specialists with a charter, a tool allowlist and a model tier. See `org.yaml` and `departments/`. |
 | Workers | Cheaper agents for bulk reading and hands-on work: `reader` (read-only) and `worker` (hands-on), defined in `.claude/agents/`. One model tier below their parent. |
 

@@ -1,6 +1,6 @@
 {
   "name": "ceo-of-agents",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Run one or many organizations with an AI chief of staff and department agents. Git-backed hq per org, decision cards and records, approval gates, and a holding view that aggregates what waits on the CEO.",
   "author": {
     "name": "Giovanni Laganà"

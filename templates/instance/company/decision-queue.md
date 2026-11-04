@@ -8,7 +8,7 @@ Open decisions for the CEO. Answer in chat; the CoS records the answer with `rec
 - since: YYYY-MM-DD
 - urgency: high | normal | low
 - proposed_by: <dept-id|cos>        (or: needs analysis by: <dept-id>)
-<!-- IF company -->
+<!-- IF portfolio-company -->
 - escalate: no                      (no | holding)
 <!-- END IF -->
 ### Context
