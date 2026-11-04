@@ -23,6 +23,8 @@ You get a fast setup: a chief of staff (CoS) you talk to, departments it routes 
 
 The freedom stays with you. You set the rules, you decide how your agents improve, and you decide what to call them. A suggestion: give each one a name, so you stay intentional about your work.
 
+If you build a product on GitHub, your fleet can also follow its repos and roadmap, and keep the issues up to date as it works.
+
 Nothing important happens without your OK. Status: early; see the [design notes](docs/design.md).
 
 <p align="center">
@@ -70,7 +72,7 @@ You pick each department, or none.
 - **Claude Code** on your own machine, signed in: the terminal, the desktop app, or an IDE extension such as VS Code or JetBrains.
 - **git** and an **empty folder** for the hq.
 - **A GitHub account** to host the hq as a private repo (you can add the remote later).
-- **`gh` (GitHub CLI)**, optional: only if a department works on GitHub, for example to open pull requests.
+- **`gh` (GitHub CLI)**, optional: only if your agents work on GitHub, for example to open pull requests or keep your roadmap up to date.
 
 Not needed: coding skills, servers, extra API keys or scheduled jobs. Nothing runs unless you open a session.
 
@@ -99,7 +101,7 @@ claude plugin install ceo-of-agents@ceo-of-agents
    /ceo-of-agents:init-fleet
    ```
 
-3. Answer the setup questions: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, and an optional GitHub repo.
+3. Answer the setup questions: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, and your product's repos and roadmap board if you have them.
 4. Confirm the summary, and your hq is ready: your chief of staff and departments are set up in a git repo you own.
 5. Approve the permission prompt that appears, then the first save (commit). The setup never pushes: you choose when.
 

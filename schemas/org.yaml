@@ -1,16 +1,16 @@
-# Schema: org.yaml (`org/2`)
+# Schema: org.yaml (`org/3`)
 #
 # Instance configuration of one org. Lives at the hq root. Annotated example below
 # is itself valid YAML. Owner: the CoS, changed only by a normal hq commit.
 #
 # Required keys: schema, framework_version, org, ceo, cos, language, models,
-#                departments, gates, accounts
+#                departments, gates, accounts, repos, tracker
 # Optional keys: policy (company level with purpose not job; null when unused),
 #                policies_repo (holding level only; null for a company),
 #                employer_rules (job only; null otherwise)
 #
 # Allowed values and rules
-#   schema                  exactly "org/2"
+#   schema                  exactly "org/3"
 #   framework_version       framework version the instance was generated from
 #   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
 #   org.name                free text
@@ -52,6 +52,26 @@
 #                           written by the CoS at the first session and on every new
 #                           machine. The wizard writes []; entries are added later,
 #                           through a decision
+#   repos                   registry of the org's product repos; [] for none (always [] in
+#                           a holding). Charters, agents and skills read this list and
+#                           never copy it. Item fields:
+#     slug                  full GitHub slug "owner/name"; owners may differ (a GitHub
+#                           org, a personal account, or both)
+#     role                  short free text: code, site, docs, hq, ...
+#     visibility            public | private. Public repos never receive internal names,
+#                           codes or hq content
+#     issues_home           true for exactly one item when the list is not empty: the repo
+#                           that holds cross-cutting issues (may be the hq itself, role hq);
+#                           false for the others
+#                           Local clone paths are per machine and are not stored here: they
+#                           live under repo_paths in accounts.local.yaml (not tracked by
+#                           git), written by the CoS on each machine
+#   tracker                 "none", or a mapping (always "none" in a holding):
+#     kind                  github-project
+#     owner                 login of the GitHub org or user that owns the Project. A user
+#                           Project can hold issues from repos of different owners
+#     number                the Project number (an integer, from its URL)
+#     status_field          name of the single-select status field, for example "Status"
 #   policy                  company level, purpose not job; null, or a mapping:
 #     repo                  git remote URL of the holding's policies repo, or "" when
 #                           it has no remote yet (the CoS reads only local and pin)
@@ -66,8 +86,8 @@
 #                           null for every other purpose and for a holding. Informational
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
-schema: org/2
-framework_version: 0.5.0
+schema: org/3
+framework_version: 0.6.0
 org:
   id: ACME
   name: Acme
@@ -98,9 +118,26 @@ gates:
   ok: [merge, deploy, publish, contact-people, spend-money, rotate-secrets, delete-data, org-or-repo-settings, change-brand-rules, change-policy-rules, file-or-sign, make-payment]
 accounts:
   forbidden_connectors: []
+repos:
+  - slug: acme/acme-app
+    role: code
+    visibility: public
+    issues_home: false
+  - slug: acme/hq
+    role: hq
+    visibility: private
+    issues_home: true
+tracker:
+  kind: github-project
+  owner: acme
+  number: 1
+  status_field: Status
 policy: null
 policies_repo: null
 employer_rules: null
+# Without product repos or a tracker:
+# repos: []
+# tracker: none
 # Example of a policy block (company only):
 # policy:
 #   repo: <policies repo git remote>
@@ -114,7 +151,7 @@ employer_rules: null
 # employer_rules: "https://intranet.example.com/rules-on-data-and-ai"
 
 # Validation checklist
-#   - Parses as YAML; all required keys present; schema is "org/2".
+#   - Parses as YAML; all required keys present; schema is "org/3".
 #   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
 #   - org.level is company or holding; policy is null when level is holding;
 #     policies_repo is null when level is company.
@@ -134,5 +171,11 @@ employer_rules: null
 #     make-payment outside the ok list.
 #   - framework_version equals the version in company/state.md frontmatter, unless a
 #     migration is pending.
+#   - repos: every slug matches ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ and is unique; visibility
+#     is public or private; exactly one item has issues_home true when the list is not
+#     empty. A holding has repos [] and tracker none. No item holds a local path.
+#   - tracker is "none" or has kind github-project, a non-empty owner, an integer number
+#     and a non-empty status_field.
 #   - An `org/1` file is read as purpose company with the CoS name unset until migrated
-#     (see migrations/0.1.1-to-0.2.0.md).
+#     (see migrations/0.1.1-to-0.2.0.md). An `org/2` file is read as repos [] and
+#     tracker none until migrated (see migrations/0.5.0-to-0.6.0.md).

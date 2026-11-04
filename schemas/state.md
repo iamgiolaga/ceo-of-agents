@@ -10,7 +10,7 @@ The living snapshot of one org. It is the standard interface a holding reads (re
 | `org_id` | string | Same as `org.id` in org.yaml |
 | `level` | string | `company` or `holding` |
 | `last_updated` | date | `YYYY-MM-DD`; updated at the end of every meaningful session |
-| `framework_version` | string | Framework version the file was generated from, e.g. `0.5.0` |
+| `framework_version` | string | Framework version the file was generated from, e.g. `0.6.0` |
 | `next_action` | integer | Next unused `A` number (starts at 1) |
 | `next_decision` | integer | Next unused `D` number (starts at 1) |
 
@@ -66,7 +66,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.5.0
+framework_version: 0.6.0
 next_action: 3
 next_decision: 4
 ---

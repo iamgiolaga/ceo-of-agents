@@ -1,4 +1,4 @@
-schema: org/2
+schema: org/3
 framework_version: {{FRAMEWORK_VERSION}}
 org:
   id: {{ORG_ID}}
@@ -31,6 +31,15 @@ gates:                          # action ids from the framework gate table
   ok: {{GATES_OK}}
 accounts:
   forbidden_connectors: []   # same account on every machine, added through a decision; per machine: accounts.local.yaml
+# Product repos, read by charters, agents and skills (never copied). [] for none. Item shape:
+#  - slug: owner/name           # full GitHub slug; owners may differ
+#    role: code                 # short: code, site, docs or hq
+#    visibility: public         # public | private; public repos get no internal names, codes or hq content
+#    issues_home: true          # exactly one item: where cross-cutting issues go (may be the hq)
+# Local clone paths are per machine: repo_paths in accounts.local.yaml, not here.
+repos: {{REPOS_YAML}}
+# none, or a GitHub Project: kind github-project, owner (org or user login), number, status_field
+tracker: {{TRACKER_YAML}}
 # IF portfolio-company
 policy: {{POLICY_YAML}}
 # Either `null` (no holding policy) or:

@@ -1,8 +1,8 @@
 ---
 name: intake
-description: Process handoff notes in inbox/ and new CEO requests or ideas in a ceo-of-agents hq. Updates state.md, adds decision cards and action items with namespaced codes, flags escalations to the holding, deletes processed notes in the same hq commit. Use at session start when inbox/ has notes, or when the CEO brings a new idea, request or finding.
+description: Process handoff notes in inbox/ and new CEO requests or ideas in a ceo-of-agents hq. Updates state.md, adds decision cards and action items with namespaced codes, opens issues in registered product repos and adds them to the tracker, flags escalations to the holding, deletes processed notes in the same hq commit. Use at session start when inbox/ has notes, or when the CEO brings a new idea, request or finding.
 user-invocable: false
-allowed-tools: Read Grep Glob Edit Write Bash(git remote:*) Bash(git pull:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git rm:*) Bash(ls:*) Bash(date:*)
+allowed-tools: Read Grep Glob Edit Write Bash(git remote:*) Bash(git pull:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git rm:*) Bash(ls:*) Bash(date:*) Bash(gh issue list:*) Bash(gh issue create:*) Bash(gh issue comment:*) Bash(gh project view:*) Bash(gh project field-list:*) Bash(gh project item-add:*) Bash(gh project item-edit:*)
 ---
 
 # intake: process handoffs and new requests
@@ -22,11 +22,12 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
 
 1. Sync. Run `git remote`. If it prints nothing, skip pull and push and say once: "No remote: pull and push skipped". Otherwise run `git pull`; if it fails, say so in one line and continue with the local copy. Skip this step if the session already synced hq.
 
-2. Orient. Read `org.yaml`, `company/vision.md` and `company/strategy.md` (if present), `company/state.md`, `company/decision-queue.md` and `ls inbox/`. Note the org id, the level and the next codes (`next_action`, `next_decision`). Search `decisions/` and the queue for duplicates and conflicts with the topic (Grep). If a topic is already decided, say so and cite the record rather than reopening it, unless the new input is a reason to supersede it. If a request does not serve the vision or the current focus, say so in one line, then follow the CEO.
+2. Orient. Read `org.yaml`, `company/vision.md` and `company/strategy.md` (if present), `company/state.md`, `company/decision-queue.md` and `ls inbox/`. Note the org id, the level and the next codes (`next_action`, `next_decision`). Search `decisions/` and the queue for duplicates and conflicts with the topic (Grep). If `repos` in `org.yaml` is not empty, also search the open issues of the repo the topic touches and of the issues home, read-only (`gh issue list -R <slug> --state open --search "<words>"`); a match is a duplicate: add the new context as a comment (`gh issue comment`) instead of opening another issue. If the search fails, say so once and continue without it. If a topic is already decided, say so and cite the record rather than reopening it, unless the new input is a reason to supersede it. If a request does not serve the vision or the current focus, say so in one line, then follow the CEO.
 
 3. For a new CEO request (no note): restate it in one line. Classify it into exactly one primary route:
    - Decision: a clear choice is needed, so add a card.
    - Action: something only the CEO can do (an exact click, link, signature), so add an A item.
+   - Issue: a concrete piece of work in a registered product repo, with nothing to decide. Only when `repos` in `org.yaml` is not empty; otherwise use another route. See "Issue route" below.
    - Department task: delegate with full context (a self-contained brief; the department leaves a handoff at the end). Keep it one task unless it must be split:
      - split only where a part has a different owner, needs different permissions, can really run in parallel, must wait for another part (a hard prerequisite), or is an independent review;
      - write each dependency into the briefs, for example "starts after engineering's PR is open";
@@ -35,6 +36,7 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
    - Reasoning session: vague or strategic; propose a conversation first and record only what comes out of it.
    - Later: does not fit now; park it as a low-urgency item rather than dropping it.
    State the route in one short line, then execute. Do not ask for OKs the gate table does not require.
+   A department task or a decision about work in a registered repo also gets its issue (see "Issue route"), unless one already exists.
 
 4. For each handoff note, read it fully, then:
    - Update `company/state.md` where facts changed: Products and status, Key numbers (only with source and date; never invent a number), Risks (with owner). Sensitive detail (tax, personal legal, personal finance) stays out of state.md; keep it in the department folder.
@@ -52,6 +54,16 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
 8. Commit. The gate for `hq-commit` is "notice": write one line to the CEO before committing (what, where, content; for example "Committing to hq main: 2 notes processed, ACME-D4 added, state.md updated."), then commit on the current branch with a message like `chore: process inbox (<codes>)` and the attribution lines required by the session. Do not wait for an OK. Never push unless the CEO asks; a push is a separate notice-tier action, and never happens without a remote.
 
 9. Reply with a short summary in the chat language: notes processed, new codes (A and D, with one-line meaning), escalations, and anything blocked or ambiguous. Cite codes, do not paste cards. If nothing was in the inbox and the CEO gave no request, say so in one line.
+
+## Issue route
+
+Skip this section entirely when `repos` in `org.yaml` is `[]` or absent (an `org/2` file). Issue, Project item and field, label and comment writes are free: do them and mention them in one line.
+
+1. Pick the repo: the registered repo the work touches; if it spans several repos or none in particular, the item with `issues_home: true`.
+2. Create the issue: `gh issue create -R <slug> --title "<title>" --body "<body>"`. The body states the goal and acceptance criteria. If the work comes from a card or a record, link it: in a private repo (or an issues home that is the hq) write the code (`<ORG_ID>-D<n>`, record `NNNN`); in a repo with `visibility: public` write no internal names, codes or hq content, and put the issue URL in hq instead (the card, the record's Links or `company/state.md`).
+3. Tracker (skip when `tracker` is `none` or absent): `gh project item-add <number> --owner <owner> --url <issue url> --format json` returns the item (its `id` is the item id). Then set the status: the project id is the `id` from `gh project view <number> --owner <owner> --format json`; the field id and option ids are the `id` of the status field and of its `options` in `gh project field-list <number> --owner <owner> --format json`; and run `gh project item-edit --id <item id> --project-id <project id> --field-id <status field id> --single-select-option-id <option id>`. Use the field named in `tracker.status_field` and the option that matches the work (for example a to-do status for new work).
+4. If `gh` fails (not installed, not signed in, no `project` scope), do not retry in a loop: say so, add an A item with the exact command for the CEO (for example `gh auth refresh -s project`) unless one is already open, and record the intended issue as a line in the reply so nothing is lost.
+5. Report the issue URL and the status set.
 
 ## Rules
 
