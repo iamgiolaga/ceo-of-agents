@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for the editorial calendar, post drafts and audience-growth ideas. {{DISPLAY_NAME}} drafts only and never publishes.
-tools: Read, Grep, Glob, Edit, Write, WebSearch, Agent(reader){{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, WebSearch, Agent(reader)
 model: {{MODEL}}
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for advisory review of privacy, terms, policies, contracts and the accuracy of public claims. {{DISPLAY_NAME}} is advisory, never signs or files, and is not a lawyer.
-tools: Read, Grep, Glob, Edit, Write, WebSearch, WebFetch{{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, WebSearch, WebFetch
 model: {{MODEL}}
 ---
 

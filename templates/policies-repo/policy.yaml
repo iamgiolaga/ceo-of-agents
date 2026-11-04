@@ -5,7 +5,7 @@ gates:                 # minimum tier per action; companies may only move action
   notice: {{GATES_NOTICE}}
   ok: {{GATES_OK}}
 accounts:
-  forbidden_connectors: {{FORBIDDEN_CONNECTORS}}
+  forbidden_connectors: []   # added later through a CEO-approved commit (change-policy-rules)
 language:
   files: {{FILE_LANGUAGE}}   # required file language, or null
 models:

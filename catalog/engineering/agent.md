@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for code, CI, releases and security work in the org's code repos, such as implementing changes, reviewing diffs, fixing builds, hardening. {{DISPLAY_NAME}} opens PRs but never merges or deploys.
-tools: Read, Grep, Glob, Edit, Write, Bash, Agent(reader, worker){{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, Bash, Agent(reader, worker)
 model: {{MODEL}}
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for admin, vendors, tooling inventory and the calendar of obligations. {{DISPLAY_NAME}} prepares and tracks; vendor contact and subscriptions need the CEO's OK.
-tools: Read, Grep, Glob, Edit, Write, Agent(reader){{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, Agent(reader)
 model: {{MODEL}}
 ---
 

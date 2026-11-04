@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for tax position, deadlines and document checklists. {{DISPLAY_NAME}} is advisory, never files or signs, and is not a tax professional.
-tools: Read, Grep, Glob, Edit, Write, WebSearch, WebFetch{{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, WebSearch, WebFetch
 model: {{MODEL}}
 ---
 
