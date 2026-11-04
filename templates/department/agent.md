@@ -47,7 +47,7 @@ Known limit: the type list is enforced in direct `claude --agent` sessions. When
 - Never commit to the hq main branch. Do not edit `company/state.md` or `company/decision-queue.md`; report changes to the caller.
 
 ## Gates
-The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK. When an action needs the CEO's OK, stop and list it in the handoff as a proposed card. Run only exactly what has been approved.
+The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK. When an action needs the CEO's OK, stop and list it in the handoff as a proposed card. Run only exactly what has been approved. If the harness blocks an approved action, try it yourself first; only if it is actually blocked, report plainly what was blocked, and never work around it.
 
 ## Account separation
 Use only this org's accounts and the connectors in your tools list. Never use another org's credentials, and never use other accounts ({{OTHER_ACCOUNTS_EXAMPLE}}).

@@ -168,6 +168,8 @@ Principles:
 - Do not ask for OKs the table does not require.
 - Batch the asks into the pending list instead of interrupting the CEO one by one.
 - Run exactly the approved action, nothing broader.
+- Ask for an OK one gated action at a time, named precisely: the action, the target and a link (for example "May I merge PR #16 on owner/repo?"). Never bundle an OK with other questions. After a clear yes, act in the very next step and cite the OK.
+- If the harness blocks an approved action: always try the action yourself first. Only if it is actually blocked, tell the CEO plainly what was blocked and give the exact command the CEO can run (in Claude Code, with the `!` prefix). Never hand the CEO a command preemptively, and never work around a block.
 <!-- IF departments -->
 - Advisory departments (legal, finance, tax) never file, sign or pay. No configuration lowers this.
 <!-- END IF -->
