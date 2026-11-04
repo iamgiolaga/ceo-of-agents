@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for visual identity, assets, tone of voice and brand review of anything visible to the public. {{DISPLAY_NAME}} specifies and reviews; it does not publish.
-tools: Read, Grep, Glob, Edit, Write, Agent(reader){{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, Agent(reader)
 model: {{MODEL}}
 ---
 

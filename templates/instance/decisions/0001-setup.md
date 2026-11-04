@@ -24,15 +24,16 @@ Each question offered the framework's listed choices or a custom answer. The ans
 | 5 | Departments | {{SETUP_DEPARTMENTS}} |
 | 6 | Names or personas (CoS, departments, CEO) | {{SETUP_PERSONAS}} |
 | 7 | Approval gates | {{SETUP_GATES}} |
-| 8 | Connectors per department | {{SETUP_CONNECTORS}} |
-| 9 | Models (CoS / departments / workers) | {{MODEL_COS}} / {{MODEL_DEPARTMENTS}} / one-down (CoS workers: {{MODEL_WORKERS}}) |
-| 10 | Holding policy (companies) or employer rules (job) | {{SETUP_POLICY}} |
-| 11 | Repositories | {{SETUP_REPOS}} |
+| 8 | Models (CoS / departments / workers) | {{MODEL_COS}} / {{MODEL_DEPARTMENTS}} / one-down (CoS workers: {{MODEL_WORKERS}}) |
+| 9 | Holding policy (companies) or employer rules (job) | {{SETUP_POLICY}} |
+| 10 | Repositories | {{SETUP_REPOS}} |
 
 ## Consequences
 
 - hq was generated with the structure described in `CLAUDE.md` and `operating-model.md`.
 - Changing any of these answers later is a new decision record plus the matching edit in `org.yaml`.
+- Every department starts with no connectors. A connector is granted later through a decision card with a one-line reason.
+- No connector is forbidden in `org.yaml` at setup. At the first session, and on every new machine or fresh clone, the CoS asks which visible connectors belong to another account and records them in `accounts.local.yaml`, which git does not track.
 - Gates can only be moved to a stricter tier where a holding policy applies.
 
 ## Links

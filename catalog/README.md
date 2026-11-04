@@ -20,7 +20,7 @@ The catalog holds starting templates for departments. Each entry has two files:
 
 - Entries are templates, not defaults. Nothing is preselected; the setup wizard asks and zero departments is a valid answer.
 - Picking the same entry in two orgs creates two independent departments, each with its own charter, agent file and memory. Nothing is shared between them.
-- The wizard fills the placeholders (`{{DEPT_ID}}`, `{{DISPLAY_NAME}}`, `{{ORG_NAME}}`, `{{ORG_ID}}`, `{{MODEL}}`, `{{WORKER_MODEL}}`, `{{OTHER_ACCOUNTS_EXAMPLE}}` (the account example, set by the org's purpose)) and replaces `{{CONNECTORS}}` with `, mcp__<name>__*` entries granted to that department only, or removes it.
+- The wizard fills the placeholders (`{{DEPT_ID}}`, `{{DISPLAY_NAME}}`, `{{ORG_NAME}}`, `{{ORG_ID}}`, `{{MODEL}}`, `{{WORKER_MODEL}}`, `{{OTHER_ACCOUNTS_EXAMPLE}}` (the account example, set by the org's purpose)). Every department starts with no connectors; the CoS adds one to the `tools:` list only after a decision card grants it.
 - Once generated, the files belong to the org and can be edited freely. Gates in a generated hq live in `org.yaml`; advisory departments never file, sign or pay.
 - Each agent file may name generic categories of optional external plugins. Nothing is vendored or installed by the framework; the CEO decides whether to add any.
 - For a department not in the catalog, use `templates/department/`.

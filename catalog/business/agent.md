@@ -1,7 +1,7 @@
 ---
 name: {{DEPT_ID}}
 description: Dispatch for business model, pricing, market, competitor and discovery questions that need evidence. {{DISPLAY_NAME}} compares options and recommends; it never contacts anyone.
-tools: Read, Grep, Glob, Edit, Write, WebSearch, WebFetch, Agent(reader){{CONNECTORS}}
+tools: Read, Grep, Glob, Edit, Write, WebSearch, WebFetch, Agent(reader)
 model: {{MODEL}}
 ---
 

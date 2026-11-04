@@ -99,7 +99,7 @@ claude plugin install ceo-of-agents@ceo-of-agents
    /ceo-of-agents:init-fleet
    ```
 
-3. Answer the wizard: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval gates, connectors each department may use, models, policy, and an optional git remote.
+3. Answer the wizard: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval gates, models, policy, and an optional git remote.
 4. Confirm the summary. The wizard writes the hq:
    - `CLAUDE.md` (your CoS), `org.yaml` (setup, gates, models), `operating-model.md`;
    - `company/vision.md` and `company/strategy.md`, `company/state.md` (state and pending list), `company/decision-queue.md`, `decisions/`, `inbox/`, `metrics/`;
@@ -155,7 +155,7 @@ It leaves a handoff in `inbox/` for the CoS. Its decisions become official only 
 
 Update from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
 
-Updates never touch your hq. When a release changes hq files, it ships a migration in [`migrations/`](migrations/README.md): ask your CoS to apply it, then review and approve the commit. Coming from 0.2.0 (`init-org`)? Follow [`migrations/0.2.0-to-0.3.0.md`](migrations/0.2.0-to-0.3.0.md).
+Updates never touch your hq. When a release changes hq files, it ships a migration in [`migrations/`](migrations/README.md): ask your CoS to apply it, then review and approve the commit.
 
 ## 7. Built with ceo-of-agents
 

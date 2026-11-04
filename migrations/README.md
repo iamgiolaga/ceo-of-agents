@@ -28,4 +28,4 @@ Version `0.3.0` renames the setup wizard to `init-fleet` and hides the four CoS 
 
 Version `0.4.0` adds three working rules: a reason for every elevated grant (department review in `init-fleet`, and a paragraph in `CLAUDE.md` for departments added later), task-splitting rules for the CoS, and blocked and failure hygiene in the worker and department agent files. No schema changes. Migration: `0.3.0-to-0.4.0.md`.
 
-Version `0.5.0` adds `company/vision.md` and `company/strategy.md`, moves machine-specific forbidden connectors to an untracked `accounts.local.yaml`, and rewrites the wizard's gates and connectors questions in plain language. No schema changes. Migration: `0.4.0-to-0.5.0.md`.
+Version `0.5.0` adds `company/vision.md` and `company/strategy.md`, moves machine-specific forbidden connectors to an untracked `accounts.local.yaml`, rewrites the wizard's gates question in plain language, and drops its connectors question (departments start with none; the CoS checks other accounts' connectors at the first session). No schema changes. Migration: `0.4.0-to-0.5.0.md`.

@@ -18,8 +18,9 @@ You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/
 - Ask one group of questions at a time (the numbered groups below), wait for the answers, then move on.
 - Use plain words. Introduce a term only when the CEO needs it to answer.
 - Never push. Never run `git commit` without asking the CEO first.
-- The only write outside the current directory is the policies repo directory the CEO named (holding only, question 11). The only reads outside the current directory and `${CLAUDE_PLUGIN_ROOT}` are the policy read check in question 10 (company level, purpose not job): `git -C <local> fetch` and `git -C <local> show <pin>:policy.yaml`.
+- The only write outside the current directory is the policies repo directory the CEO named (holding only, question 10). The only reads outside the current directory and `${CLAUDE_PLUGIN_ROOT}` are the policy read check in question 9 (company level, purpose not job): `git -C <local> fetch` and `git -C <local> show <pin>:policy.yaml`.
 - `mkdir` and `cp` write only into the target hq directory (the current directory) or the policies repo directory the CEO named. Never anywhere else.
+- Do not ask about connectors (external services reached through MCP servers). Every department starts with none (least privilege); the CEO asks the CoS to grant one later, through a decision card. Connectors of other accounts are not asked either: the CoS checks them with the CEO at the first session of the new hq (see "Accounts on this machine" in `CLAUDE.md`).
 - Every shell command in this skill is covered by `allowed-tools`, and every pattern there is used below. Use only those commands, with at least one argument each (for example `git status --short`).
 
 ## Step 0: check the directory
@@ -28,7 +29,7 @@ Run `ls -A`. If the directory holds anything other than `.git`, stop and tell th
 
 ## Non-interactive mode
 
-If the CEO provides all answers in one message, or in a file passed as the argument, read them, map them to the question groups, ask only about what is missing or invalid, and skip the questions already answered. Still run validation, the policy check (question 10, company level, purpose not job), the department review and show the full summary with a confirmation request before generating anything.
+If the CEO provides all answers in one message, or in a file passed as the argument, read them, map them to the question groups, ask only about what is missing or invalid, and skip the questions already answered. Still run validation, the policy check (question 9, company level, purpose not job), the department review and show the full summary with a confirmation request before generating anything.
 
 ## Questions
 
@@ -41,7 +42,7 @@ Ask first, nothing preselected: "What is this fleet for?" with the four values a
 
 Then, only if the purpose is `company`, ask the level: holding (the CEO as entrepreneur: registry of companies, policies, the most sensitive data) or company (one company, with its own code org and hq repo). Nothing is preselected. For `job`, `product` and `startup` the level is `company` and is not asked; say so in one line.
 
-For `job`, also say, once: a job hq is never registered in a holding portfolio and never pins a holding policy; the employer's connectors used for this job may be granted to departments; check the employer's rules on data and AI tools before putting work content into this hq or any remote.
+For `job`, also say, once: a job hq is never registered in a holding portfolio and never pins a holding policy; the employer's connectors used for this job are this org's accounts and may be granted to departments later, through the CoS; check the employer's rules on data and AI tools before putting work content into this hq or any remote.
 
 ### 2. Name and id
 Ask for the org name and a short id used in codes (for example `ACME`). Validate the id: 2 to 8 characters, only capital letters A-Z and digits 0-9, starting with a letter. If invalid, explain and ask again. Do not invent an id from the name without the CEO choosing it; you may suggest one as a proposal only.
@@ -90,26 +91,12 @@ Then offer three answers, nothing preselected:
 2. Make something stricter: the CEO names actions and the group each moves to.
 3. Make something looser: before recording it, warn in one line that agents will then do that action with less warning or none. Signing or filing anything binding, and payments, always need the CEO's OK (`file-or-sign` and `make-payment` stay in `ok`; see `gates/default.md`, "Advisory departments"): do not offer them, and refuse a request to move them.
 
-Internally, the tiers are ordered `free` < `notice` < `ok`; moving an action toward `ok` is stricter. Record the final lists with the action ids in `org.yaml` only. Every action stays in exactly one list. If a holding policy applies, question 10 checks the result.
+Internally, the tiers are ordered `free` < `notice` < `ok`; moving an action toward `ok` is stricter. Record the final lists with the action ids in `org.yaml` only. Every action stays in exactly one list. If a holding policy applies, question 9 checks the result.
 
-### 8. Connectors
-Open with this purpose line: "This decides which external services each department can reach." Never ask the CEO to type a tool name or a pattern; the CEO picks from what you show.
-
-1. Detect. Every tool in your own tool list whose name starts with `mcp__` comes from a connector (an MCP server) available in this session. Group them by server (`mcp__<server>__`) and show one line per server: a plain name, what it seems to do, and how many tools it has. Mark the obvious account boundaries: a `claude_ai_*` server comes from the claude.ai account signed in on this machine; when a service could belong to a work or a personal account, ask which. If you see no `mcp__` tool, say that no connector is available in this session and that one can be added later through a decision card.
-2. Already covered. Skip steps 2 and 3 if no department was chosen. For each department, say in one line what it can already reach with the tools in its agent file, with no connector: with `Bash` (engineering), GitHub through the `gh` CLI and git, using the GitHub account signed in to `gh` on that machine; with `WebSearch` or `WebFetch`, the public web; every department reads and writes files in this hq.
-3. Pick per department. Ask which detected servers each department may use. Nothing is granted unless the CEO picks it; "none" is valid. Plain answers are fine ("github via CLI", "Slack"): map each to a detected server, or to a need already covered (record nothing for it), or, if nothing matches, offer "none for now, add later" and move on. For each server granted, record `mcp__<server>__*` and ask for a one-line reason tied to the department's scope (see "Department review").
-
-   Advisory departments (legal, finance, tax) get only read-only tools, named one by one. Show the chosen server's tools whose names only read (get, list, search, read), let the CEO pick, and ask the CEO to confirm each one only reads. Record single tool names, never `mcp__<server>__*`, because a whole server can include write tools. Refuse any tool that files, pays, sends, publishes or writes, with this one line: "Advisory departments never file, pay, send or publish, so they only get read-only connector tools." Ask for another tool or "none".
-4. Forbidden. Explain that connectors are granted per department, never globally, and that work and personal accounts must not be mixed. Then ask which detected services belong to an account no agent of this org may ever use. Purpose not `job`: for example an employer's accounts. Purpose `job`: for example the CEO's personal accounts or another org's; the employer's connectors used for this job are this org's accounts and may be granted to departments. For each one picked, ask whether that service name means the same account on every machine the CEO will use this hq from (a claude.ai connector follows whichever claude.ai account is signed in on that machine):
-   - the same account everywhere: record `mcp__<server>__*` in `accounts.forbidden_connectors` in `org.yaml`, which git syncs;
-   - it differs by machine, or the CEO is not sure: record it for this machine only in `accounts.local.yaml`, with a short label of the account it was seen as (for example "work account"; never an email address). That file is not tracked by git, and the CoS asks again on every new machine.
-
-   A server granted to a department cannot also be forbidden on the same machine; if it is, go back to step 3.
-
-### 9. Model tiers
+### 8. Model tiers
 Show the tier list `[opus, sonnet, haiku]`, most to least capable. Ask which tier the CoS should use and which tier the departments should use (a per-department override is allowed; ask, no preselected answer). Explain the rule, which is fixed and is not a question: workers run one tier below their parent and never use a more capable model than their parent (`workers: one-down` in `org.yaml`). If the parent is the least capable tier, workers use the same tier. Every org gets two generic worker agents, `reader` and `worker`, which run one tier below the departments tier. Show the resulting worker model for the CoS, for the generic workers and for any department with an override in the summary.
 
-### 10. Holding policy (company level, purpose not job) or employer rules (job); skip for a holding
+### 9. Holding policy (company level, purpose not job) or employer rules (job); skip for a holding
 For a job hq there is no holding policy question: a job hq is never governed by a holding. Instead ask for an optional pointer to the employer's rules on data, AI tools and accounts (a URL or a path; "none" is valid). It is stored as `employer_rules` in `org.yaml`. Never read or copy its content during setup. The rest of this section applies when the purpose is not `job`.
 
 Ask whether this company follows a holding policy. It is optional. If yes, ask for:
@@ -124,13 +111,12 @@ git -C <local> show <pin>:policy.yaml
 ```
 If it cannot be read, report the reason and ask for a corrected value or to continue without a policy. If it can be read, parse it (schema `policy/1`; see `${CLAUDE_PLUGIN_ROOT}/schemas/policy.yaml`) and run the tighten-only comparison against the answers so far, immediately:
 1. Gates: for every action in the policy file, the company tier must be at or above the policy tier. An action absent from the company gates inherits the policy tier (fine).
-2. Connectors: any policy `forbidden_connectors` entry present in any department's connectors is a loosening.
-3. Language: policy `language.files` set and different from the company file language is a loosening.
-4. Models: `models.cos` more capable than `models.ceiling.cos`, or `models.departments` or any department `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent, including the generic `reader` and `worker`) more capable than `models.ceiling.workers`, is a loosening.
+2. Language: policy `language.files` set and different from the company file language is a loosening.
+3. Models: `models.cos` more capable than `models.ceiling.cos`, or `models.departments` or any department `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent, including the generic `reader` and `worker`) more capable than `models.ceiling.workers`, is a loosening.
 
 Report every loosening, one line each (for example `gate merge: company=notice, holding=ok`), before generating. A company may only tighten. Ask the CEO to adjust the answers; never silently fix them. Read nothing else in the policies repo.
 
-### 11. Repositories
+### 10. Repositories
 Ask these as questions, with no preselected answer. Both remotes are optional; "none" is valid.
 - The hq git remote URL. If given, it is added after init (`git remote add origin <url>`); never pushed. Tell the CEO that, while there is no remote, the CoS skips pull and push and says so in its status line.
 - Holding only: where to create the policies repo. Ask for an absolute path outside this hq directory (the CEO chooses it; do not propose one). Check with `ls -A <path>` that it does not exist or is empty; otherwise ask for another path. Then ask for the policies repo remote URL (optional; if given it is added with `git -C <path> remote add origin <url>`; never pushed). Explain that the policies repo must hold no sensitive data: only `policy.yaml` and `README.md`.
@@ -138,17 +124,17 @@ Ask these as questions, with no preselected answer. Both remotes are optional; "
 
 ## Department review
 
-Skip this if no department was chosen. Otherwise, before the summary, re-read each department draft as a whole: scope (and for a custom department its triggers, exclusions and core job), tools, connectors and model. If the parts do not fit together, go back to the affected question.
+Skip this if no department was chosen. Otherwise, before the summary, re-read each department draft as a whole: scope (and for a custom department its triggers, exclusions and core job), tools and model. If the parts do not fit together, go back to the affected question.
 
 Every elevated grant needs a one-line reason tied to the department's scope. Elevated grants are any connector, `Edit`, `Write`, `Bash` and `Agent`.
 - Template tools carry their reason: `Edit` and `Write` because every department writes its outputs and its `inbox/` handoff; `Agent(...)` because the department delegates to the generic workers it lists; `Bash` (engineering) because it runs repo checks and git on branches.
-- A connector's reason comes from the CEO (question 8). You may propose one; the CEO confirms it.
+- No connector is granted at setup: every department starts with none. A connector granted later goes through a decision card with its own reason (see `CLAUDE.md`).
 - Drop any grant that has no reason before the summary, and tell the CEO which grants were dropped.
 - Grants come only from the confirmed answers. Approving a permission prompt during setup, or replying after a denied one, grants nothing to any agent.
 
 ## Summary and confirmation
 
-After the last group, show a compact summary: purpose, level, name and id, what the org is about (the three answers to question 3), the CoS name, languages, departments (id, source, display name, model, connectors with their reasons), gate changes versus the framework table (in plain words), forbidden connectors (on every machine, and on this machine only), model tiers (CoS, departments, and the derived worker model of the generic `reader` and `worker` agents), policy and the result of the check (for a job hq: the employer rules pointer or none), the hq remote (or none), for a job hq where the remote lives and, for a holding, the policies repo path and remote. For a holding, also show the policy ceilings `models.ceiling.cos`, `models.ceiling.departments` and `models.ceiling.workers` (proposed as described under `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}` in the placeholder reference; the CEO confirms or changes them) and say they are written to the policies repo. Ask for explicit confirmation. Also ask whether to write `.claude/settings.json` enabling the plugin for this repo (optional; yes or no, ask, do not assume). On any correction go back to the affected group and show the summary again.
+After the last group, show a compact summary: purpose, level, name and id, what the org is about (the three answers to question 3), the CoS name, languages, departments (id, source, display name, model; no connectors, see the line below), gate changes versus the framework table (in plain words), model tiers (CoS, departments, and the derived worker model of the generic `reader` and `worker` agents), policy and the result of the check (for a job hq: the employer rules pointer or none), the hq remote (or none), for a job hq where the remote lives and, for a holding, the policies repo path and remote. For a holding, also show the policy ceilings `models.ceiling.cos`, `models.ceiling.departments` and `models.ceiling.workers` (proposed as described under `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}` in the placeholder reference; the CEO confirms or changes them) and say they are written to the policies repo. Add one line: every department starts with no connectors (the CEO asks the CoS when one needs a connector), and at the first session the CoS lists the connectors visible on this machine and asks which belong to another account. Ask for explicit confirmation. Also ask whether to write `.claude/settings.json` enabling the plugin for this repo (optional; yes or no, ask, do not assume). On any correction go back to the affected group and show the summary again.
 
 ## Generation
 
@@ -156,12 +142,12 @@ Only after confirmation.
 
 Before generating, tell the CEO that the wizard writes into `.claude/` (`.claude/agents/*.md` and optionally `.claude/settings.json`), which Claude Code protects, so a permission prompt may appear and must be approved. For headless runs (`claude -p`) these writes can be denied even with `acceptEdits` or `--allowedTools "Edit(.claude/**)"`: path rules do not lift the `.claude/` protection. If a write into `.claude/` is denied, do not retry or work around it. Finish everything else, then list the missing files in the final report and tell the CEO to run the wizard in an interactive session, or to approve the prompt, or to place the files from the templates by hand. Generate every file directly with your own tools; do not delegate file writes to sub-agents, which may lack the permissions.
 
-1. List `${CLAUDE_PLUGIN_ROOT}/templates/instance/` and copy every file to the same relative path in the current directory, rendering as below. One exception: `gitignore` is written as `.gitignore` (it lists the per-machine files `accounts.local.yaml` and `.claude/settings.local.json`, so git never tracks them).
+1. List `${CLAUDE_PLUGIN_ROOT}/templates/instance/` and copy every file to the same relative path in the current directory, rendering as below. One exception: `gitignore` is written as `.gitignore` (it lists the per-machine files `accounts.local.yaml` and `.claude/settings.local.json`, so git never tracks them). The wizard writes neither file: the CoS creates them at the first session.
 2. Placeholders: render every `{{NAME}}` using the "Placeholder reference" below. Every placeholder used in `templates/` and `catalog/` is listed there.
 3. Conditional blocks: render them as described under "Conditional markers" below.
 4. Holding-only files: see "Holding-only files" below.
 5. `{{DEPARTMENTS_TABLE}}` and `{{GATES_TABLE}}`: see the reference below (column specs are fixed there).
-6. `org.yaml`: fill every field (`models.workers` stays the literal `one-down`), including `departments` (id, from_catalog, display_name, model, connectors), the `gates` lists, `accounts.forbidden_connectors`, `org.purpose`, `cos.display_name`, `employer_rules` (job: the pointer or `null`; otherwise `null`), `policies_repo` (holding: local and remote; otherwise `null`) and `policy` (company level, purpose not job, with a policy: repo, local, pin; otherwise `null`). It must follow `${CLAUDE_PLUGIN_ROOT}/schemas/org.yaml`.
+6. `org.yaml`: fill every field (`models.workers` stays the literal `one-down`), including `departments` (id, from_catalog, display_name, model, `connectors: []`), the `gates` lists, `org.purpose`, `cos.display_name`, `employer_rules` (job: the pointer or `null`; otherwise `null`), `policies_repo` (holding: local and remote; otherwise `null`) and `policy` (company level, purpose not job, with a policy: repo, local, pin; otherwise `null`). It must follow `${CLAUDE_PLUGIN_ROOT}/schemas/org.yaml`.
 7. Per department:
    - catalog department: copy `${CLAUDE_PLUGIN_ROOT}/catalog/<id>/charter.md` to `departments/<id>/charter.md` and `${CLAUDE_PLUGIN_ROOT}/catalog/<id>/agent.md` to `.claude/agents/<id>.md`;
    - custom department: do the same from `${CLAUDE_PLUGIN_ROOT}/templates/department/` (`charter.md`, `agent.md`), filling the purpose, scope, triggers, exclusions and core job the CEO gave.
@@ -169,20 +155,15 @@ Before generating, tell the CEO that the wizard writes into `.claude/` (`.claude
    Not rendered: `catalog/README.md` (framework documentation, never copied). Catalog and department templates are used only for the departments chosen.
 8. Create `departments/` only if there is at least one department. `company/briefs/.gitkeep` and `inbox/` come from the template.
 9. Generic workers, for every org (also with zero departments): render `${CLAUDE_PLUGIN_ROOT}/templates/workers/reader.md` to `.claude/agents/reader.md` and `${CLAUDE_PLUGIN_ROOT}/templates/workers/worker.md` to `.claude/agents/worker.md`, with `{{MODEL_WORKERS}}`.
-10. Holding only, the policies repo, at the absolute path the CEO gave in question 11: `mkdir -p <path>`, `git -C <path> init --quiet`, render `${CLAUDE_PLUGIN_ROOT}/templates/policies-repo/README.md` and `policy.yaml` into `<path>` (with `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}`). Show `git -C <path> status --short`, then ask the CEO before its first commit. If approved: `git -C <path> add -A`, then `git -C <path> commit -m "chore: initialize policies"` with the attribution lines required by the session. If a remote was given: `git -C <path> remote add origin <url>`. Never push. Write nothing else outside the hq.
-11. Decision `decisions/0001-setup.md`, from the template, following `${CLAUDE_PLUGIN_ROOT}/schemas/decision-record.md`: record all answers in Context and Decision (purpose, level, name and id, the CoS name, languages, departments with models and connectors (with each connector's reason), gate changes, forbidden connectors, model tiers, policy pin and check result, remotes, and for a holding the policies repo path). `Card: none`, `Decided by: ceo`. Add its row to `decisions/README.md`.
+10. Holding only, the policies repo, at the absolute path the CEO gave in question 10: `mkdir -p <path>`, `git -C <path> init --quiet`, render `${CLAUDE_PLUGIN_ROOT}/templates/policies-repo/README.md` and `policy.yaml` into `<path>` (with `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}`). Show `git -C <path> status --short`, then ask the CEO before its first commit. If approved: `git -C <path> add -A`, then `git -C <path> commit -m "chore: initialize policies"` with the attribution lines required by the session. If a remote was given: `git -C <path> remote add origin <url>`. Never push. Write nothing else outside the hq.
+11. Decision `decisions/0001-setup.md`, from the template, following `${CLAUDE_PLUGIN_ROOT}/schemas/decision-record.md`: record all answers in Context and Decision (purpose, level, name and id, the CoS name, languages, departments with models, gate changes, model tiers, policy pin and check result, remotes, and for a holding the policies repo path). `Card: none`, `Decided by: ceo`. Add its row to `decisions/README.md`.
 12. `company/state.md`: empty schema-valid state from the template (`schema: state/1`, the five fixed H2 sections, `- none` in empty sections, `next_action: 1`, `next_decision: 1`). If the policy check reported loosenings the CEO chose to keep, seed one A item per kept loosening, in the exact "Waiting on the CEO" line format of `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`: `- <ORG_ID>-A<n> [high]: <exact action> (since YYYY-MM-DD)` with urgency `high`, `since` = today (`date +%F`), and the text an exact action, for example `In org.yaml move \`merge\` from notice back to ok, or approve a holding policy change; see decision 0001`. Number them from 1 and set `next_action` to the last number plus one (`2` for a single item). Never use `normal` or omit the `since` date. Also keep the rest of `state.md` consistent: Risks and Open decisions stay `- none` unless the CEO says otherwise (the A item is the only record, and decision 0001 holds the details).
 13. If the CEO agreed, write `.claude/settings.json` enabling the plugin, for example:
     ```json
     { "enabledPlugins": { "ceo-of-agents@ceo-of-agents": true } }
     ```
     Check the marketplace name in `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/marketplace.json` before writing it. Otherwise skip this file.
-14. `company/vision.md` and `company/strategy.md` come from the template with the answers to question 3. `accounts.local.yaml` comes from the template, always (an empty list records that this machine was checked).
-15. If `accounts.local.yaml` lists any connector, also write `.claude/settings.local.json` with one deny rule per entry, so Claude Code blocks it for every agent on this machine: `mcp__<server>` for an `mcp__<server>__*` entry, the exact name for a single tool. For example:
-    ```json
-    { "permissions": { "deny": ["mcp__claude_ai_Slack"] } }
-    ```
-    The same `.claude/` caveat applies as above; if the write is denied, list it in the final report: the rule in `accounts.local.yaml` still applies.
+14. `company/vision.md` and `company/strategy.md` come from the template with the answers to question 3.
 
 ## Placeholder reference
 
@@ -197,35 +178,32 @@ Render with plain string replacement. Values are single-line unless stated. Neve
 | `{{PURPOSE}}` | `job`, `product`, `startup` or `company` (question 1) |
 | `{{LEVEL}}` | `company` or `holding` |
 | `{{COS_DISPLAY_NAME}}` | CoS display name (question 6) without quotes; the `org.yaml` template wraps it in quotes. In `CLAUDE.md` it renders "You are **<name>**, the chief of staff (CoS) of ...". If the name equals the role name the repetition is accepted, as for departments |
-| `{{EMPLOYER_RULES}}` | `null`, or the pointer in double quotes (job only; question 10). Not job: `null` |
+| `{{EMPLOYER_RULES}}` | `null`, or the pointer in double quotes (job only; question 9). Not job: `null` |
 | `{{CHAT_LANGUAGE}}` | Chat language code (question 4), for example `en` |
 | `{{FILE_LANGUAGE}}` | File language code (question 4) |
 | `{{CEO_ROLE_ID}}` | `ceo` |
 | `{{CEO_DISPLAY_NAME}}` | CEO display name without quotes, or an empty string. The template already wraps it in quotes (`display_name: "..."`) |
 | `{{FRAMEWORK_VERSION}}` | `0.5.0` |
 | `{{DATE}}` | Today, `YYYY-MM-DD` (`date +%F`) |
-| `{{MODEL_COS}}` | Tier chosen for the CoS (question 9) |
-| `{{MODEL_DEPARTMENTS}}` | Tier chosen for departments (question 9; a department may override) |
+| `{{MODEL_COS}}` | Tier chosen for the CoS (question 8) |
+| `{{MODEL_DEPARTMENTS}}` | Tier chosen for departments (question 8; a department may override) |
 | `{{MODEL_WORKERS}}` | The tier one below `models.departments` (`{{MODEL_DEPARTMENTS}}`) in `models.tiers`; the same tier if `{{MODEL_DEPARTMENTS}}` is the last. Used in `templates/workers/*` and in prose (`CLAUDE.md`, `decisions/0001-setup.md`). `org.yaml` keeps the literal rule `workers: one-down`, never a model name |
 | `{{DEPARTMENTS_TABLE}}` | Markdown table `Agent id \| Name \| Role \| Use for`, one row per department: `Agent id` = the department id (`name` in its agent file), `Name` = display name (persona or role name), `Role` = the catalog role name (for example Business; the one in the agent file's intro line) or, for a custom department, the custom department's role name as given when it was defined, `Use for` = a short routing phrase of at most 12 words derived from the charter's `Purpose` line (never the full sentence). Used inside the `departments` condition only (for none, the `no-departments` block applies) |
 | `{{GATES_TABLE}}` | Markdown table `Tier \| Rule \| Action ids`, exactly three rows (free, notice, ok) in that order. `Rule` is the short rule from `${CLAUDE_PLUGIN_ROOT}/gates/default.md` (free: do it and mention it; notice: one line before acting; ok: the CEO's explicit OK). `Action ids` are the final action ids of that tier, in backticks, comma-separated |
-| `{{DEPARTMENTS_YAML}}` | `[]` for no departments. Otherwise the value starts with a newline and is a block list indented two spaces under `departments:`; each item has `id`, `from_catalog` (catalog id or `custom`), `display_name`, `model`, `connectors` (inline list such as `[mcp__github__*]`, or `[]`) |
+| `{{DEPARTMENTS_YAML}}` | `[]` for no departments. Otherwise the value starts with a newline and is a block list indented two spaces under `departments:`; each item has `id`, `from_catalog` (catalog id or `custom`), `display_name`, `model`, `connectors: []` (every department starts with none) |
 | `{{GATES_FREE}}` `{{GATES_NOTICE}}` `{{GATES_OK}}` | Final action ids of that tier as an inline YAML list: `[a, b, c]` (`[]` if the tier is empty). Each action id is in exactly one tier |
-| `{{FORBIDDEN_CONNECTORS}}` | Inline YAML list of the connector patterns forbidden on every machine (question 8, step 4), `[mcp__x__*, mcp__y__*]`, or `[]` |
-| `{{LOCAL_FORBIDDEN_YAML}}` | Used in `accounts.local.yaml`. `[]` when nothing is forbidden on this machine only. Otherwise the value starts with a newline and is a block list indented two spaces, each item with `pattern` (an `mcp__<server>__*` pattern or a single tool name) and `account` (the short label in double quotes) |
 | `{{VISION_WHAT}}` | Answer A to question 3, as confirmed in the summary. Single line |
 | `{{VISION_WHY}}` | Answer B to question 3, as confirmed in the summary. Single line |
 | `{{STAGE}}` | The stage picked in question 3, for example `building` |
-| `{{POLICY_YAML}}` | Company level, purpose not job only. `null` when there is no holding policy. Otherwise the value starts with a newline and is a mapping indented two spaces under `policy:` with keys `repo`, `local`, `pin` (question 10) |
-| `{{POLICIES_REPO_YAML}}` | Holding: the value starts with a newline and is a mapping indented two spaces under `policies_repo:` with keys `local` (absolute path, question 11) and `remote` (the URL, or `""` when none). Otherwise `null` |
+| `{{POLICY_YAML}}` | Company level, purpose not job only. `null` when there is no holding policy. Otherwise the value starts with a newline and is a mapping indented two spaces under `policy:` with keys `repo`, `local`, `pin` (question 9) |
+| `{{POLICIES_REPO_YAML}}` | Holding: the value starts with a newline and is a mapping indented two spaces under `policies_repo:` with keys `local` (absolute path, question 10) and `remote` (the URL, or `""` when none). Otherwise `null` |
 | `{{CEILING_COS}}` | Holding only, rendered into the policies repo `policy.yaml`. Most capable model a company CoS may use. Proposed: the holding's own CoS model (`{{MODEL_COS}}`). Show it in the summary; the CEO confirms or changes it; it must be a name from `models.tiers` |
 | `{{CEILING_DEPARTMENTS}}` | Holding only, same file. Most capable model a company department may use. Proposed: the holding's own department model (`{{MODEL_DEPARTMENTS}}`). Show it in the summary; the CEO confirms or changes it; it must be a name from `models.tiers` |
 | `{{CEILING_WORKERS}}` | Holding only, same file. Most capable model a company worker may use. Proposed: the tier one below `{{CEILING_DEPARTMENTS}}` (the same if it is the last). A name from `models.tiers`, never `one-down` |
-| `{{SETUP_QUESTION_COUNT}}` | Number of question groups asked (questions 1 to 11). A holding skips question 10, which stays in the table as a row marked not applicable and is not counted. Custom department follow-ups belong to question 5 and do not add groups. Counted by groups that apply to the level, also in non-interactive mode. Holding: 10. Company: 11 (any purpose, job included, because a job hq answers question 10 as employer rules) |
+| `{{SETUP_QUESTION_COUNT}}` | Number of question groups asked (questions 1 to 10). A holding skips question 9, which stays in the table as a row marked not applicable and is not counted. Custom department follow-ups belong to question 5 and do not add groups. Counted by groups that apply to the level, also in non-interactive mode. Holding: 9. Company: 10 (any purpose, job included, because a job hq answers question 9 as employer rules) |
 | `{{SETUP_DEPARTMENTS}}` | Cell text for `decisions/0001-setup.md`: `id (model)` for each department, comma-separated, or `none` |
 | `{{SETUP_PERSONAS}}` | Starts with `CoS: <cos display name>`, then `id: display name` for each department whose display name differs from the role name, then `CEO: <name>` if given |
 | `{{SETUP_GATES}}` | `framework table` or `framework table with changes: <action> <from> -> <to>; ...` |
-| `{{SETUP_CONNECTORS}}` | `id: pattern (reason), pattern (reason)` per department with connectors, `;`-separated, plus `forbidden: patterns` for the ones forbidden on every machine and `forbidden on the setup machine: patterns` for the ones in `accounts.local.yaml`, if any; `none` if there is nothing. Reasons contain no `;` |
 | `{{SETUP_REPOS}}` | Cell text for `decisions/0001-setup.md`: `hq remote: <url or none>`; for a holding append `; policies repo: <path>, remote: <url or none>`; for a job hq append `, hosted on: <the CEO's answer: personal account, employer account, or not decided>` |
 | `{{SETUP_POLICY}}` | `none` for a company without policy, `not applicable (holding)` for a holding, `not applicable (job); employer rules: <pointer or none>` for a job hq, otherwise `<repo> @ <short pin> (check: OK)` or `<repo> @ <short pin> (check: N loosening(s) kept)` |
 
@@ -248,7 +226,6 @@ Table cell values (`SETUP_*`) must not contain `|` or newlines.
 | `{{DEPT_CORE_JOB}}` | Custom departments only. The single core job: one single-line sentence ending with a period, containing no `: ` |
 | `{{DEPT_TRIGGERS_LINE}}` | Custom departments only. The trigger items on one line, as a comma-separated list of noun phrases, derived from the same bullets as `{{DEPT_TRIGGERS}}` (no extra question). It must read after "Use for " (so turn a situation into a noun phrase: "a customer email arrives" becomes "incoming customer emails"), for example `incoming customer emails, refund requests`. No `: `, no trailing period. Used in the one-line YAML `description:` of the agent file |
 | `{{DEPT_EXCLUSIONS_LINE}}` | Custom departments only. The exclusion items on one line, same format as `{{DEPT_TRIGGERS_LINE}}` (noun phrases that read after "Not for ", for example `legal advice, payments`), derived from the same bullets as `{{DEPT_EXCLUSIONS}}` without the `(owner: ...)` parts. No `: `, no trailing period |
-| `{{CONNECTORS}}` | Empty string when the department has no connectors; otherwise `, mcp__x__*, mcp__y__*` (leading comma and space), appended to the `tools:` list in the agent file. For legal, finance and tax only the read-only single tool names confirmed in question 8 |
 
 ### Conditional markers
 
@@ -277,13 +254,13 @@ Run them and fix what fails; report the results:
 - `org.yaml` parses. Try `python3 -c "import yaml,sys; yaml.safe_load(open('org.yaml'))"`; if that fails (for example no `yaml` module), check it carefully by reading and say explicitly in the final report that YAML was checked by reading only.
 - Every expected `.claude/agents/<id>.md` exists (one per department in `org.yaml`), plus `.claude/agents/reader.md` and `.claude/agents/worker.md`. If any is missing, stop and tell the CEO clearly, listing the missing files and the likely cause (`.claude/` write permission, see Generation); never report success with missing agent files.
 - Mandatory, never skipped: compare `company/state.md` against `${CLAUDE_PLUGIN_ROOT}/schemas/state.md` item by item: frontmatter keys and values, the 5 H2 headings in exact order, the line formats, and `- none` in every empty section. List the result of each item in the final report. A skipped or partial check is reported as a failure, not as done.
-- Advisory department agent files (legal, finance, tax, from the catalog) have no `Agent` in `tools:`, and their connectors are single read-only tool names.
+- Advisory department agent files (legal, finance, tax, from the catalog) have no `Agent` in `tools:`.
 - `.claude/agents/reader.md` and `worker.md` have `model:` equal to `{{MODEL_WORKERS}}` as rendered.
 - Every `.claude/agents/*.md` has an explicit `tools:` list in its frontmatter, and its `name` equals its file name. The frontmatter of each parses as YAML (a `: ` inside an unquoted `description:` breaks it): `python3 -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]).read().split('---')[1])" <file>`. If that fails for a custom department, fix the rendered value, never leave it.
 - The files in `departments/` match the departments in `org.yaml`, and the display names appear in `CLAUDE.md`.
-- Every connector in `org.yaml` appears with its reason in `decisions/0001-setup.md`.
+- No department has a connector: every department in `org.yaml` has `connectors: []`, no `.claude/agents/*.md` lists an `mcp__` tool, and `accounts.forbidden_connectors` is `[]`.
 - `company/vision.md` and `company/strategy.md` exist and hold the confirmed answers to question 3.
-- `.gitignore` lists `accounts.local.yaml` and `.claude/settings.local.json`, `accounts.local.yaml` parses as YAML, and after `git init` neither file shows up in `git status --short`.
+- `.gitignore` lists `accounts.local.yaml` and `.claude/settings.local.json`, and neither file exists in the hq (the CoS creates them at the first session).
 
 ## Git
 
@@ -291,4 +268,4 @@ If there is no `.git`, run `git init --quiet`. If the CEO gave an hq remote, run
 
 ## End
 
-Tell the CEO in chat language: what was generated (file count, departments, the generic `reader` and `worker` agents and their model), any open A items, the policies repo path (holding), that the CoS skips pull and push while there is no hq remote, that `accounts.local.yaml` stays on this machine (the CoS asks again on any other machine), and how to start: open Claude Code in this directory and say what is on their mind; the CoS (from `CLAUDE.md`) takes it from there. Give three or four plain-language examples, such as describing an idea, "decide X", "brief", and with departments "pass to <department>: <text>". Do not list the CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) as commands: they are hidden from the `/` menu and the CoS invokes them on its own. `/ceo-of-agents:init-fleet` is the only command the CEO types.
+Tell the CEO in chat language: what was generated (file count, departments, the generic `reader` and `worker` agents and their model), any open A items, the policies repo path (holding), that the CoS skips pull and push while there is no hq remote, that departments start with no connectors (the CEO asks the CoS when one needs a connector), that at the first session the CoS lists the connectors visible on this machine and asks which belong to another account (and asks again on any other machine or fresh clone), and how to start: open Claude Code in this directory and say what is on their mind; the CoS (from `CLAUDE.md`) takes it from there. Give three or four plain-language examples, such as describing an idea, "decide X", "brief", and with departments "pass to <department>: <text>". Do not list the CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) as commands: they are hidden from the `/` menu and the CoS invokes them on its own. `/ceo-of-agents:init-fleet` is the only command the CEO types.
