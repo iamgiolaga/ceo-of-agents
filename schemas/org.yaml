@@ -60,7 +60,7 @@
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
 schema: org/2
-framework_version: 0.2.0
+framework_version: 0.3.0
 org:
   id: ACME
   name: Acme

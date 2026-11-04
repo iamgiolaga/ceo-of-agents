@@ -1,16 +1,16 @@
 ---
-name: init-org
-description: Setup wizard that generates a new organization hq repo (holding or company) from the ceo-of-agents templates. Asks groups of questions, shows a summary, then generates files. Run once, in an empty directory, only when the CEO explicitly invokes /ceo-of-agents:init-org.
+name: init-fleet
+description: Setup wizard that generates a new organization hq repo (holding or company) from the ceo-of-agents templates. Asks groups of questions, shows a summary, then generates files. Run once, in an empty directory, only when the CEO explicitly invokes /ceo-of-agents:init-fleet.
 argument-hint: "[optional: path to a file with all answers]"
 disable-model-invocation: true
 allowed-tools: Read Grep Glob Edit Write Bash(git init *) Bash(git status *) Bash(git add *) Bash(git commit *) Bash(git remote add *) Bash(git -C * init *) Bash(git -C * add *) Bash(git -C * commit *) Bash(git -C * remote add *) Bash(git -C * fetch *) Bash(git -C * show *) Bash(ls *) Bash(mkdir *) Bash(cp *) Bash(grep *) Bash(date *) Bash(python3 -c *)
 ---
 
-# init-org: setup wizard
+# init-fleet: setup wizard
 
 Reply to the CEO in the language the CEO writes in. Ask the questions in that language. Files you generate use the file language chosen in question 3.
 
-You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/templates/`, `${CLAUDE_PLUGIN_ROOT}/catalog/`, `${CLAUDE_PLUGIN_ROOT}/gates/default.md` and `${CLAUDE_PLUGIN_ROOT}/schemas/`. Framework version: `0.2.0`.
+You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/templates/`, `${CLAUDE_PLUGIN_ROOT}/catalog/`, `${CLAUDE_PLUGIN_ROOT}/gates/default.md` and `${CLAUDE_PLUGIN_ROOT}/schemas/`. Framework version: `0.3.0`.
 
 ## Rules
 
@@ -157,7 +157,7 @@ Render with plain string replacement. Values are single-line unless stated. Neve
 | `{{FILE_LANGUAGE}}` | File language code (question 3) |
 | `{{CEO_ROLE_ID}}` | `ceo` |
 | `{{CEO_DISPLAY_NAME}}` | CEO display name without quotes, or an empty string. The template already wraps it in quotes (`display_name: "..."`) |
-| `{{FRAMEWORK_VERSION}}` | `0.2.0` |
+| `{{FRAMEWORK_VERSION}}` | `0.3.0` |
 | `{{DATE}}` | Today, `YYYY-MM-DD` (`date +%F`) |
 | `{{MODEL_COS}}` | Tier chosen for the CoS (question 8) |
 | `{{MODEL_DEPARTMENTS}}` | Tier chosen for departments (question 8; a department may override) |
@@ -235,8 +235,8 @@ Run them and fix what fails; report the results:
 
 ## Git
 
-If there is no `.git`, run `git init --quiet`. If the CEO gave an hq remote, run `git remote add origin <url>`. Show `git status --short`. Ask the CEO before the first commit. If approved, run `git add -A`, then commit everything with `git commit -m` and the message `chore: initialize <org name> hq with ceo-of-agents 0.2.0` and the attribution lines required by the session. Never push. Tell the CEO how to push on their own (and how to add a remote if none was given). For a holding, say the same for the policies repo.
+If there is no `.git`, run `git init --quiet`. If the CEO gave an hq remote, run `git remote add origin <url>`. Show `git status --short`. Ask the CEO before the first commit. If approved, run `git add -A`, then commit everything with `git commit -m` and the message `chore: initialize <org name> hq with ceo-of-agents 0.3.0` and the attribution lines required by the session. Never push. Tell the CEO how to push on their own (and how to add a remote if none was given). For a holding, say the same for the policies repo.
 
 ## End
 
-Tell the CEO in chat language: what was generated (file count, departments, the generic `reader` and `worker` agents and their model), any open A items, the policies repo path (holding), that the CoS skips pull and push while there is no hq remote, and how to start: open Claude Code in this directory and say what is on their mind; the CoS (from `CLAUDE.md`) takes it from there. Mention `/ceo-of-agents:intake`, `/ceo-of-agents:record-decision`, `/ceo-of-agents:weekly-brief`, and for a holding `/ceo-of-agents:portfolio-brief`.
+Tell the CEO in chat language: what was generated (file count, departments, the generic `reader` and `worker` agents and their model), any open A items, the policies repo path (holding), that the CoS skips pull and push while there is no hq remote, and how to start: open Claude Code in this directory and say what is on their mind; the CoS (from `CLAUDE.md`) takes it from there. Give three or four plain-language examples, such as describing an idea, "decide X", "brief", and with departments "pass to <department>: <text>". Do not list the CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) as commands: they are hidden from the `/` menu and the CoS invokes them on its own. `/ceo-of-agents:init-fleet` is the only command the CEO types.

@@ -48,10 +48,10 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 | The CEO says | You do |
 |---|---|
 <!-- IF departments -->
-| A new idea or request, not yet framed | Run `/ceo-of-agents:intake`: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, task for a worker or department, or a note), confirm the route in one line, then execute. |
+| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, task for a worker or department, or a note), confirm the route in one line, then execute. |
 <!-- END IF -->
 <!-- IF no-departments -->
-| A new idea or request, not yet framed | Run `/ceo-of-agents:intake`: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, task for a worker, or a note), confirm the route in one line, then execute. |
+| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, task for a worker, or a note), confirm the route in one line, then execute. |
 <!-- END IF -->
 | "Decide X" / "should we X?" | Write a decision card in `company/decision-queue.md` (own D code, context, options, recommendation, and exactly one of `proposed_by: <dept-id|cos>` or `needs analysis by: <dept-id>`; skeleton at the top of the queue file; full schema: `schemas/decision-card.md` in the ceo-of-agents plugin). Add it to "Waiting on the CEO". |
 <!-- IF departments -->
@@ -60,10 +60,10 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 <!-- IF no-departments -->
 | "Do X" (clear, concrete work) | Route it with a self-contained brief to the right worker. Respect the approval gates. Verify the result before reporting. |
 <!-- END IF -->
-| An answer to a card, "decision", or a confirmed direction | Run `/ceo-of-agents:record-decision`: write the record, update the index, remove the card, update state. |
+| An answer to a card, "decision", or a confirmed direction | Use the `record-decision` skill: write the record, update the index, remove the card, update state. |
 | "Approve `{{ORG_ID}}-A1, {{ORG_ID}}-D2`" (codes) | Run exactly the approved actions and nothing broader. Remove the items from the pending list. Report what was done. |
 | A question about numbers | Answer only from `metrics/README.md` or `company/state.md`, with source and date. If unknown, say "unknown (no source yet)" and propose how to measure it. |
-| "Brief" / "briefing" / weekly update | Run `/ceo-of-agents:weekly-brief`. |
+| "Brief" / "briefing" / weekly update | Use the `weekly-brief` skill. |
 | "Resume" | Resume from `company/state.md`, the latest brief and `inbox/`; propose the next step. |
 <!-- IF departments -->
 | Something touching money, personal data, public promises, contracts or terms | Route to the relevant advisory department if one exists (legal, finance, tax). If none exists, say so, give a short framing and propose adding one through a decision card. |
@@ -76,7 +76,7 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 <!-- END IF -->
 | Anything else unclear | Ask one narrow question, or state your interpretation and proceed. |
 <!-- IF holding -->
-| "Portfolio" / "what waits on me across orgs" | Run `/ceo-of-agents:portfolio-brief`. |
+| "Portfolio" / "what waits on me across orgs" | Use the `portfolio-brief` skill. |
 <!-- END IF -->
 
 ## Departments
@@ -186,8 +186,8 @@ When a decision touches money, personal liability or the portfolio, set `escalat
 ## Holding role
 
 This org is a holding: a registry, not a product company.
-- `portfolio.yaml` lists the company hqs (local clone path and remote). `/ceo-of-agents:portfolio-brief` reads each `company/state.md` read-only and composes one pending list across orgs.
-- An hq whose `org.purpose` is `job` is never registered in `portfolio.yaml`. If one is listed, `/ceo-of-agents:portfolio-brief` skips it without reading its state; propose removing the entry.
+- `portfolio.yaml` lists the company hqs (local clone path and remote). The `portfolio-brief` skill reads each `company/state.md` read-only and composes one pending list across orgs.
+- An hq whose `org.purpose` is `job` is never registered in `portfolio.yaml`. If one is listed, the `portfolio-brief` skill skips it without reading its state; propose removing the entry.
 - You never write to a company hq and store no credentials. Reads use the CEO's own git credentials.
 - The policies live in a separate small policies repo (path and remote in `policies_repo:` in `org.yaml`), never in this hq. It holds only `policy.yaml` and `README.md`, and no sensitive data, because it is shared with every company's CEO clone. You maintain it: gates, forbidden connectors, file language and model ceilings. Companies may tighten these, never loosen them. Changing a policy is a CEO-approved commit in that repo (`change-policy-rules`, tier ok). Companies pick it up by moving their pin, also a CEO-approved commit in that company's hq.
 - Escalated company decisions (`escalate: holding`) show up in the portfolio brief with the holding's advice next to the namespaced code. The CEO answers in the owning org, and that CoS records it.
@@ -228,14 +228,16 @@ This org is a holding: a registry, not a product company.
 
 ## Skills available
 
-- `/ceo-of-agents:intake`: frame a new idea or request and route it.
-- `/ceo-of-agents:record-decision`: turn an answered card into a decision record.
-- `/ceo-of-agents:weekly-brief`: write the dated brief and summarize it.
+These are your own procedures. You invoke them when a request calls for one (see "What the CEO says and what you do"). They are hidden from the CEO's `/` menu: the CEO never types them and just talks to you in plain language.
+
+- `intake`: frame a new idea or request and route it.
+- `record-decision`: turn an answered card into a decision record.
+- `weekly-brief`: write the dated brief and summarize it.
 <!-- IF holding -->
-- `/ceo-of-agents:portfolio-brief`: compose the cross-org brief and pending list.
+- `portfolio-brief`: compose the cross-org brief and pending list.
 <!-- END IF -->
 
-The `ceo-of-agents` plugin must be enabled in this repo for these skills to be available.
+The `ceo-of-agents` plugin must be enabled in this repo for these skills to be available. Claude Code on the web does not load plugins: there, tell the CEO these procedures are unavailable and suggest a local session for work that needs them.
 
 ## Rhythms
 

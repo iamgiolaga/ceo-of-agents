@@ -1,6 +1,7 @@
 ---
 name: portfolio-brief
 description: Holding-only, on-demand portfolio brief. Fetches each registered company hq read-only (no change to its working tree), reads its company/state.md from the fetched default branch, composes one pending list across the holding and all companies (urgency, then level, then age), and writes company/briefs/YYYY-MM-DD-portfolio.md. Use when the CEO asks for a portfolio brief or a view across orgs. Refuses to run in a company hq. Skips job hqs (org.purpose job) without reading their state.
+user-invocable: false
 allowed-tools: Read Write Edit Grep Glob Bash(git -C * fetch *) Bash(git -C * show *) Bash(git -C * status *) Bash(git -C * branch *) Bash(git -C * symbolic-ref *) Bash(git add *) Bash(git commit *) Bash(ls *) Bash(date *)
 ---
 

@@ -1,6 +1,6 @@
 # ceo-of-agents: design spec (draft v0)
 
-Status: v0.2.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility.
+Status: v0.3.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments.
 
 ## 1. Problem
 
@@ -59,7 +59,7 @@ ceo-of-agents/
     workers/         reader and worker agent templates, one pair per instance
     policies-repo/   policy.yaml and README.md for the holding's separate policies repo
   catalog/           department catalog (charter + agent template each)
-  skills/            init-org, intake, record-decision, weekly-brief, portfolio-brief
+  skills/            init-fleet, intake, record-decision, weekly-brief, portfolio-brief
   schemas/           state.md, org.yaml, portfolio.yaml, policy.yaml, handoff, decision card, decision record
   gates/             default approval-gate table
   migrations/        vN-to-vN+1 diffs
@@ -105,7 +105,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.2.0
+framework_version: 0.3.0
 next_action: 1
 next_decision: 1
 ---
@@ -163,7 +163,7 @@ When a company decision touches money, personal liability or the portfolio, the 
 
 ## 6. Setup wizard
 
-`/ceo-of-agents:init-org` runs in an empty directory and asks:
+`/ceo-of-agents:init-fleet` runs in an empty directory and asks:
 
 1. Purpose and level: what the fleet is for (job, product, startup, company); level (holding or company) is asked only for company, and job, product and startup are company-level hqs.
 2. Org name and short id (used in codes).
