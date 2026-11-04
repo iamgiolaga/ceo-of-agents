@@ -10,7 +10,7 @@ allowed-tools: Read Grep Glob Edit Write Bash(git init *) Bash(git status *) Bas
 
 Reply to the CEO in the language the CEO writes in. Ask the questions in that language. Files you generate use the file language chosen in question 4. Keep technical ids (action ids, file names, patterns) out of the questions; they go into the files.
 
-You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/templates/`, `${CLAUDE_PLUGIN_ROOT}/catalog/`, `${CLAUDE_PLUGIN_ROOT}/gates/default.md` and `${CLAUDE_PLUGIN_ROOT}/schemas/`. Framework version: `0.8.0`.
+You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/templates/`, `${CLAUDE_PLUGIN_ROOT}/catalog/`, `${CLAUDE_PLUGIN_ROOT}/gates/default.md` and `${CLAUDE_PLUGIN_ROOT}/schemas/`. Framework version: `0.8.1`.
 
 ## Rules
 
@@ -26,7 +26,7 @@ You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/
 
 ## Step 0: check the directory
 
-Run `ls -A`. If the directory holds anything other than `.git`, stop and tell the CEO what is there. Continue only if the CEO explicitly confirms generating into a non-empty directory. Never overwrite an existing file without a per-file confirmation.
+Run `ls -A`. The plugin is installed at project scope in this directory, which writes `.claude/settings.json`; if `.claude` is present, also run `ls -A .claude`. If the directory holds anything other than `.git` and `.claude/settings.json`, stop and tell the CEO what is there. Continue only if the CEO explicitly confirms generating into a non-empty directory. Never overwrite an existing file without a per-file confirmation.
 
 ## Non-interactive mode
 
@@ -145,7 +145,7 @@ Every elevated grant needs a one-line reason tied to the department's scope. Ele
 
 ## Summary and confirmation
 
-After the last group, show a compact summary: purpose, level, name and id, what the org is about (the three answers to question 3), the CoS name, languages, departments (id, agent name, source, display name, model; no connectors, see the line below), gate changes versus the framework table (in plain words), model tiers (CoS, departments, and the derived worker model of the generic `reader` and `worker` agents), policy and the result of the check (for a job hq: the employer rules pointer or none), the hq remote (or none), for a job hq where the remote lives, at company level the product repos (address, what it is, public or private, issues home) and the roadmap board (address and status field, or none), for a holding, the policies repo path and remote. For a holding, also show the policy ceilings `models.ceiling.cos`, `models.ceiling.departments` and `models.ceiling.workers` (proposed as described under `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}` in the placeholder reference; the CEO confirms or changes them) and say they are written to the policies repo. Add one line: every department starts with no connectors (the CEO asks the CoS when one needs a connector). Ask for explicit confirmation. Also ask whether to write `.claude/settings.json` enabling the plugin for this repo (optional; yes or no, ask, do not assume). On any correction go back to the affected group and show the summary again.
+After the last group, show a compact summary: purpose, level, name and id, what the org is about (the three answers to question 3), the CoS name, languages, departments (id, agent name, source, display name, model; no connectors, see the line below), gate changes versus the framework table (in plain words), model tiers (CoS, departments, and the derived worker model of the generic `reader` and `worker` agents), policy and the result of the check (for a job hq: the employer rules pointer or none), the hq remote (or none), for a job hq where the remote lives, at company level the product repos (address, what it is, public or private, issues home) and the roadmap board (address and status field, or none), for a holding, the policies repo path and remote. For a holding, also show the policy ceilings `models.ceiling.cos`, `models.ceiling.departments` and `models.ceiling.workers` (proposed as described under `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}` in the placeholder reference; the CEO confirms or changes them) and say they are written to the policies repo. Add one line: every department starts with no connectors (the CEO asks the CoS when one needs a connector). Ask for explicit confirmation. If `.claude/settings.json` already enables the plugin (the project-scope install writes it), say it stays as it is and do not ask about it. Otherwise also ask whether to write `.claude/settings.json` enabling the plugin for this repo (optional; yes or no, ask, do not assume). On any correction go back to the affected group and show the summary again.
 
 ## Generation
 
@@ -169,7 +169,7 @@ Before generating, tell the CEO that the wizard writes into `.claude/` (`.claude
 10. Holding only, the policies repo, at the absolute path the CEO gave in question 10: `mkdir -p <path>`, `git -C <path> init --quiet`, render `${CLAUDE_PLUGIN_ROOT}/templates/policies-repo/README.md` and `policy.yaml` into `<path>` (with `{{CEILING_COS}}`, `{{CEILING_DEPARTMENTS}}` and `{{CEILING_WORKERS}}`). Show `git -C <path> status --short`, then ask the CEO before its first commit. If approved: `git -C <path> add -A`, then `git -C <path> commit -m "chore: initialize policies"` with the attribution lines required by the session. If a remote was given: `git -C <path> remote add origin <url>`. Never push. Write nothing else outside the hq.
 11. Decision `decisions/0001-setup.md`, from the template, following `${CLAUDE_PLUGIN_ROOT}/schemas/decision-record.md`: record all answers in Context and Decision (purpose, level, name and id, the CoS name, languages, departments with models, gate changes, model tiers, policy pin and check result, remotes, and for a holding the policies repo path). `Card: none`, `Decided by: ceo`. Add its row to `decisions/README.md`.
 12. `company/state.md`: empty schema-valid state from the template (`schema: state/1`, the five fixed H2 sections, `- none` in empty sections, `next_action: 1`, `next_decision: 1`). If the policy check reported loosenings the CEO chose to keep, seed one A item per kept loosening, in the exact "Waiting on the CEO" line format of `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`: `- <ORG_ID>-A<n> [high]: <exact action> (since YYYY-MM-DD)` with urgency `high`, `since` = today (`date +%F`), and the text an exact action, for example `In org.yaml move \`merge\` from notice back to ok, or approve a holding policy change; see decision 0001`. Number them from 1 and set `next_action` to the last number plus one (`2` for a single item). Never use `normal` or omit the `since` date. Also keep the rest of `state.md` consistent: Risks and Open decisions stay `- none` unless the CEO says otherwise (the A item is the only record, and decision 0001 holds the details).
-13. If the CEO agreed, write `.claude/settings.json` enabling the plugin, for example:
+13. If `.claude/settings.json` already enables the plugin (written by the project-scope install), leave it unchanged. Otherwise, if the CEO agreed, write `.claude/settings.json` enabling the plugin, for example:
     ```json
     { "enabledPlugins": { "ceo-of-agents@ceo-of-agents": true } }
     ```
@@ -194,7 +194,7 @@ Render with plain string replacement. Values are single-line unless stated. Neve
 | `{{FILE_LANGUAGE}}` | File language code (question 4) |
 | `{{CEO_ROLE_ID}}` | `ceo` |
 | `{{CEO_DISPLAY_NAME}}` | CEO display name without quotes, or an empty string. The template already wraps it in quotes (`display_name: "..."`) |
-| `{{FRAMEWORK_VERSION}}` | `0.8.0` |
+| `{{FRAMEWORK_VERSION}}` | `0.8.1` |
 | `{{DATE}}` | Today, `YYYY-MM-DD` (`date +%F`) |
 | `{{MODEL_COS}}` | Tier chosen for the CoS (question 8) |
 | `{{MODEL_DEPARTMENTS}}` | Tier chosen for departments (question 8; a department may override) |
