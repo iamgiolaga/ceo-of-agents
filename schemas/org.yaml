@@ -1,4 +1,4 @@
-# Schema: org.yaml (`org/3`)
+# Schema: org.yaml (`org/4`)
 #
 # Instance configuration of one org. Lives at the hq root. Annotated example below
 # is itself valid YAML. Owner: the CoS, changed only by a normal hq commit.
@@ -10,7 +10,7 @@
 #                employer_rules (job only; null otherwise)
 #
 # Allowed values and rules
-#   schema                  exactly "org/3"
+#   schema                  exactly "org/4"
 #   framework_version       framework version the instance was generated from
 #   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
 #   org.name                free text
@@ -33,8 +33,13 @@
 #   models.departments      one of models.tiers; applies to departments unless overridden
 #   models.workers          "one-down" (one tier below the parent; never escalate)
 #   departments             list, zero items is valid; item fields:
-#     id                    kebab-case; files .claude/agents/<id>.md and
-#                           departments/<id>/charter.md
+#     id                    kebab-case; departments/<id>/charter.md, decision cards
+#                           and handoffs
+#     agent                 required; the agent name: lowercase kebab-case,
+#                           ^[a-z][a-z0-9-]*$. The persona slug when display_name is a
+#                           persona, otherwise equal to id. The agent file is
+#                           .claude/agents/<agent>.md. Unique; never another
+#                           department's id, never "reader" or "worker"
 #     from_catalog          a catalog id (engineering, design-brand, business,
 #                           growth-social, legal, finance, tax, operations)
 #                           or "custom"
@@ -86,8 +91,8 @@
 #                           null for every other purpose and for a holding. Informational
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
-schema: org/3
-framework_version: 0.6.0
+schema: org/4
+framework_version: 0.7.0
 org:
   id: ACME
   name: Acme
@@ -108,8 +113,9 @@ models:
   workers: one-down
 departments:
   - id: engineering
+    agent: mike
     from_catalog: engineering
-    display_name: Engineering
+    display_name: Mike
     model: opus
     connectors: []
 gates:
@@ -151,7 +157,7 @@ employer_rules: null
 # employer_rules: "https://intranet.example.com/rules-on-data-and-ai"
 
 # Validation checklist
-#   - Parses as YAML; all required keys present; schema is "org/3".
+#   - Parses as YAML; all required keys present; schema is "org/4".
 #   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
 #   - org.level is company or holding; policy is null when level is holding;
 #     policies_repo is null when level is company.
@@ -163,7 +169,11 @@ employer_rules: null
 #   - employer_rules is null unless org.purpose is job.
 #   - models.cos, models.departments and every department model are in models.tiers.
 #   - models.workers is one-down; no worker model is more capable than its parent.
-#   - Department ids are unique kebab-case; each has a matching charter and agent file.
+#   - Department ids are unique kebab-case; each has a matching charter
+#     (departments/<id>/charter.md).
+#   - Each department has an agent matching ^[a-z][a-z0-9-]*$, unique, not equal to another
+#     department's id, "reader" or "worker". The file .claude/agents/<agent>.md exists and
+#     its name: equals the file name and agent.
 #   - No connector pattern appears both in a department connectors list and in
 #     accounts.forbidden_connectors.
 #   - Every gate action id is known (see gates/default.md) and listed exactly once.
@@ -178,4 +188,6 @@ employer_rules: null
 #     and a non-empty status_field.
 #   - An `org/1` file is read as purpose company with the CoS name unset until migrated
 #     (see migrations/0.1.1-to-0.2.0.md). An `org/2` file is read as repos [] and
-#     tracker none until migrated (see migrations/0.5.0-to-0.6.0.md).
+#     tracker none until migrated (see migrations/0.5.0-to-0.6.0.md). An `org/3` file (or
+#     older) is read as agent equal to id for every department until migrated (see
+#     migrations/0.6.0-to-0.7.0.md).

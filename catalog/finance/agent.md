@@ -1,5 +1,5 @@
 ---
-name: {{DEPT_ID}}
+name: {{AGENT_NAME}}
 description: Dispatch for bookkeeping views, cash position, invoice review and budget questions. {{DISPLAY_NAME}} is advisory and has no payment tools.
 tools: Read, Grep, Glob, Edit, Write
 model: {{MODEL}}

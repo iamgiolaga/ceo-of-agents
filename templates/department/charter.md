@@ -1,6 +1,6 @@
 # {{DISPLAY_NAME}}: charter
 
-Department `{{DEPT_ID}}` of {{ORG_NAME}} (`{{ORG_ID}}`). Agent file: `.claude/agents/{{DEPT_ID}}.md`.
+Department `{{DEPT_ID}}` of {{ORG_NAME}} (`{{ORG_ID}}`). Agent file: `.claude/agents/{{AGENT_NAME}}.md`.
 
 ## Scope
 

@@ -135,16 +135,20 @@ Your agents do safe things on their own (drafts, research), tell you before savi
 For long work in one department, open it directly from the hq folder:
 
 ```
-claude --agent <department-id>
+claude --agent mike
 ```
 
-Use the department's short name, for example `engineering`. It leaves a note for the CoS; its decisions count only once the CoS records them.
+Use the name you gave the department, in lowercase (for example `mike`), or its role (for example `engineering`) if you kept the role name. It leaves a note for the CoS; its decisions count only once the CoS records them.
 
 ## 6. Update
 
 Update from `/plugin` (Installed tab, **Update now**) or with `claude plugin update ceo-of-agents@ceo-of-agents`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
 
-Updates never touch your hq. When a release needs changes in your hq, it ships update notes in [`migrations/`](migrations/README.md): ask your CoS to apply them, then review and approve the commit.
+Updates never touch your hq.
+
+When the plugin updates, your chief of staff notices at the start of a session and offers to bring your hq up to date.
+
+Nothing in your hq changes until you say OK. Each update is described in [`migrations/`](migrations/README.md); your CoS shows a short summary of what changed and saves it as one commit per update.
 
 ## 7. Built with ceo-of-agents
 
