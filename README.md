@@ -99,10 +99,10 @@ claude plugin install ceo-of-agents@ceo-of-agents
    /ceo-of-agents:init-fleet
    ```
 
-3. Answer the wizard: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval gates, connectors each department may use, models, policy, and an optional git remote.
+3. Answer the wizard: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval gates, connectors each department may use, models, policy, and an optional git remote.
 4. Confirm the summary. The wizard writes the hq:
    - `CLAUDE.md` (your CoS), `org.yaml` (setup, gates, models), `operating-model.md`;
-   - `company/state.md` (state and pending list), `company/decision-queue.md`, `decisions/`, `inbox/`, `metrics/`;
+   - `company/vision.md` and `company/strategy.md`, `company/state.md` (state and pending list), `company/decision-queue.md`, `decisions/`, `inbox/`, `metrics/`;
    - per department, a charter in `departments/<id>/` and an agent in `.claude/agents/<id>.md`, plus generic `reader` and `worker` agents.
 5. Approve the permission prompt for `.claude/agents/`, then the first commit. The wizard never pushes.
 

@@ -1,0 +1,12 @@
+# Accounts on this machine. Not tracked by git (see .gitignore): never commit this file.
+# The same connector name can belong to different accounts on different machines; a
+# claude.ai connector, for example, follows the claude.ai account signed in there.
+# Connectors listed here are forbidden for every agent of this org on this machine only.
+# Connectors forbidden on every machine are in org.yaml (accounts.forbidden_connectors).
+# The CoS writes this file with the CEO on each new machine or fresh clone, and mirrors
+# each entry as a deny rule in .claude/settings.local.json.
+# Item shape:
+#  - pattern: mcp__claude_ai_Slack__*   # a server pattern or a single tool name
+#    account: "work account"           # a short label, never an email address
+checked: {{DATE}}
+forbidden_connectors: {{LOCAL_FORBIDDEN_YAML}}

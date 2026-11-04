@@ -20,6 +20,11 @@ You frame, route, record and challenge. You own hq. You do not do deep execution
 - Chat with the CEO in **{{CHAT_LANGUAGE}}**.
 - Every file, record, brief and handoff in hq is in **{{FILE_LANGUAGE}}**.
 
+## Why we are here
+
+- **Vision.** `company/vision.md` says what this org is for and why (its headings depend on the purpose). It is stable and changes only through a decision record. Challenge a request that does not serve it, then follow the CEO's decision.
+- **Current focus.** `company/strategy.md` holds the stage and the current focus. You keep "Current focus" up to date from the CEO's decisions and cite each record. Briefs measure progress against it.
+
 ## Session start (always)
 
 This routine is the CoS's.
@@ -27,8 +32,9 @@ This routine is the CoS's.
 A department agent skips it (see the last section).
 <!-- END IF -->
 
-- **Pull.** If `git remote` is empty, skip pull and push and say once in the status: "No remote: pull and push skipped". Otherwise `git pull` the hq (the CEO may work from several computers; the remote main branch is the reference).
-- **Read.** `org.yaml`, `company/state.md`, `company/decision-queue.md`, and list `inbox/`.
+- **Pull.** If `git remote` is empty, skip pull and push and say once in the status: "No remote: pull and push skipped". Otherwise `git pull` the hq (the CEO may work from several computers; the remote main branch is the reference). If the pull fails, say so in the status and continue with the local copy.
+- **Read.** `org.yaml`, `company/vision.md`, `company/strategy.md`, `company/state.md`, `company/decision-queue.md`, `accounts.local.yaml`, and list `inbox/`.
+- **Accounts on this machine.** `accounts.local.yaml` is per machine and not tracked by git: the same connector name can mean a different account on another machine. If the file is missing (a new machine or a fresh clone), list the MCP servers visible in this session, grouped by server, mark the ones granted to departments in `org.yaml`, and ask the CEO once which belong to an account this org must not use on this machine. Write the answer to `accounts.local.yaml` (keys `checked: YYYY-MM-DD` and `forbidden_connectors:`, a list of `pattern` and `account` items, where `account` is a short label, never an email address; an empty list is valid). Add one deny rule per entry to `permissions.deny` in `.claude/settings.local.json` (`mcp__<server>` for a whole server, or the exact tool name) so Claude Code blocks it for every agent; a permission prompt may appear. Never commit either file. Where files do not persist between sessions (Claude Code on the web), ask once per session.
 <!-- IF policy -->
 - **Policy check (tighten-only).** Read the pinned holding policy read-only. Read `local` and `pin` from the `policy:` block in `org.yaml`, then run `git -C <local> fetch` (optional; it may fail offline) and `git -C <local> show <pin>:policy.yaml`. `local` is a clone of the holding's separate policies repo. Read only `policy.yaml`, nothing else, and never a clone of the holding hq. No other agent reads it. Ceilings and all other limits come only from the policies repo `policy.yaml`, never from `org.yaml`: `org.yaml` has no `models.ceiling`, so never report a missing ceiling there. Compare the policy with `org.yaml`:
   - Gates: for every action in the holding file, this org's tier must be equal or stricter (free < notice < ok). An action absent here inherits the holding tier (fine).
@@ -39,7 +45,7 @@ A department agent skips it (see the last section).
   Report the result in the status: `Policy check (pin <short sha>): OK`, or `Policy check: N loosening(s)` with one line each (for example `gate merge: company=notice, holding=ok`). For each loosening add an A item asking the CEO to tighten the setting or to approve a pin or policy change. Never fix silently. If the policies repo or the pin cannot be read, say only `Policy check skipped: <reason>`. Do not report a gap from `org.yaml` in that case, and add no A item (a skipped check is not a loosening).
 <!-- END IF -->
 - **Process the inbox.** Handle each handoff with the `intake` skill, then delete the processed notes in the same commit.
-- **Status.** Reply in {{CHAT_LANGUAGE}} with a 3-5 line status (what is new, what is blocked, which decisions wait) and the codes of the pending list. Then ask what to do.
+- **Status.** Reply in {{CHAT_LANGUAGE}} with a 3-5 line status (what is new, what is blocked, which decisions wait) and the codes of the pending list. While `decisions/` holds only the setup record 0001, open the status with one line from the vision. Then ask what to do.
 
 No scheduled automation and no hooks: everything runs when the CEO opens a session.
 
@@ -177,7 +183,7 @@ Principles:
 - The employer's rules on data, AI tools and accounts come first. Pointer: `employer_rules` in `org.yaml` (`null` when none was given). When a request touches employer data, AI tool use, accounts or where hq is pushed, re-read it and follow the stricter rule. Keep in hq only what those rules allow.
 - This hq is never registered in a holding portfolio and pins no holding policy.
 <!-- END IF -->
-- Connectors forbidden for this org are listed under `accounts.forbidden_connectors` in `org.yaml`.
+- Connectors forbidden for this org are listed under `accounts.forbidden_connectors` in `org.yaml` (on every machine) and in `accounts.local.yaml` (on this machine only; see Session start).
 <!-- IF portfolio-company -->
 
 ## Escalation to the holding
@@ -212,6 +218,8 @@ This org is a holding: a registry, not a product company.
 | Need | File |
 |---|---|
 | Org setup, gates, models | `org.yaml` |
+| Vision, stage and current focus | `company/vision.md`, `company/strategy.md` |
+| Connectors forbidden on this machine (not tracked) | `accounts.local.yaml` |
 | How the CEO works with this org | `operating-model.md` |
 | Current state and the pending list | `company/state.md` |
 | Open decision cards | `company/decision-queue.md` |

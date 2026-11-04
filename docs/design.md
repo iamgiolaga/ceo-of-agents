@@ -1,6 +1,6 @@
 # ceo-of-agents: design spec (draft v0)
 
-Status: v0.4.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments. v0.4.0 adds three working rules: a department review in `init-fleet` with a one-line reason for every elevated grant (also when a department is added later), task-splitting rules for the CoS, and blocked and failure hygiene for workers and departments.
+Status: v0.5.0 implemented. v0.1.1 implemented phase 0 plus review fixes. Sections updated where implementation diverged. v0.1.1 applied these fixes: restricted spawning with `reader` and `worker` agents, read-only connectors for advisory departments, a separate policies repo, a portfolio brief that never pulls, no preselected choices in the wizard, an optional hq remote, and fully filled custom departments. v0.2.0 adds schema `org/2`: the chief of staff's name (`cos.display_name`) and the fleet purpose (`org.purpose`: job, product, startup, company), which drives suggested departments, account rules and holding eligibility. v0.3.0 renames the setup wizard to `init-fleet`, the only command the CEO types; the four CoS procedures (`intake`, `record-decision`, `weekly-brief`, `portfolio-brief`) are hidden from the `/` menu (`user-invocable: false`) and invoked by the CoS from plain-language requests. Custom departments get the same purpose-aware account-separation line as catalog departments. v0.4.0 adds three working rules: a department review in `init-fleet` with a one-line reason for every elevated grant (also when a department is added later), task-splitting rules for the CoS, and blocked and failure hygiene for workers and departments. v0.5.0 makes the wizard ask what the org is about (generating `company/vision.md` and `company/strategy.md`), rewrites the gates and connectors questions in plain language, moves machine-specific forbidden connectors to an untracked `accounts.local.yaml`, and makes every CoS procedure check for a remote before pulling.
 
 ## 1. Problem
 
@@ -105,7 +105,7 @@ schema: state/1
 org_id: ACME
 level: company
 last_updated: 2026-01-15
-framework_version: 0.4.0
+framework_version: 0.5.0
 next_action: 1
 next_decision: 1
 ---
@@ -167,13 +167,14 @@ When a company decision touches money, personal liability or the portfolio, the 
 
 1. Purpose and level: what the fleet is for (job, product, startup, company); level (holding or company) is asked only for company, and job, product and startup are company-level hqs.
 2. Org name and short id (used in codes).
-3. Language for chat with the CEO, and language for files.
-4. Departments: nothing is preselected. Pick from the catalog, define custom ones, or none. For every custom department the wizard asks scope, triggers, exclusions and the single core job, so no placeholder is left in its files.
-5. Names or personas per agent, including the chief of staff's name (the role name or a persona, the CEO's choice; the CoS name is required).
-6. Approval-gate table: take the framework table as listed or edit it.
-7. Allowed connectors per department. Advisory departments (legal, finance, tax) get read-only connector tools only, named one by one (no server wildcard); the wizard refuses tools that file, pay, send, publish or write.
-8. Model tiers for the CoS, departments and workers.
-9. For a company with purpose not job: the holding's policies repo (remote), the local clone and the pin (optional). If a policy is given, the tighten-only check runs before anything is generated. For a job hq: an optional pointer to the employer's rules on data, AI tools and accounts. A holding skips this question.
+3. What the org is about: what it does and for whom, why it exists, and its stage (for a job: role and team, what good work looks like; for a holding: personal goals and portfolio direction). The answers become `company/vision.md` and `company/strategy.md`, which the CoS reads at session start.
+4. Language for chat with the CEO, and language for files.
+5. Departments: nothing is preselected, with relevance notes from question 3. Pick from the catalog, define custom ones, or none. For every custom department the wizard asks scope, triggers, exclusions and the single core job, so no placeholder is left in its files.
+6. Names or personas per agent, including the chief of staff's name (the role name or a persona, the CEO's choice; the CoS name is required).
+7. Approval gates, in plain words with one example per action (ids stay in `org.yaml`): accept, make something stricter, or make something looser after a warning.
+8. Allowed connectors per department, picked from the MCP servers detected in the session; needs already covered by a CLI (GitHub through `gh`) need no connector. Forbidden connectors go to `org.yaml` when the name means the same account on every machine, otherwise to the untracked `accounts.local.yaml`, which the CoS fills again on each new machine. Advisory departments (legal, finance, tax) get read-only connector tools only, named one by one (no server wildcard); the wizard refuses tools that file, pay, send, publish or write.
+9. Model tiers for the CoS, departments and workers.
+10. For a company with purpose not job: the holding's policies repo (remote), the local clone and the pin (optional). If a policy is given, the tighten-only check runs before anything is generated. For a job hq: an optional pointer to the employer's rules on data, AI tools and accounts. A holding skips this question.
 
 The wizard also offers an optional remote for the hq, added with `git remote add` and never pushed. Without a remote, the CoS skips pull and push and says once "No remote: pull and push skipped". A holding additionally creates its policies repo at a path the CEO gives (outside the hq; the only write outside the current directory): `git init`, renders `policy.yaml` and `README.md` from `templates/policies-repo/`, asks before its first commit, and offers an optional remote the same way. For a job hq the wizard also asks where the remote lives (a personal or an employer account) without imposing one, and reminds the CEO of the employer's rules.
 

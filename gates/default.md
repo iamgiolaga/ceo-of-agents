@@ -12,29 +12,31 @@ Three tiers, ordered `free < notice < ok`. An org may change the table in `org.y
 
 ## Actions in plain language
 
-| Action id | Meaning |
-|---|---|
-| `issues-and-labels` | Create or edit tracker issues, project items, fields, labels, milestones |
-| `comments` | Comment on issues, PRs and tracker items |
-| `drafts` | Prepare drafts of documents, posts, emails or messages without sending or publishing them |
-| `open-pr` | Open a pull request (the review and merge are the gate) |
-| `research` | Read, search and analyze; no side effects outside hq |
-| `hq-write` | Edit files in the org's hq working tree (committing is `hq-commit`) |
-| `push-non-deploy-branch` | Push a branch that does not trigger a deploy or publish |
-| `hq-commit` | The CoS commits and pushes to the hq main branch |
-| `dispatch-pushing-department` | Start a department that will push code or content |
-| `merge` | Merge a pull request into a default or protected branch |
-| `deploy` | Release or promote to an environment, including a push that itself deploys or publishes |
-| `publish` | Make anything public: posts, pages, packages, assets, announcements |
-| `contact-people` | Send any message to a person or organization outside the org |
-| `spend-money` | Commit funds: purchases, subscriptions, paid promotion |
-| `rotate-secrets` | Rotate or revoke credentials and keys |
-| `delete-data` | Delete or irreversibly change data, repos, branches of record |
-| `org-or-repo-settings` | Change organization, repository, account or security settings |
-| `change-brand-rules` | Change the identity, palette, typeface or voice rules |
-| `change-policy-rules` | Change gates, policies or charters' approval rules |
-| `file-or-sign` | File, sign, accept or submit anything legally or officially binding |
-| `make-payment` | Pay, transfer or authorize a payment |
+The setup wizard shows the meaning and the example to the CEO, never the id. The ids are used only in `org.yaml`.
+
+| Action id | Meaning | Example |
+|---|---|---|
+| `issues-and-labels` | Create or edit tracker issues, project items, fields, labels, milestones | open an issue for a bug found in review |
+| `comments` | Comment on issues, PRs and tracker items | reply to a pull request with review notes |
+| `drafts` | Prepare drafts of documents, posts, emails or messages without sending or publishing them | draft a launch post without posting it |
+| `open-pr` | Open a pull request (the review and merge are the gate) | propose a code change for you to review |
+| `research` | Read, search and analyze; no side effects outside hq | compare three competitors' pricing pages |
+| `hq-write` | Edit files in the org's hq working tree (committing is `hq-commit`) | update the notes in this hq |
+| `push-non-deploy-branch` | Push a branch that does not trigger a deploy or publish | push a work-in-progress branch that publishes nothing |
+| `hq-commit` | The CoS commits and pushes to the hq main branch | save today's decisions in this hq's history and sync it |
+| `dispatch-pushing-department` | Start a department that will push code or content | hand a fix to a department that will push it to a branch |
+| `merge` | Merge a pull request into a default or protected branch | merge a reviewed pull request into main |
+| `deploy` | Release or promote to an environment, including a push that itself deploys or publishes | release a new version of the app |
+| `publish` | Make anything public: posts, pages, packages, assets, announcements | post on social media or put a page online |
+| `contact-people` | Send any message to a person or organization outside the org | email a customer or a supplier |
+| `spend-money` | Commit funds: purchases, subscriptions, paid promotion | buy a subscription |
+| `rotate-secrets` | Rotate or revoke credentials and keys | replace an API key |
+| `delete-data` | Delete or irreversibly change data, repos, branches of record | delete a repository or a database table |
+| `org-or-repo-settings` | Change organization, repository, account or security settings | change who can access a repository |
+| `change-brand-rules` | Change the identity, palette, typeface or voice rules | change the logo colours or the tone of voice |
+| `change-policy-rules` | Change gates, policies or charters' approval rules | change this approval table |
+| `file-or-sign` | File, sign, accept or submit anything legally or officially binding | sign a contract or submit a tax return |
+| `make-payment` | Pay, transfer or authorize a payment | pay an invoice |
 
 ## Principles
 
