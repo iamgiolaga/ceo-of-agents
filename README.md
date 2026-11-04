@@ -1,12 +1,56 @@
 # ceo-of-agents
 
-<!-- TOP SLOT: banner, tagline, badges and diagram go here (owned by design-brand). Body starts below. -->
+<p align="center">
+  <img src="assets/banner.svg" width="100%" alt="ceo-of-agents, a plugin for Claude Code. You're the CEO. Your agents are the company.">
+</p>
 
-A Claude Code plugin that gives you a chief of staff (CoS) and a small set of departments (engineering, design, legal, finance and so on), all living in one git repo called the **hq**. You are the CEO. The CoS frames your requests, routes work to departments, records every decision and keeps one list of what waits on you. Departments do the specialist work under explicit tool allowlists and approval gates.
+<p align="center">
+  <strong>A Claude Code plugin: a chief of staff and departments that work from one git repo, behind approval gates.</strong>
+</p>
 
-Everything is plain markdown and YAML in git, so every decision, number and risk has one written home.
+<p align="center">
+  <a href="#2-install"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-2DD4BF?style=flat-square&labelColor=0F172A"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/iamgiolaga/ceo-of-agents?style=flat-square&labelColor=0F172A&color=94A3B8"></a>
+  <img alt="Version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fiamgiolaga%2Fceo-of-agents%2Fmain%2F.claude-plugin%2Fplugin.json&query=%24.version&label=version&style=flat-square&labelColor=0F172A&color=A78BFA">
+  <img alt="Status: early" src="https://img.shields.io/badge/status-early-94A3B8?style=flat-square&labelColor=0F172A">
+</p>
 
-Status: v0.3.0, early. See the [design spec](docs/design.md) for the roadmap.
+## What it is
+
+- **You talk to one agent, your chief of staff (CoS).** It frames each request, routes it to a department agent (engineering, design, legal, finance and more) and pushes back when it should.
+- **Everything is written down in a git repo you own, the hq:** the current state, what waits on you, and immutable decision records. It is plain markdown and YAML, so every decision, number and risk has one written home.
+- **Nothing important happens without you.** Approval gates hold merges, publishing, spending and the like until you OK them by code.
+
+Use it for your job, a product, a startup or a company. Status: early; see the [design spec](docs/design.md) for the roadmap.
+
+<p align="center">
+  <img src="assets/diagram.svg" width="100%" alt="How it works: you ask your chief of staff in plain language and get back a status and codes to approve. The chief of staff routes work to departments (engineering, design and brand, legal and finance, the last two advisory). Everything is written to the hq repo: state, decision records and approval gates (free, notice, ok).">
+</p>
+
+## Get started in 30 seconds
+
+<p align="center">
+  <img src="assets/quickstart.svg" width="100%" alt="Four steps: 1. You need Claude Code, git and a GitHub account. 2. Install the plugin with two commands inside Claude Code. 3. In an empty folder run /ceo-of-agents:init-fleet and say what the fleet is for. 4. Talk to your chief of staff in plain language and approve by code.">
+</p>
+
+**You need:** Claude Code (signed in), git, a GitHub account ([details](#1-what-we-assume-you-have)).
+
+**1. Install** (inside Claude Code):
+
+```
+/plugin marketplace add iamgiolaga/ceo-of-agents
+/plugin install ceo-of-agents@ceo-of-agents
+```
+
+**2. Start** (open Claude Code in an empty folder):
+
+```
+/ceo-of-agents:init-fleet
+```
+
+**3. Talk.** That is the only command you type. From then on, talk to your chief of staff in plain language.
+
+Full steps: [Install](#2-install) · [First run](#3-first-run) · [Daily use](#4-daily-use)
 
 ## 1. What we assume you have
 
@@ -62,6 +106,10 @@ claude plugin install ceo-of-agents@ceo-of-agents
 5. Approve the permission prompt when the wizard writes into `.claude/agents/`, then approve the first commit. The wizard never pushes: push when you are ready.
 
 ## 4. Daily use
+
+<p align="center">
+  <img src="assets/exchange.svg" width="100%" alt="A typical exchange. You say: I have an idea, a referral program for early users. The chief of staff frames it, checks for duplicates, picks the route and runs it. You say: Decide whether we keep the free tier. It writes a decision card and adds ACME-D3 to your list. You say: ACME-D3, option b. It records the decision, clears the card and updates the state. You say: Pass to engineering, why did the last release fail? It forwards it, returns engineering's answer and adds its view.">
+</p>
 
 ### Open a session
 

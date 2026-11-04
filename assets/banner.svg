@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="banner-title banner-desc">
+  <title id="banner-title">ceo-of-agents, a plugin for Claude Code</title>
+  <desc id="banner-desc">You're the CEO. Your agents are the company. A chief of staff routes your requests to department agents (engineering, design, legal, finance) and every piece of work lands in one git repo, the hq: state, decisions, gates. Start with /ceo-of-agents:init-fleet.</desc>
+
+  <!-- Solid background: identical in GitHub light and dark mode. 1px border keeps the edge visible on GitHub dark (#0D1117). -->
+  <rect x="0.5" y="0.5" width="1279" height="399" rx="24" fill="#0F172A" stroke="#334155"/>
+
+  <!-- Left: what it is -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace">
+    <rect x="64" y="56" width="214" height="32" rx="16" fill="none" stroke="#2DD4BF" stroke-width="1.5"/>
+    <text x="171" y="77" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="2" fill="#2DD4BF">CLAUDE CODE PLUGIN</text>
+    <text x="64" y="156" font-size="56" font-weight="700" fill="#F8FAFC">ceo-of-agents</text>
+  </g>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-weight="600" font-size="30">
+    <text x="64" y="208" fill="#F8FAFC">You're the CEO.</text>
+    <text x="64" y="248" fill="#2DD4BF">Your agents are the company.</text>
+  </g>
+
+  <rect x="64" y="284" width="330" height="44" rx="10" fill="#1E293B" stroke="#334155"/>
+  <text x="84" y="312" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="18" fill="#F8FAFC"><tspan fill="#2DD4BF">&gt;</tspan> /ceo-of-agents:init-fleet</text>
+  <text x="414" y="312" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" fill="#94A3B8">one command, then plain language</text>
+
+  <!-- Right: motif, org tree landing on a commit line (the hq) -->
+  <g stroke="#64748B" stroke-width="2" fill="none">
+    <line x1="958" y1="84" x2="958" y2="118"/>
+    <line x1="958" y1="164" x2="958" y2="188"/>
+    <line x1="757" y1="188" x2="1159" y2="188"/>
+    <line x1="757" y1="188" x2="757" y2="210"/>
+    <line x1="891" y1="188" x2="891" y2="210"/>
+    <line x1="1025" y1="188" x2="1025" y2="210"/>
+    <line x1="1159" y1="188" x2="1159" y2="210"/>
+  </g>
+
+  <rect x="878" y="44" width="160" height="40" rx="20" fill="#1E293B" stroke="#A78BFA" stroke-width="2"/>
+  <rect x="848" y="118" width="220" height="46" rx="12" fill="#2DD4BF"/>
+  <g fill="#1E293B" stroke="#334155" stroke-width="1.5">
+    <rect x="700" y="210" width="114" height="40" rx="10"/>
+    <rect x="834" y="210" width="114" height="40" rx="10"/>
+    <rect x="968" y="210" width="114" height="40" rx="10"/>
+    <rect x="1102" y="210" width="114" height="40" rx="10"/>
+  </g>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="958" y="69" font-size="15" font-weight="600" fill="#F8FAFC">you, the CEO</text>
+    <text x="958" y="147" font-size="17" font-weight="700" fill="#0F172A">chief of staff</text>
+    <text x="757" y="235" font-size="16" fill="#F8FAFC">engineering</text>
+    <text x="891" y="235" font-size="16" fill="#F8FAFC">design</text>
+    <text x="1025" y="235" font-size="16" fill="#F8FAFC">legal</text>
+    <text x="1159" y="235" font-size="16" fill="#F8FAFC">finance</text>
+  </g>
+
+  <g stroke="#2DD4BF" fill="none">
+    <line x1="757" y1="250" x2="757" y2="300" stroke-width="2"/>
+    <line x1="891" y1="250" x2="891" y2="300" stroke-width="2"/>
+    <line x1="1025" y1="250" x2="1025" y2="300" stroke-width="2"/>
+    <line x1="1159" y1="250" x2="1159" y2="300" stroke-width="2"/>
+    <line x1="712" y1="300" x2="1204" y2="300" stroke-width="3"/>
+  </g>
+  <g fill="#0F172A" stroke="#2DD4BF" stroke-width="3">
+    <circle cx="757" cy="300" r="7"/>
+    <circle cx="891" cy="300" r="7"/>
+    <circle cx="1025" cy="300" r="7"/>
+    <circle cx="1159" cy="300" r="7"/>
+  </g>
+  <text x="958" y="340" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="16" fill="#94A3B8">hq repo · state · decisions · gates</text>
+</svg>
