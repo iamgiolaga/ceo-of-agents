@@ -107,7 +107,9 @@ The plugin is then turned on in the folder's `.claude/settings.json`, so it load
    /ceo-of-agents:init-fleet
    ```
 
-3. Answer the setup questions: purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, languages for chat and files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, and your product's repos and roadmap board if you have them.
+3. Answer the setup questions: the language to chat in (asked first, unless you already wrote something), purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, the language of the files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, your product's repos and roadmap board if you have them, and how commits and pull requests are signed.
+
+   Optional answers can be "later": your chief of staff puts them on your list to answer later.
 4. Confirm the summary, and your hq is ready: your chief of staff and departments are set up in a git repo you own.
 5. Approve the permission prompt that appears, then the first save (commit). The setup never pushes: you choose when.
 

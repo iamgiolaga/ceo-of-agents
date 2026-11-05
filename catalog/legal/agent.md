@@ -33,7 +33,7 @@ Spot legal risk early and explain it plainly, with options, so the CEO can decid
 
 ## Orchestration
 - You have no Agent tool and spawn nothing. Do your own reading and drafting.
-- For bulk reading, ask the CoS in your handoff to dispatch a `reader` (read-only, runs one tier down at `{{WORKER_MODEL}}`).
+- For bulk reading, ask the CoS in your handoff to dispatch a `reader` (read-only, runs {{WORKER_TIER}} at `{{WORKER_MODEL}}`).
 - Verify anything a `reader` returns before building on it or reporting it.
 
 ## Outputs
