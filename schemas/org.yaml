@@ -45,6 +45,10 @@
 #                           or "custom"
 #     display_name          role name or a persona name, the CEO's choice
 #     model                 one of models.tiers
+#     workers               optional. Absent = follow models.workers (one-down). "same" =
+#                           "top model, workers included": allowed only when the
+#                           department model is the first entry of models.tiers; its
+#                           workers run on that same tier, never above it
 #     connectors            MCP tool patterns granted to this department only,
 #                           e.g. mcp__github__*; [] for none. The wizard writes []:
 #                           connectors are granted later, through a decision
@@ -64,6 +68,12 @@
 #     issues_home           true for exactly one item when the list is not empty: the repo
 #                           that holds cross-cutting issues (may be the hq itself, role hq);
 #                           false for the others
+#     planned               optional. Absent = the repo exists. true = the user plans to
+#                           create it: agents skip issue and tracker writes to it (one
+#                           line, not a failure) until it exists, and an action item asks
+#                           the user to create it. The CoS removes the key once
+#                           `gh repo view` finds it. A planned repo is never cloned, so it
+#                           gets no repo_paths entry
 #                           Local clone paths are per machine and are not stored here: they
 #                           live under repo_paths in accounts.local.yaml (not tracked by
 #                           git), written by the CoS on each machine
@@ -88,7 +98,7 @@
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
 schema: org/4
-framework_version: 0.8.1
+framework_version: 0.9.0
 org:
   id: ACME
   name: Acme
@@ -165,6 +175,8 @@ employer_rules: null
 #   - employer_rules is null unless org.purpose is job.
 #   - models.cos, models.departments and every department model are in models.tiers.
 #   - models.workers is one-down; no worker model is more capable than its parent.
+#   - A department with workers: same has a model equal to the first entry of
+#     models.tiers; any other value of workers is invalid.
 #   - Department ids are unique kebab-case; each has a matching charter
 #     (departments/<id>/charter.md).
 #   - Each department has an agent matching ^[a-z][a-z0-9-]*$, unique, not equal to another
@@ -180,6 +192,7 @@ employer_rules: null
 #   - repos: every slug matches ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ and is unique; visibility
 #     is public or private; exactly one item has issues_home true when the list is not
 #     empty. A holding has repos [] and tracker none. No item holds a local path.
+#   - repos: planned, when present, is true; a planned repo has no repo_paths entry.
 #   - tracker is "none" or has kind github-project, a non-empty owner, an integer number
 #     and a non-empty status_field.
 #   - An `org/1` file is read as purpose company with the CoS name unset until migrated

@@ -24,6 +24,7 @@ models:
 #    from_catalog: engineering  # catalog id or "custom"
 #    display_name: Engineering  # role name or persona, the CEO's choice
 #    model: opus
+#    workers: same              # optional: top model, workers included (only with the top tier)
 #    connectors: []             # MCP tool patterns granted to this department only; none at setup
 departments: {{DEPARTMENTS_YAML}}
 gates:                          # action ids from the framework gate table
@@ -37,6 +38,7 @@ accounts:
 #    role: code                 # short: code, site, docs or hq
 #    visibility: public         # public | private; public repos get no internal names, codes or hq content
 #    issues_home: true          # exactly one item: where cross-cutting issues go (may be the hq)
+#    planned: true              # optional: not created yet; the CoS asks you to create it
 # Local clone paths are per machine: repo_paths in accounts.local.yaml, not here.
 repos: {{REPOS_YAML}}
 # none, or a GitHub Project: kind github-project, owner (org or user login), number, status_field
