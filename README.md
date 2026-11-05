@@ -67,7 +67,7 @@ Using the `/plugin` menu instead? In the "Add Marketplace" field, type only `iam
 
 Full steps: [Install](#3-install) · [First run](#4-first-run) · [Daily use](#5-daily-use)
 
-## 1. The four purposes
+## 1. The five purposes
 
 | Purpose | What changes |
 |---|---|
@@ -75,6 +75,7 @@ Full steps: [Install](#3-install) · [First run](#4-first-run) · [Daily use](#5
 | **product** | One product. Suggested departments: engineering, design and brand, growth and social, business. Employer accounts stay out. Can join a holding. |
 | **startup** | A venture. Suggests legal and finance too. Same rules as product. |
 | **company** | A company, or a **holding**: it follows its companies without changing them, gives you one pending list across them, and sets shared rules (approvals, model limits) they follow. |
+| **personal** | Your own life: health, money, paperwork. Personal data stays on your computer, out of git. Departments only prepare and remember: your doctor, accountant or lawyer decides, and agents never file, sign or pay. Never joins a holding. |
 
 You pick each department, or none.
 
