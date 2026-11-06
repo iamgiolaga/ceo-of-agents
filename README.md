@@ -15,6 +15,8 @@
   <img alt="Status: early" src="https://img.shields.io/badge/status-early-94A3B8?style=flat-square&labelColor=0F172A">
 </p>
 
+https://github.com/user-attachments/assets/4908a78b-c24e-4bcd-ab51-a64db12b38a9
+
 ## What it is
 
 It is more than a tool: it is a shift in how you work. You become the CEO of a micro-company that works toward your goal.
