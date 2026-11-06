@@ -8,6 +8,7 @@
 # tighten-only check.
 #
 # A job hq (`org.purpose: job`) never pins a policy; its optional `employer_rules` pointer takes that place.
+# A personal hq (`org.purpose: personal`) never pins a policy either.
 #
 # Required keys: schema, gates, accounts, language, models
 #   schema                       exactly "policy/1"

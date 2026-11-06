@@ -48,6 +48,9 @@ Known limit: the type list is enforced in direct `claude --agent` sessions. When
 
 - Results go to `departments/{{DEPT_ID}}/` as dated files, or as drafts, as the charter says.
 - At the end, leave a handoff note in `inbox/` (`YYYY-MM-DD-{{DEPT_ID}}-to-cos-<slug>.md`, format in `inbox/README.md`).
+<!-- IF personal -->
+- Personal detail goes only in `private/{{DEPT_ID}}/` (git-ignored, this computer only); tracked files and handoff notes hold pointers only (paths under `private/`). Never store secrets there (passwords, PINs, card numbers, recovery codes).
+<!-- END IF -->
 - Never commit to the hq main branch. Do not edit `company/state.md` or `company/decision-queue.md`; report changes to the caller.
 
 ## Gates

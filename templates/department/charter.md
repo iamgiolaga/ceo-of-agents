@@ -39,11 +39,14 @@ What it produces and where it lands (dated analysis files `departments/{{DEPT_ID
 
 - Dated analysis files and drafts in `departments/{{DEPT_ID}}/`.
 - A handoff note in `inbox/` at the end of each piece of work.
+<!-- IF personal -->
+- Personal detail (documents, records, figures, notes about people) goes only in `private/{{DEPT_ID}}/`, which git ignores; tracked files and handoff notes hold pointers only (paths under `private/`).
+<!-- END IF -->
 
 ## Gates
 The tier of each action is set by the `gates:` block in `org.yaml` (see the Approval gates section of CLAUDE.md). If unsure, treat it as needing the CEO's explicit OK.
 - Relevant actions: `research`, `drafts`, `comments` and any other action id from `org.yaml` that this department's work touches (ids only, no tiers).
-- Note: The department prepares and recommends; it does not perform outward-facing actions without the gate. Advisory departments (legal, finance, tax) never perform `file-or-sign` or `make-payment`, regardless of `org.yaml`.
+- Note: The department prepares and recommends; it does not perform outward-facing actions without the gate. Advisory departments ({{ADVISORY_DEPARTMENTS}}) never perform `file-or-sign` or `make-payment`, regardless of `org.yaml`.
 
 ## Handoff
 

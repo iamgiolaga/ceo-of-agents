@@ -4,7 +4,7 @@ org:
   id: {{ORG_ID}}
   name: {{ORG_NAME}}
   level: {{LEVEL}}              # company | holding
-  purpose: {{PURPOSE}}          # job | product | startup | company
+  purpose: {{PURPOSE}}          # job | product | startup | company | personal
 ceo:
   role_id: {{CEO_ROLE_ID}}      # the CEO is a role, not a hard-coded person
   display_name: "{{CEO_DISPLAY_NAME}}"   # optional
@@ -57,6 +57,11 @@ policy: null                    # a job hq is never governed by a holding
 policies_repo: null
 employer_rules: {{EMPLOYER_RULES}}
 # null, or "<url or path of the employer's rules on data, AI tools and accounts>"
+# END IF
+# IF personal
+policy: null                    # a personal hq is never governed by a holding
+policies_repo: null
+employer_rules: null
 # END IF
 # IF holding
 policy: null

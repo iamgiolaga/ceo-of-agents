@@ -5,7 +5,7 @@
 #
 # Required keys: schema, framework_version, org, ceo, cos, language, models,
 #                departments, gates, accounts, repos, tracker
-# Optional keys: policy (company level with purpose not job; null when unused),
+# Optional keys: policy (company level, purpose product, startup or company; null when unused),
 #                policies_repo (holding level only; null for a company),
 #                employer_rules (job only; null otherwise)
 #
@@ -15,12 +15,15 @@
 #   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
 #   org.name                free text
 #   org.level               company | holding
-#   org.purpose             job | product | startup | company
+#   org.purpose             job | product | startup | company | personal
 #                             job: the CEO's own work at an employer
 #                             product: one product the CEO builds
 #                             startup: a startup the CEO is founding or running
 #                             company: a company the CEO runs; at holding level, the
 #                             CEO's affairs as an entrepreneur across their orgs
+#                             personal: the CEO's own personal life (company level
+#                             only); personal data lives in the git-ignored private/
+#                             folder of the hq, never in tracked files
 #   ceo.role_id             role id for the CEO (for example "ceo"); a role, not a person
 #   ceo.display_name        optional free text, may be ""
 #   cos.display_name        required, non-empty; the role name ("Chief of staff") or a
@@ -41,8 +44,8 @@
 #                           .claude/agents/<agent>.md. Unique; never another
 #                           department's id, never "reader" or "worker"
 #     from_catalog          a catalog id (engineering, design-brand, business,
-#                           growth-social, legal, finance, tax, operations)
-#                           or "custom"
+#                           growth-social, legal, finance, tax, operations; and
+#                           health, money, paperwork in a personal hq only) or "custom"
 #     display_name          role name or a persona name, the CEO's choice
 #     model                 one of models.tiers
 #     workers               optional. Absent = follow models.workers (one-down). "same" =
@@ -58,7 +61,7 @@
 #                           org may use. The wizard writes []; entries are added later,
 #                           through a decision
 #   repos                   registry of the org's product repos; [] for none (always [] in
-#                           a holding). Charters, agents and skills read this list and
+#                           a holding and in a personal hq). Charters, agents and skills read this list and
 #                           never copy it. Item fields:
 #     slug                  full GitHub slug "owner/name"; owners may differ (a GitHub
 #                           org, a personal account, or both)
@@ -77,13 +80,15 @@
 #                           Local clone paths are per machine and are not stored here: they
 #                           live under repo_paths in accounts.local.yaml (not tracked by
 #                           git), written by the CoS on each machine
-#   tracker                 "none", or a mapping (always "none" in a holding):
+#   tracker                 "none", or a mapping (always "none" in a holding and in a
+#                           personal hq):
 #     kind                  github-project
 #     owner                 login of the GitHub org or user that owns the Project. A user
 #                           Project can hold issues from repos of different owners
 #     number                the Project number (an integer, from its URL)
 #     status_field          name of the single-select status field, for example "Status"
-#   policy                  company level, purpose not job; null, or a mapping:
+#   policy                  company level, purpose product, startup or company; null, or
+#                           a mapping:
 #     repo                  git remote URL of the holding's policies repo, or "" when
 #                           it has no remote yet (the CoS reads only local and pin)
 #     local                 CEO's local clone of the policies repo, read-only
@@ -98,7 +103,7 @@
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
 schema: org/4
-framework_version: 0.9.0
+framework_version: 0.10.0
 org:
   id: ACME
   name: Acme
@@ -167,10 +172,12 @@ employer_rules: null
 #   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
 #   - org.level is company or holding; policy is null when level is holding;
 #     policies_repo is null when level is company.
-#   - org.purpose is job, product, startup or company. Level holding requires purpose
-#     company; purpose job, product or startup requires level company.
-#   - Purpose job requires policy null (a job hq is never governed by a holding) and
-#     is never registered in a holding portfolio.yaml.
+#   - org.purpose is job, product, startup, company or personal. Level holding requires
+#     purpose company; purpose job, product, startup or personal requires level company.
+#   - Purpose job or personal requires policy null (never governed by a holding) and is
+#     never registered in a holding portfolio.yaml.
+#   - Purpose personal requires repos [] and tracker none. Catalog ids health, money and
+#     paperwork appear only with purpose personal.
 #   - cos.display_name is present and non-empty.
 #   - employer_rules is null unless org.purpose is job.
 #   - models.cos, models.departments and every department model are in models.tiers.
@@ -185,8 +192,8 @@ employer_rules: null
 #   - No connector pattern appears both in a department connectors list and in
 #     accounts.forbidden_connectors.
 #   - Every gate action id is known (see gates/default.md) and listed exactly once.
-#   - Advisory departments (legal, finance, tax) never have file-or-sign or
-#     make-payment outside the ok list.
+#   - Advisory departments (legal, finance, tax, health, money, paperwork) never have
+#     file-or-sign or make-payment outside the ok list.
 #   - framework_version equals the version in company/state.md frontmatter, unless a
 #     migration is pending.
 #   - repos: every slug matches ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ and is unique; visibility
