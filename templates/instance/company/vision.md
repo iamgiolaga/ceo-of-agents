@@ -20,6 +20,15 @@ Stable. Written at setup from the CEO's answers; it changes only through a decis
 
 {{VISION_WHY}}
 <!-- END IF -->
+<!-- IF personal -->
+## What this is for
+
+{{VISION_WHAT}}
+
+## What matters to me
+
+{{VISION_WHY}}
+<!-- END IF -->
 <!-- IF holding -->
 ## Personal goals as an entrepreneur
 

@@ -29,7 +29,8 @@ orgs:
 #   - Parses as YAML; schema is "portfolio/1"; stale_after_days is an integer >= 1.
 #   - Each org has id, name, path and remote (remote may be ""); ids are unique.
 #   - No org entry points at the holding's own hq.
-#   - No org entry is a job hq (`org.purpose: job` in its `org.yaml`); the holding CoS
-#     refuses to register one, and portfolio-brief skips one if listed.
+#   - No org entry is a job or personal hq (`org.purpose: job` or `personal` in its
+#     `org.yaml`); the holding CoS refuses to register one, and portfolio-brief skips
+#     one if listed.
 #   - No credentials, tokens or passwords appear anywhere in the file.
 #   - The holding never writes to any listed path (portfolio-brief reads only).

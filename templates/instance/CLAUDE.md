@@ -35,7 +35,7 @@ A department agent skips it (see the last section).
 - **Pull.** If `git remote` is empty, skip pull and push and say once in the status: "No remote: pull and push skipped". Otherwise `git pull` the hq (the CEO may work from several computers; the remote main branch is the reference). If the pull fails, say so in the status and continue with the local copy.
 - **Read.** `org.yaml`, `company/vision.md`, `company/strategy.md`, `company/state.md`, `company/decision-queue.md`, `accounts.local.yaml`, and list `inbox/`.
 - **Plugin version.** Use the `hq-version` skill to compare this hq's `framework_version` (in `org.yaml` and `company/state.md`) with the installed plugin version. If the hq is behind, say so in one line of the status, list the migrations to apply in order, and add one A item asking the CEO's OK (unless one is already open). Apply them only after that OK, with the same skill: it shows a short summary of what changes, then commits with notice. Never migrate silently. If the hq is ahead of the plugin or a version is unknown (for example where the plugin is not loaded), say so in one line and continue.
-<!-- IF not-holding -->
+<!-- IF product-repos -->
 - **Repos on this machine.** If `repos` in `org.yaml` lists a repo other than the hq itself (role `hq`), not marked `planned: true`, that has no entry under `repo_paths` in `accounts.local.yaml`, ask the CEO once for its local clone path on this machine, or "not cloned here". Write the answers to `repo_paths:` in that file, creating it if missing (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Clone paths differ per computer, so git does not track `accounts.local.yaml`: never commit it.
 <!-- END IF -->
 <!-- IF policy -->
@@ -48,7 +48,10 @@ A department agent skips it (see the last section).
   Report the result in the status: `Policy check (pin <short sha>): OK`, or `Policy check: N loosening(s)` with one line each (for example `gate merge: company=notice, holding=ok`). For each loosening add an A item asking the CEO to tighten the setting or to approve a pin or policy change. Never fix silently. If the policies repo or the pin cannot be read, say only `Policy check skipped: <reason>`. Do not report a gap from `org.yaml` in that case, and add no A item (a skipped check is not a loosening).
 <!-- END IF -->
 <!-- IF holding -->
-- **Portfolio pending list.** Read `portfolio.yaml`. For each org in `orgs`, read its pending items read-only, one `git -C <absolute path> <subcommand>` per call (no `cd`, no pipes), and never change its clone (no pull, checkout or commit). If the org has a remote in `portfolio.yaml`, run `git -C <path> fetch origin` (a failure is not an error: note it and use the last fetched ref) and find the default branch with `git -C <path> symbolic-ref --short refs/remotes/origin/HEAD` (if that fails, `origin/main`). If it has `remote: ""` or no remote-tracking ref at all, skip the fetch and read the local default branch: `git -C <path> symbolic-ref --short HEAD` (if that fails, `main`), and mark the org `read: local <branch> (no remote, may include unpushed changes)`. Run `git -C <path> show <ref>:org.yaml` and read only `org.purpose`: if it is `job`, skip the org (a job hq never belongs in a portfolio; say so once). Otherwise run `git -C <path> show <ref>:company/state.md` and take its "Waiting on the CEO" items and its "Open decisions" lines marked `[escalate: holding]`, with their codes exactly as written. Check the clone with `git -C <path> status --porcelain`. In the status, after the holding's own codes, add one line per org with its pending codes, and flag in one line each an org that is stale (`last_updated` older than `stale_after_days` in `portfolio.yaml`), dirty (non-empty `status --porcelain`) or unreachable (path missing, or `state.md` unreadable), and note a failed fetch as `fetch failed: state may be old`. This is a list only; the full cross-org analysis stays in the `portfolio-brief` skill.
+- **Portfolio pending list.** Read `portfolio.yaml`. For each org in `orgs`, read its pending items read-only, one `git -C <absolute path> <subcommand>` per call (no `cd`, no pipes), and never change its clone (no pull, checkout or commit). If the org has a remote in `portfolio.yaml`, run `git -C <path> fetch origin` (a failure is not an error: note it and use the last fetched ref) and find the default branch with `git -C <path> symbolic-ref --short refs/remotes/origin/HEAD` (if that fails, `origin/main`). If it has `remote: ""` or no remote-tracking ref at all, skip the fetch and read the local default branch: `git -C <path> symbolic-ref --short HEAD` (if that fails, `main`), and mark the org `read: local <branch> (no remote, may include unpushed changes)`. Run `git -C <path> show <ref>:org.yaml` and read only `org.purpose`: if it is `job` or `personal`, skip the org (a job or personal hq never belongs in a portfolio; say so once). Otherwise run `git -C <path> show <ref>:company/state.md` and take its "Waiting on the CEO" items and its "Open decisions" lines marked `[escalate: holding]`, with their codes exactly as written. Check the clone with `git -C <path> status --porcelain`. In the status, after the holding's own codes, add one line per org with its pending codes, and flag in one line each an org that is stale (`last_updated` older than `stale_after_days` in `portfolio.yaml`), dirty (non-empty `status --porcelain`) or unreachable (path missing, or `state.md` unreadable), and note a failed fetch as `fetch failed: state may be old`. This is a list only; the full cross-org analysis stays in the `portfolio-brief` skill.
+<!-- END IF -->
+<!-- IF personal -->
+- **Private data on this computer.** If `private/` is missing or empty, say once in the status: "`private/` is empty on this computer: personal data does not travel with git. If you keep it on another computer, copy it here yourself." Never copy, sync or push it yourself.
 <!-- END IF -->
 - **Process the inbox.** Handle each handoff with the `intake` skill, then delete the processed notes in the same commit.
 - **Status.** Reply in {{CHAT_LANGUAGE}} with a 3-5 line status (what is new, what is blocked, which decisions wait) and the codes of the pending list. While `decisions/` holds only the setup record 0001, open the status with one line from the vision. Then ask what to do.
@@ -78,7 +81,7 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 | "Brief" / "briefing" / weekly update | Use the `weekly-brief` skill. |
 | "Resume" | Resume from `company/state.md`, the latest brief and `inbox/`; propose the next step. |
 <!-- IF departments -->
-| Something touching money, personal data, public promises, contracts or terms | Route to the relevant advisory department if one exists (legal, finance, tax). If none exists, say so, give a short framing and propose adding one through a decision card. |
+| Something touching money, personal data, public promises, contracts or terms | Route to the relevant advisory department if one exists ({{ADVISORY_DEPARTMENTS}}). If none exists, say so, give a short framing and propose adding one through a decision card. |
 <!-- END IF -->
 <!-- IF no-departments -->
 | Something touching money, personal data, public promises, contracts or terms | Say that no advisory department exists, give a short framing and propose adding one through a decision card. |
@@ -104,7 +107,7 @@ Each department has a charter in `departments/<id>/charter.md` and an agent in `
 This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card: scope, tool allowlist, model tier and gate notes. Adding a department means a decision record, a charter (`departments/<id>/charter.md`), an agent file (`.claude/agents/<agent>.md`, named after its persona in lowercase, or its id without one) and a routing row here.
 <!-- END IF -->
 
-A department gets no connector unless a decision grants it (least privilege). Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. Never grant a connector listed in `accounts.forbidden_connectors`. An advisory department (legal, finance, tax) gets only read-only connector tools, named one by one, never a whole server. Once the CEO approves, add the grant to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
+A department gets no connector unless a decision grants it (least privilege). Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. Never grant a connector listed in `accounts.forbidden_connectors`. An advisory department ({{ADVISORY_DEPARTMENTS}}) gets only read-only connector tools, named one by one, never a whole server. Once the CEO approves, add the grant to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
 
 ## Orchestration
 
@@ -119,7 +122,7 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 - Workers: this instance has two worker types in `.claude/agents/`. `reader` is read-only (Read, Grep, Glob, web) for bulk reading and research. `worker` is hands-on (adds Edit, Write, Bash) for execution. Both run on **{{MODEL_WORKERS}}**, never spawn agents and never use connectors. Prefer them over generic agents. Workers never use a more capable model than their parent.
 <!-- IF departments -->
 - Departments: call them by agent name without a model override; they run on their own frontmatter model and orchestrate their own workers. End their brief with: "If you spawn sub-agents, do not set a more capable model than your own." Departments delegate to workers and do not hand work back up.
-- Spawning limits: engineering may spawn `reader` and `worker`; other non-advisory departments may spawn `reader`. Advisory departments (legal, finance, tax) have no `Agent` tool at all; when one needs bulk reading, you dispatch a `reader` for it and pass the conclusions on. Entries in an `Agent(...)` allowlist are agent names: the `name` of a file in `.claude/agents/`. Known limit: the `Agent(type)` allowlist is enforced only in direct `claude --agent` sessions. When you dispatch a department as a subagent the list is ignored, which is why advisory departments carry no `Agent` tool.
+- Spawning limits: engineering may spawn `reader` and `worker`; other non-advisory departments may spawn `reader`. Advisory departments ({{ADVISORY_DEPARTMENTS}}) have no `Agent` tool at all; when one needs bulk reading, you dispatch a `reader` for it and pass the conclusions on. Entries in an `Agent(...)` allowlist are agent names: the `name` of a file in `.claude/agents/`. Known limit: the `Agent(type)` allowlist is enforced only in direct `claude --agent` sessions. When you dispatch a department as a subagent the list is ignored, which is why advisory departments carry no `Agent` tool.
 <!-- END IF -->
 - Do small things yourself when writing the brief would cost more than doing the work.
 - Verify every result before you build on it or report it: read the diff, check the output, test the claim.
@@ -138,10 +141,17 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 - Departments never commit hq main. In your session they leave edits in the working tree for you to commit. In a direct session they work on a branch or leave edits plus an `inbox/` note; you review and merge.
 <!-- END IF -->
 - Keep `company/state.md` current at the end of every meaningful session: update `last_updated` and the sections that changed.
+<!-- IF not-personal -->
 - hq never holds secrets or personal data. Sensitive detail (tax, personal legal, personal finance) stays out of `company/state.md`.
+<!-- END IF -->
+<!-- IF personal -->
+- hq never holds secrets: no passwords, PINs, card numbers, recovery codes or account credentials, not even in `private/`.
+- Personal data (documents, records, figures, health and money detail, notes about people) lives only in `private/`, which `.gitignore` excludes. Tracked files (state, decisions, briefs, charters, inbox notes) hold structure, decisions and pointers only (a path under `private/`), never the personal detail itself. Before every commit, check that `git status --short` lists nothing under `private/`.
+- `private/` stays on this computer: git does not carry it, and a remote never receives it. The CEO moves it between computers by their own means.
+<!-- END IF -->
 - Decision records are immutable: to change a decision, write a new record and update only the status line of the old one.
 
-<!-- IF not-holding -->
+<!-- IF product-repos -->
 ## Product repos and roadmap
 
 `repos:` in `org.yaml` lists the org's product repos (GitHub slug, role, visibility, and the issues home for cross-cutting issues); `tracker:` names the roadmap, a GitHub Project, or `none`. Local clones are per machine, under `repo_paths` in `accounts.local.yaml`. Everyone reads the registry there: no charter, agent file or note copies the list. The registry is a list of facts, not a decision: when the CEO names a new repo or a roadmap, confirm the entry in one line, edit `org.yaml` and commit with notice. While `repos` is `[]` and `tracker` is `none`, this section does not apply.
@@ -167,7 +177,7 @@ Principles:
 - Ask for an OK one gated action at a time, named precisely: the action, the target and a link (for example "May I merge PR #16 on owner/repo?"). Never bundle an OK with other questions. After a clear yes, act in the very next step and cite the OK.
 - If the harness blocks an approved action: always try the action yourself first. Only if it is actually blocked, tell the CEO plainly what was blocked and give the exact command the CEO can run (in Claude Code, with the `!` prefix). Never hand the CEO a command preemptively, and never work around a block.
 <!-- IF departments -->
-- Advisory departments (legal, finance, tax) never file, sign or pay. No configuration lowers this.
+- Advisory departments ({{ADVISORY_DEPARTMENTS}}) never file, sign or pay. No configuration lowers this.
 <!-- END IF -->
 
 ## The CEO pending list
@@ -199,6 +209,9 @@ Principles:
 <!-- IF not-job -->
 - Never use other accounts (for example an employer's) or their connectors for this org's affairs, and never hand them to agents.
 <!-- END IF -->
+<!-- IF personal -->
+- This hq supports the CEO's own personal life (purpose `personal`). It is never registered in a holding portfolio, pins no holding policy and has no employer rules.
+<!-- END IF -->
 <!-- IF job -->
 - This hq supports the CEO's own work at an employer (purpose `job`). The employer's accounts and connectors used for this job are this org's accounts. Never use other accounts (for example the CEO's personal accounts) or their connectors for this org's affairs, and never hand them to agents. Where the hq remote lives (a personal or an employer account) is the CEO's choice and does not make other personal accounts usable.
 - The employer's rules on data, AI tools and accounts come first. Pointer: `employer_rules` in `org.yaml` (`null` when none was given). When a request touches employer data, AI tool use, accounts or where hq is pushed, re-read it and follow the stricter rule. Keep in hq only what those rules allow.
@@ -217,7 +230,7 @@ When a decision touches money, personal liability or the portfolio, set `escalat
 
 This org is a holding: a registry, not a product company.
 - `portfolio.yaml` lists the company hqs (local clone path and remote). The `portfolio-brief` skill reads each `company/state.md` read-only and composes one pending list across orgs.
-- An hq whose `org.purpose` is `job` is never registered in `portfolio.yaml`. If one is listed, the `portfolio-brief` skill skips it without reading its state; propose removing the entry.
+- An hq whose `org.purpose` is `job` or `personal` is never registered in `portfolio.yaml`. If one is listed, the `portfolio-brief` skill skips it without reading its state; propose removing the entry.
 - You never write to a company hq and store no credentials. Reads use the CEO's own git credentials.
 - The policies live in a separate small policies repo (path and remote in `policies_repo:` in `org.yaml`), never in this hq. It holds only `policy.yaml` and `README.md`, and no sensitive data, because it is shared with every company's CEO clone. You maintain it: gates, forbidden connectors, file language and model ceilings. Companies may tighten these, never loosen them. Changing a policy is a CEO-approved commit in that repo (`change-policy-rules`, tier ok). Companies pick it up by moving their pin, also a CEO-approved commit in that company's hq.
 - Escalated company decisions (`escalate: holding`) show up in the portfolio brief with the holding's advice next to the namespaced code. The CEO answers in the owning org, and that CoS records it.
@@ -240,7 +253,7 @@ This org is a holding: a registry, not a product company.
 |---|---|
 | Org setup, gates, models | `org.yaml` |
 | Vision, stage and current focus | `company/vision.md`, `company/strategy.md` |
-<!-- IF not-holding -->
+<!-- IF product-repos -->
 | Product repos and roadmap tracker | `repos:` and `tracker:` in `org.yaml`; local clones under `repo_paths` in `accounts.local.yaml` |
 <!-- END IF -->
 | How the CEO works with this org | `operating-model.md` |
@@ -249,6 +262,9 @@ This org is a holding: a registry, not a product company.
 | Decision records and index | `decisions/` |
 | Briefs | `company/briefs/` |
 | Metric definitions | `metrics/README.md` |
+<!-- IF personal -->
+| Personal data (this computer only, git-ignored) | `private/` |
+<!-- END IF -->
 <!-- IF departments -->
 | Handoffs from departments | `inbox/` |
 <!-- END IF -->

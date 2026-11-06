@@ -64,13 +64,19 @@ Gates live in `org.yaml` and are summarized in `CLAUDE.md`. Three tiers: free (d
 |---|---|
 | Decisions, state, numbers, risks, plans, briefs, charters | hq (this repo) |
 | Source code, CI, releases | The org's code repos, which own their technical facts (their own docs); hq links to them and does not restate them |
-<!-- IF not-holding -->
+<!-- IF product-repos -->
 | Tasks and bugs | Issues in the product repos and the roadmap tracker listed in `org.yaml` (`repos:`, `tracker:`), kept current by the agents as they work; hq links to them. This is not a project-management tool |
 <!-- END IF -->
 <!-- IF holding -->
 | Tasks and bugs | The issue tracker the org already uses; hq links to it. This is not a project-management tool |
 <!-- END IF -->
+<!-- IF not-personal -->
 | Secrets and personal data | Never in hq |
+<!-- END IF -->
+<!-- IF personal -->
+| Personal data | `private/` in this hq, git-ignored: on this computer only, never committed or pushed |
+| Secrets (passwords, PINs, card numbers) | Never in hq, not even in `private/` |
+<!-- END IF -->
 
 ## Handoffs
 

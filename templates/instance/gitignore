@@ -1,3 +1,7 @@
 # Per-computer files, never committed: local clone paths and Claude Code's local settings.
 accounts.local.yaml
 .claude/settings.local.json
+# IF personal
+# Personal data: stays on this computer, never committed or pushed.
+private/
+# END IF

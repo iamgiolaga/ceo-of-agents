@@ -3,7 +3,7 @@
 The catalog holds starting templates for departments. Each entry has two files:
 
 - `charter.md`: scope, what the department never does, inputs, outputs, gates, handoff.
-- `agent.md`: a Claude Code subagent template with an explicit `tools:` allowlist. Spawning is limited by type: legal, finance and tax have no `Agent` tool; engineering has `Agent(reader, worker)`; every other department has `Agent(reader)`. The type list is enforced in direct `claude --agent` sessions only. When the CoS dispatches a department as a subagent the list is ignored, so the department must still spawn only those types. The `reader` and `worker` agents come from `templates/workers/`.
+- `agent.md`: a Claude Code subagent template with an explicit `tools:` allowlist. Spawning is limited by type: the advisory entries (legal, finance, tax, health, money, paperwork) have no `Agent` tool and no `Bash`; engineering has `Agent(reader, worker)`; every other department has `Agent(reader)`. The type list is enforced in direct `claude --agent` sessions only. When the CoS dispatches a department as a subagent the list is ignored, so the department must still spawn only those types. The `reader` and `worker` agents come from `templates/workers/`.
 
 | Id | Department | Advisory |
 |---|---|---|
@@ -15,6 +15,9 @@ The catalog holds starting templates for departments. Each entry has two files:
 | `finance` | Finance and accounting | yes |
 | `tax` | Tax | yes |
 | `operations` | Operations | no |
+| `health` | Health (personal only) | yes |
+| `money` | Money (personal only) | yes |
+| `paperwork` | Paperwork (personal only) | yes |
 
 ## How to read it
 
@@ -24,6 +27,7 @@ The catalog holds starting templates for departments. Each entry has two files:
 - Once generated, the files belong to the org and can be edited freely. Gates in a generated hq live in `org.yaml`; advisory departments never file, sign or pay.
 - Each agent file may name generic categories of optional external plugins. Nothing is vendored or installed by the framework; the CEO decides whether to add any.
 - For a department not in the catalog, use `templates/department/`.
+- `health`, `money` and `paperwork` are offered only in a personal hq (`org.purpose: personal`). They keep personal detail in the hq's git-ignored `private/` folder and put only pointers in tracked files and handoffs.
 
 ## Suggestions by purpose
 
@@ -36,3 +40,4 @@ Suggestions only. The wizard shows the line for the chosen purpose next to the l
 | `startup` (company level) | `engineering`, `business`, `design-brand`, `growth-social`, `legal`, `finance` |
 | `company` (company level) | `engineering`, `business`, `legal`, `finance`, `tax`, `operations` |
 | `company` (holding level) | None. Departments are optional for a holding; do not suggest any. |
+| `personal` (company level) | `health`, `money`, `paperwork` (advisory: they prepare and remember, the professional decides); custom departments for other areas of the CEO's life. Not suggested: `legal`, `finance`, `tax` (they cover a company's functions; `money` and `paperwork` cover the personal side), `engineering`, `design-brand`, `business`, `growth-social`, `operations` (they work for an organization). |

@@ -47,7 +47,7 @@ The setup wizard shows the meaning and the example to the CEO, never the id. The
 
 ## Advisory departments
 
-Legal, finance and tax departments are advisory. They never perform `file-or-sign` or `make-payment` at all, in any tier: they prepare and recommend, and the CEO acts outside the agents. No org configuration or policy may lower this; those two actions stay in `ok` and the advisory departments do not get tools for them.
+Legal, finance and tax departments are advisory, and so are the personal health, money and paperwork departments. They never perform `file-or-sign` or `make-payment` at all, in any tier: they prepare and recommend, and the CEO acts outside the agents. No org configuration or policy may lower this; those two actions stay in `ok` and the advisory departments do not get tools for them.
 
 ## Overriding the default in an org
 
@@ -62,7 +62,7 @@ gates:
 
 ## Tighten-only rule against a holding policy
 
-A job hq (`org.purpose: job`) never sets `policy`: it is never governed by a holding, and its optional `employer_rules` pointer takes that place.
+A job hq (`org.purpose: job`) never sets `policy`: it is never governed by a holding, and its optional `employer_rules` pointer takes that place. A personal hq (`org.purpose: personal`) never sets `policy` either.
 
 When a company sets `policy` in `org.yaml`, the company CoS checks it at session start (read files only; no script). It reads only `policy.yaml` from the pinned commit of the holding's separate policies repo, read-only: an optional `git -C <local> fetch` (it may fail offline), then `git -C <local> show <pin>:policy.yaml`. It never reads a clone of the holding hq, and departments never read the policies repo. Compare with org.yaml:
 
