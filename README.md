@@ -39,14 +39,21 @@ Nothing important happens without your OK. Status: early; see the [design notes]
 
 **You need:** Claude Code (signed in), git, a GitHub account ([details](#2-what-you-need)).
 
-**1. Install** (open Claude Code in an empty folder: it becomes your hq):
+**1. Install** (open Claude Code in an empty folder: it becomes your hq). Run these two commands one at a time:
 
-```
-/plugin marketplace add iamgiolaga/ceo-of-agents
-/plugin install ceo-of-agents@ceo-of-agents
-```
+1. Add the marketplace:
 
-When asked where to install, pick project scope.
+   ```
+   /plugin marketplace add iamgiolaga/ceo-of-agents
+   ```
+
+2. Install the plugin. When asked where to install, pick project scope:
+
+   ```
+   /plugin install ceo-of-agents@ceo-of-agents
+   ```
+
+Using the `/plugin` menu instead? In the "Add Marketplace" field, type only `iamgiolaga/ceo-of-agents`.
 
 **2. Start** (same folder):
 
@@ -80,14 +87,21 @@ Not needed: coding skills, servers, extra API keys or scheduled jobs. Nothing ru
 
 ## 3. Install
 
-Install the plugin in the folder that will become your hq, not for your whole computer. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then:
+Install the plugin in the folder that will become your hq, not for your whole computer. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then run these two commands one at a time:
 
-```
-/plugin marketplace add iamgiolaga/ceo-of-agents
-/plugin install ceo-of-agents@ceo-of-agents
-```
+1. Add the marketplace:
 
-When asked where to install, pick project scope.
+   ```
+   /plugin marketplace add iamgiolaga/ceo-of-agents
+   ```
+
+2. Install the plugin. When asked where to install, pick project scope:
+
+   ```
+   /plugin install ceo-of-agents@ceo-of-agents
+   ```
+
+Using the `/plugin` menu instead? In the "Add Marketplace" field, type only `iamgiolaga/ceo-of-agents`.
 
 Or from your shell, inside that folder:
 
