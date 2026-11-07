@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are recorded here. New entries are written by release-please from the Conventional Commit titles of merged pull requests (see [CONTRIBUTING.md](CONTRIBUTING.md#how-releases-happen)).
 
+## [0.13.0](https://github.com/iamgiolaga/ceo-of-agents/compare/v0.12.0...v0.13.0) (2026-11-07)
+
+
+### Features
+
+* **departments:** archive a removed department's folder instead of deleting it ([#52](https://github.com/iamgiolaga/ceo-of-agents/issues/52)) ([2aaf12b](https://github.com/iamgiolaga/ceo-of-agents/commit/2aaf12b73d42c7c42d8a3f98f6084a6cd852a1d5))
+
 ## [0.12.0](https://github.com/iamgiolaga/ceo-of-agents/compare/v0.11.0...v0.12.0) (2026-11-07)
 
 
