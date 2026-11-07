@@ -52,6 +52,7 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 | "Approve `{{ORG_ID}}-A1, {{ORG_ID}}-D2`" (codes) | Run exactly the approved actions and nothing broader. Remove the items from the pending list. Report what was done. |
 | A question about numbers | Answer only from `metrics/README.md` or `company/state.md`, with source and date. If unknown, say "unknown (no source yet)" and propose how to measure it. |
 | "Brief" / "briefing" / weekly update | Use the `weekly-brief` skill. |
+| Work that will span several sessions or departments, or "X is done" | Use the `initiatives` skill: it opens, updates, closes and archives an initiative folder. |
 | "Resume" | Resume from `company/state.md`, the latest brief and `inbox/`; propose the next step. |
 <!-- IF departments -->
 | Something touching money, personal data, public promises, contracts or terms | Route to the relevant advisory department if one exists ({{ADVISORY_DEPARTMENTS}}). If none exists, say so, give a short framing and propose adding one through a decision card. |
@@ -184,9 +185,11 @@ superseded_by: <path>    # only when status is superseded
 ---
 ```
 
+- **Where they go.** Work that one department finishes in one go goes in `departments/<id>/`. Work that spans several sessions or departments gets an initiative, `initiatives/<slug>/`, which the CoS opens with the `initiatives` skill: a one-page `status.md` (goal, state, next step, links to documents and decision records) that only the CoS edits. A brief that names an initiative means: write your documents in its folder as `YYYY-MM-DD-<dept-id>-<slug>.md` and put `initiative: <slug>` in your handoff.
+- **Indexes.** Each folder of documents has a `README.md` with one line per document, newest first: `- [<file>](<file>): <what it answers>`, with ` (superseded)` when it is; an archived document leaves it. Read the index first and open only the documents you need. Whoever adds, supersedes or archives a document updates the index of its folder in the same change. `initiatives/README.md` and each `status.md` are the CoS's.
 - When a newer document replaces one, set `status: superseded` and `superseded_by` on the old one, and leave its body as it is.
 - An archived document moves to `archive/`, keeping its path (for example `archive/departments/<id>/<file>`), with `status: archived`. Archive only when the CEO asks or agrees; the move is an hq commit. `.ignore` keeps `archive/` out of default searches: search it only when old material is needed, by naming `archive/` as the path.
-- Files with a format of their own keep it and get no such frontmatter: decision records, `company/` files, briefs, charters, agent files and `inbox/` notes.
+- Files with a format of their own keep it and get no such frontmatter: decision records, `company/` files, briefs, charters, agent files, `inbox/` notes, indexes and `status.md`.
 
 ## Numbers and metrics
 
@@ -259,6 +262,7 @@ This org is a holding: a registry, not a product company.
 | Decision records and index | `decisions/` |
 | Briefs | `company/briefs/` |
 | Metric definitions | `metrics/README.md` |
+| Work across sessions or departments | `initiatives/` (index: `initiatives/README.md`) |
 | Old documents, out of default searches | `archive/` |
 <!-- IF personal -->
 | Personal data (this computer only, git-ignored) | `private/` |
@@ -284,6 +288,7 @@ These are your own procedures. You invoke them when a request calls for one (see
 - `weekly-brief`: write the dated brief and summarize it.
 - `hq-version`: check the hq's framework version against the installed plugin and apply migrations after the CEO's OK.
 - `departments`: add, change or remove a department, or grant one a tool or connector, through a decision card.
+- `initiatives`: open, update, close and archive an initiative folder.
 <!-- IF product-repos -->
 - `product-repos`: register product repos and the roadmap board, handle planned repos and local clone paths, and use `gh`.
 <!-- END IF -->

@@ -8,7 +8,7 @@ A handoff is what a department (or any outside surface) leaves for the chief of 
 
 - `<from>` and `<to>` are department ids or `cos`; `<slug>` is kebab-case.
 
-## Frontmatter (all fields required)
+## Frontmatter (five required fields, one optional)
 
 | Field | Allowed values |
 |---|---|
@@ -17,6 +17,8 @@ A handoff is what a department (or any outside surface) leaves for the chief of 
 | `date` | `YYYY-MM-DD` |
 | `needs_ceo_decision` | `yes` or `no` |
 | `proposed_card` | one-line question, or `none` |
+
+Optional: `initiative`, the slug of the initiative the brief named (see `schemas/initiative.md`). Leave the line out when there is none. The CoS then updates that initiative's `status.md`.
 
 If `needs_ceo_decision` is `yes`, `proposed_card` must be a question and the CoS adds a decision card (with a new D code) to company/decision-queue.md. If `no`, `proposed_card` is `none`.
 
@@ -51,7 +53,7 @@ Dropping it removes two compatibility shims.
 ## Validation checklist
 
 - Filename matches the pattern; `from`/`to` in the name equal the frontmatter fields.
-- All five frontmatter fields present; `date` is valid.
+- All five required frontmatter fields present; `date` is valid; `initiative`, if present, names a folder in `initiatives/`.
 - `needs_ceo_decision` and `proposed_card` are consistent (yes with a question, no with `none`).
 - The three H2 headings exist, in order; Ask or finding is at most 5 lines.
 - No secrets, credentials or sensitive personal data in the note.

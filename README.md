@@ -162,7 +162,7 @@ The plugin is then turned on in the folder's `.claude/settings.json`, so it load
 
 Open Claude Code in the hq folder. The CoS gets the latest hq, reads what departments left for it and gives you a short status with the codes of what waits on you.
 
-Your hq grows every day, but each session reads only a small set of files at the start. If those files grow past their size budget, the CoS says so and offers to move the detail into linked notes. Old documents can be archived: they move to `archive/`, stay in git, and stop showing up in everyday searches.
+Your hq grows every day, but each session reads only a small set of files at the start. If those files grow past their size budget, the CoS says so and offers to move the detail into linked notes. Work that spans several sessions or departments gets its own folder with a one-page status, and every folder of documents has a one-line index, so your agents open only what they need. Old documents can be archived: they move to `archive/`, stay in git, and stop showing up in everyday searches. The weekly brief checks for clutter and proposes what to archive; nothing moves without your OK.
 
 ### Talk in plain language
 
@@ -171,7 +171,7 @@ Your hq grows every day, but each session reads only a small set of files at the
 | "I have an idea: a referral program for early users." | The CoS frames it, checks for duplicates and routes it: a decision card, a department task or a note. |
 | "Decide whether we keep the free tier." | A decision card with a code (for example `ACME-D3`), options and a recommendation, added to your pending list. |
 | "Approve ACME-A2." or "ACME-D3: b." | The CoS runs exactly that, or records your decision, and clears the item. |
-| "Brief." | A dated brief, saved in the hq: changes, sourced numbers, risks, pending items. |
+| "Brief." | A dated brief, saved in the hq: changes, sourced numbers, risks, pending items, and a cleanup check that proposes what to archive. |
 | "Pass to engineering: why did the last release fail?" | The CoS forwards your text, returns the answer verbatim and adds its comment. |
 | "Resume." | The CoS picks up from the state, the latest brief and the inbox, and proposes a next step. |
 

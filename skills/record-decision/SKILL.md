@@ -45,6 +45,7 @@ Never record a decision the CEO did not take. An answer must come from the CEO i
    - Remove the answered card from `company/decision-queue.md`. If the queue becomes empty, write `_No open decisions._`.
    - Remove the `<ORG_ID>-D<n>` item from "Waiting on the CEO" in `company/state.md`, and its line from "Open decisions".
    - If the decision changes facts (products, numbers with source and date, risks), update those sections. A consciously accepted risk goes in Risks with a link to the record.
+   - If the decision belongs to an initiative, add the record to the Links of its `initiatives/<slug>/status.md` and update its state and next step (the `initiatives` skill, section Update). If the decision closes or drops it, close it with the same skill.
    - If the decision sets or changes what the org focuses on now, update "Current focus" in `company/strategy.md` (if present) and cite the record (`see decision NNNN`). A change to `company/vision.md` needs a decision that says so explicitly.
    - Set `last_updated` to today. Do not change `next_action` or `next_decision`; codes are never reused.
 

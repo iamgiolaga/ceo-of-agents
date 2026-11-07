@@ -32,6 +32,7 @@ Every line stays under 300 characters, frontmatter included (budget: `schemas/bo
 
 Products and status:
 `- <product>: <status in one line> (as of YYYY-MM-DD)`
+`- <initiative title>: <state in a few words>, see initiatives/<slug>/status.md (as of YYYY-MM-DD)` (one line per open initiative; `schemas/initiative.md`)
 
 Key numbers (never invent; unknown is allowed):
 `- <metric>: <value> (source: <source>, as of YYYY-MM-DD)`

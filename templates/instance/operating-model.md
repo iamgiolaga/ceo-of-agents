@@ -37,7 +37,7 @@ No scheduled automation, no hooks. Nothing runs unless the CEO opens a session.
 
 | Rhythm | What | How |
 |---|---|---|
-| Weekly brief | What changed, numbers, decisions needed | The CEO asks for a brief; the CoS runs its `weekly-brief` procedure and writes `company/briefs/YYYY-MM-DD-weekly.md`. |
+| Weekly brief | What changed, numbers, decisions needed, and a cleanup check that proposes what to archive | The CEO asks for a brief; the CoS runs its `weekly-brief` procedure and writes `company/briefs/YYYY-MM-DD-weekly.md`. |
 | Batched approvals | Several OKs in one pass | Departments prepare, the CoS lists the codes in "Waiting on the CEO", the CEO approves by code. |
 | Review | Risks, metrics trend, charters | On request. |
 
@@ -63,6 +63,7 @@ Gates live in `org.yaml` and are summarized in `CLAUDE.md`. Three tiers: free (d
 | Thing | Lives in |
 |---|---|
 | Decisions, state, numbers, risks, plans, briefs, charters | hq (this repo) |
+| Work that spans several sessions or departments | `initiatives/<slug>/` in hq: a one-page `status.md` and the documents, listed in its `README.md` |
 | Source code, CI, releases | The org's code repos, which own their technical facts (their own docs); hq links to them and does not restate them |
 <!-- IF product-repos -->
 | Tasks and bugs | Issues in the product repos and the roadmap tracker listed in `org.yaml` (`repos:`, `tracker:`), kept current by the agents as they work; hq links to them. This is not a project-management tool |
@@ -88,7 +89,7 @@ Full support: Claude Code on your own machine with the plugin enabled (terminal,
 
 ## Plugin requirement
 
-The `ceo-of-agents` plugin must be enabled in this hq. The CoS procedures (`session-start`, `intake`, `record-decision`, `weekly-brief`, `hq-version`, `departments`, `product-repos`) come from it. They are hidden from the `/` menu: the CEO never types them, the CoS invokes them.
+The `ceo-of-agents` plugin must be enabled in this hq. The CoS procedures (`session-start`, `intake`, `record-decision`, `weekly-brief`, `hq-version`, `departments`, `product-repos`, `initiatives`) come from it. They are hidden from the `/` menu: the CEO never types them, the CoS invokes them.
 <!-- IF holding -->
 The holding also uses the `portfolio-brief` procedure.
 <!-- END IF -->
