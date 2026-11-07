@@ -119,7 +119,17 @@ The plugin is then turned on in the folder's `.claude/settings.json`, so it load
 
 In your hq folder, run the setup command from [Get started](#get-started-in-30-seconds), step 2. Then:
 
-1. Answer the setup questions: the language to chat in (asked first, unless you already wrote something), purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, the language of the files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, your product's repos and roadmap board if you have them, and how commits and pull requests are signed.
+1. Answer the setup questions:
+   - the language to chat in (asked first, unless you already wrote something)
+   - purpose (for a company: company or holding)
+   - org name and short id for codes (for example `ACME`)
+   - what the org does and why
+   - the language of the files
+   - departments (from the catalog, your own, or none), and names for your CoS and departments
+   - approval rules and which Claude models to use
+   - a holding's shared rules, if any
+   - an optional GitHub repo, and your product's repos and roadmap board if you have them
+   - how commits and pull requests are signed
 
    Optional answers can be "later": your chief of staff puts them on your list to answer later.
 
@@ -164,7 +174,13 @@ Use the name you gave the department, in lowercase (for example `mike`), or its 
 
 ## 6. Update
 
-Update from `/plugin` (Installed tab, **Update now**) or, inside your hq folder, with `claude plugin update ceo-of-agents@ceo-of-agents --scope project`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
+Update from `/plugin` (Installed tab, **Update now**) or from your shell, inside your hq folder:
+
+```
+claude plugin update ceo-of-agents@ceo-of-agents --scope project
+```
+
+Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
 
 If you also installed the plugin for your whole computer (user scope), install it at project scope in each of your hqs first, then check `/plugin`, Installed tab, and remove the extra copy with `claude plugin uninstall ceo-of-agents@ceo-of-agents --scope user`.
 
