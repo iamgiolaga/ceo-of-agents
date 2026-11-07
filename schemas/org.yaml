@@ -1,4 +1,4 @@
-# Schema: org.yaml (`org/4`)
+# Schema: org.yaml (`org/5`)
 #
 # Instance configuration of one org. Lives at the hq root. Annotated example below
 # is itself valid YAML. Owner: the CoS, changed only by a normal hq commit.
@@ -10,7 +10,7 @@
 #                employer_rules (job only; null otherwise)
 #
 # Allowed values and rules
-#   schema                  exactly "org/4"
+#   schema                  exactly "org/5"
 #   framework_version       framework version the instance was generated from
 #   org.id                  2-8 characters, A-Z and 0-9, starts with a letter
 #   org.name                free text
@@ -42,12 +42,24 @@
 #                           ^[a-z][a-z0-9-]*$. The persona slug when display_name is a
 #                           persona, otherwise equal to id. The agent file is
 #                           .claude/agents/<agent>.md. Unique; never another
-#                           department's id, never "reader" or "worker"
+#                           department's id, never "reader" or "worker". For
+#                           from_catalog own: the name the CEO's own agent or skill
+#                           already has (any name without spaces, ":" allowed)
 #     from_catalog          a catalog id (engineering, design-brand, business,
 #                           growth-social, legal, finance, tax, operations; and
-#                           health, money, paperwork in a personal hq only) or "custom"
+#                           health, money, paperwork in a personal hq only), "custom",
+#                           or "own" (the CEO's own agent or skill, used as it is: its
+#                           file lives outside the hq and is never edited; the hq holds
+#                           only its charter, from templates/department/own-charter.md)
+#     adapted               optional, only with a catalog id. true = the CEO changed the
+#                           catalog entry (scope, exclusions or tools); the changes are
+#                           in a "Changes for this org" section of its charter and agent
+#                           file, everything else is the catalog's
+#     kind                  only with own: agent | skill
+#     location              only with own: where it lives, as the CEO said it (a path, the
+#                           CEO's own agents, or a plugin name); informational
 #     display_name          role name or a persona name, the CEO's choice
-#     model                 one of models.tiers
+#     model                 one of models.tiers; omitted for own (its own file decides)
 #     workers               optional. Absent = follow models.workers (one-down). "same" =
 #                           "top model, workers included": allowed only when the
 #                           department model is the first entry of models.tiers; its
@@ -64,13 +76,27 @@
 #                           a holding and in a personal hq). Charters, agents and skills read this list and
 #                           never copy it. Item fields:
 #     slug                  full GitHub slug "owner/name"; owners may differ (a GitHub
-#                           org, a personal account, or both)
+#                           org, a personal account, or both). Advanced, only when the
+#                           user asks for it: an owner pattern "owner/*" covers every repo
+#                           of that owner that has no exact item of its own (an exact item
+#                           always wins over the pattern, so exact items are the
+#                           exceptions). A pattern item is never planned, never the issues
+#                           home, and gets no repo_paths entry
 #     role                  short free text: code, site, docs, hq, ...
 #     visibility            public | private. Public repos never receive internal names,
 #                           codes or hq content
 #     issues_home           true for exactly one item when the list is not empty: the repo
 #                           that holds cross-cutting issues (may be the hq itself, role hq);
 #                           false for the others
+#     protected             required. true = other people work on this repo and see what
+#                           agents write there: every write to it (issues, labels,
+#                           milestones, comments, pull requests, branch pushes, and every
+#                           action of the ok tier) needs the user's explicit OK, whatever
+#                           its tier in gates. Reads stay free. false = the gates apply as
+#                           written. The hq (role hq) is always false. Every other repo
+#                           defaults to true: set at registration with one plain question,
+#                           and "not sure" keeps it true. A repo that is in no item and
+#                           matches no pattern is treated as protected
 #     planned               optional. Absent = the repo exists. true = the user plans to
 #                           create it: agents skip issue and tracker writes to it (one
 #                           line, not a failure) until it exists, and an action item asks
@@ -102,8 +128,8 @@
 #                           null for every other purpose and for a holding. Informational
 #                           pointer: the CoS reads it on demand, nothing is copied into hq
 
-schema: org/4
-framework_version: 0.10.0
+schema: org/5
+framework_version: 0.11.0
 org:
   id: ACME
   name: Acme
@@ -140,10 +166,12 @@ repos:
     role: code
     visibility: public
     issues_home: false
+    protected: false
   - slug: acme/hq
     role: hq
     visibility: private
     issues_home: true
+    protected: false
 tracker:
   kind: github-project
   owner: acme
@@ -155,6 +183,17 @@ employer_rules: null
 # Without product repos or a tracker:
 # repos: []
 # tracker: none
+# Example of an owner pattern with an exception (advanced, only when the user asks):
+#  - slug: bigcorp/*            # every bigcorp repo without an item of its own
+#    role: team repos
+#    visibility: private
+#    issues_home: false
+#    protected: true
+#  - slug: bigcorp/my-tool      # the exception: the user's own repo in that org
+#    role: code
+#    visibility: private
+#    issues_home: false
+#    protected: false
 # Example of a policy block (company only):
 # policy:
 #   repo: <policies repo git remote>
@@ -168,7 +207,7 @@ employer_rules: null
 # employer_rules: "https://intranet.example.com/rules-on-data-and-ai"
 
 # Validation checklist
-#   - Parses as YAML; all required keys present; schema is "org/4".
+#   - Parses as YAML; all required keys present; schema is "org/5".
 #   - org.id matches ^[A-Z][A-Z0-9]{1,7}$ and equals org_id in company/state.md.
 #   - org.level is company or holding; policy is null when level is holding;
 #     policies_repo is null when level is company.
@@ -188,7 +227,10 @@ employer_rules: null
 #     (departments/<id>/charter.md).
 #   - Each department has an agent matching ^[a-z][a-z0-9-]*$, unique, not equal to another
 #     department's id, "reader" or "worker". The file .claude/agents/<agent>.md exists and
-#     its name: equals the file name and agent.
+#     its name: equals the file name and agent. Exception, from_catalog own: the agent is
+#     any name without spaces, has no file in .claude/agents/, and the item has kind and
+#     location and no model.
+#   - adapted appears only with a catalog id and is true.
 #   - No connector pattern appears both in a department connectors list and in
 #     accounts.forbidden_connectors.
 #   - Every gate action id is known (see gates/default.md) and listed exactly once.
@@ -196,9 +238,12 @@ employer_rules: null
 #     file-or-sign or make-payment outside the ok list.
 #   - framework_version equals the version in company/state.md frontmatter, unless a
 #     migration is pending.
-#   - repos: every slug matches ^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$ and is unique; visibility
+#   - repos: every slug matches ^[A-Za-z0-9-]+/([A-Za-z0-9._-]+|\*)$ and is unique; visibility
 #     is public or private; exactly one item has issues_home true when the list is not
 #     empty. A holding has repos [] and tracker none. No item holds a local path.
+#   - repos: every item has protected true or false; an item with role hq has protected
+#     false.
+#   - repos: an owner pattern (slug ending in /*) has issues_home false and no planned key.
 #   - repos: planned, when present, is true; a planned repo has no repo_paths entry.
 #   - tracker is "none" or has kind github-project, a non-empty owner, an integer number
 #     and a non-empty status_field.
@@ -206,4 +251,6 @@ employer_rules: null
 #     (see migrations/0.1.1-to-0.2.0.md). An `org/2` file is read as repos [] and
 #     tracker none until migrated (see migrations/0.5.0-to-0.6.0.md). An `org/3` file (or
 #     older) is read as agent equal to id for every department until migrated (see
-#     migrations/0.6.0-to-0.7.0.md).
+#     migrations/0.6.0-to-0.7.0.md). An `org/4` file is read as protected false for the
+#     item with role hq and protected true for every other item until migrated (see
+#     migrations/0.10.0-to-0.11.0.md).

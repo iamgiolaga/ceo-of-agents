@@ -26,18 +26,20 @@ The catalog holds starting templates for departments. Each entry has two files:
 - The wizard fills the placeholders (`{{DEPT_ID}}`, `{{AGENT_NAME}}` (the department's agent name; its agent file is named after it), `{{DISPLAY_NAME}}`, `{{ORG_NAME}}`, `{{ORG_ID}}`, `{{MODEL}}`, `{{WORKER_MODEL}}`, `{{WORKER_TIER}}` (how its workers relate to the department's tier: one tier down, or the same tier for a department set to top model, workers included), `{{OTHER_ACCOUNTS_EXAMPLE}}` (the account example, set by the org's purpose)). Every department starts with no connectors; the CoS adds one to the `tools:` list only after a decision card grants it.
 - Once generated, the files belong to the org and can be edited freely. Gates in a generated hq live in `org.yaml`; advisory departments never file, sign or pay.
 - Each agent file may name generic categories of optional external plugins. Nothing is vendored or installed by the framework; the CEO decides whether to add any.
-- For a department not in the catalog, use `templates/department/`.
+- Four ways to build the org: take entries as they are; take an entry and change it (a "Changes for this org" section from `templates/department/changes.md` is appended to its charter and agent file, and its `tools:` line changes; everything else stays from the catalog); write a department from scratch (`templates/department/charter.md` and `agent.md`); or bring the CEO's own agents or skills, used as they are (only a charter from `templates/department/own-charter.md`). An overlap check warns, never blocks, when two departments cover the same work.
 - `health`, `money` and `paperwork` are offered only in a personal hq (`org.purpose: personal`). They keep personal detail in the hq's git-ignored `private/` folder and put only pointers in tracked files and handoffs.
 
 ## Suggestions by purpose
 
 Suggestions only. The wizard shows the line for the chosen purpose next to the list above; nothing is preselected and the CEO still picks each department or none. This table is the single source the wizard reads.
 
+Org chart reason: wherever `design-brand` is suggested, the wizard shows this reason with it: its first task can be to draw the org chart of this org (you, your chief of staff, each department and how work flows between them), a picture that helps you understand and explain the org you just set up. For `job` it adds that the chart is for you, not something that speaks for your employer. When `design-brand` is picked, the chief of staff proposes the org chart as its first task at the first session, and runs it only if you say yes.
+
 | Purpose and level | Suggested departments |
 |---|---|
-| `job` (company level) | `operations` (recurring obligations and work tools); `engineering` (only if the job is technical); custom departments that mirror the CEO's own work streams. Not suggested: `business`, `growth-social`, `legal`, `finance`, `tax` (they speak for the employer or cover the employer's own functions). |
-| `product` (company level) | `engineering`, `design-brand`, `growth-social`, `business` |
-| `startup` (company level) | `engineering`, `business`, `design-brand`, `growth-social`, `legal`, `finance` |
-| `company` (company level) | `engineering`, `business`, `legal`, `finance`, `tax`, `operations` |
+| `job` (company level) | `operations` (recurring obligations and work tools); `design-brand` (org chart reason; the chart is for the CEO, not a deliverable that speaks for the employer); `engineering` (only if the job is technical); custom departments that mirror the CEO's own work streams. Not suggested: `business`, `growth-social`, `legal`, `finance`, `tax` (they speak for the employer or cover the employer's own functions). |
+| `product` (company level) | `engineering`, `design-brand` (also for the org chart reason), `growth-social`, `business` |
+| `startup` (company level) | `engineering`, `business`, `design-brand` (also for the org chart reason), `growth-social`, `legal`, `finance` |
+| `company` (company level) | `engineering`, `business`, `legal`, `finance`, `tax`, `operations`, `design-brand` (org chart reason) |
 | `company` (holding level) | None. Departments are optional for a holding; do not suggest any. |
 | `personal` (company level) | `health`, `money`, `paperwork` (advisory: they prepare and remember, the professional decides); custom departments for other areas of the CEO's life. Not suggested: `legal`, `finance`, `tax` (they cover a company's functions; `money` and `paperwork` cover the personal side), `engineering`, `design-brand`, `business`, `growth-social`, `operations` (they work for an organization). |

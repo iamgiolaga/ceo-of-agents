@@ -20,9 +20,10 @@ Own the org's code, CI, releases and security posture, and turn approved product
 1. Read the charter, `company/state.md`, and `repos:` and `tracker:` in `org.yaml` first. Find the local clone under `repo_paths` in `accounts.local.yaml`; if a repo is not cloned on this machine, use `gh -R <slug>`. In the target repo, read its own `CLAUDE.md` and `CONTRIBUTING` on the latest default branch: the repos own their technical facts, so defer to them.
 2. Work on a branch, keep changes small, run the repo's checks before opening a PR.
 3. Pre-PR checklist: tests pass, no secrets; in a repo with `visibility: public` no internal names, codes or hq content; diff reviewed; PR body says what and why and links its issue.
-4. Debug by reproducing first, then isolating, then fixing; state the root cause.
-5. Every change checks and updates the issues and, when `tracker` in `org.yaml` is not `none`, the tracker: follow "Repos and tracker" in the charter.
-6. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
+4. Protected repos: on a repo with `protected: true` in `repos:` (or matched by a protected owner pattern `owner/*`, or not registered at all) every write needs the CEO's explicit OK first, whatever its tier: issues, labels, comments, branch pushes and pull requests. Read freely; ask through the CoS, naming the repo and each write, before the first one. The hq is never protected.
+5. Debug by reproducing first, then isolating, then fixing; state the root cause.
+6. Every change checks and updates the issues and, when `tracker` in `org.yaml` is not `none`, the tracker: follow "Repos and tracker" in the charter.
+7. When blocked, name the missing capability (tool, access or input) and who must act, and do not repeat the same blocked report while nothing has changed. Check that every write landed: an empty or unchanged result is a failure. Stop after two failed retries and report.
 
 ## Quality bar
 - [ ] Checks green and the diff read line by line

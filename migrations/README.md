@@ -13,7 +13,7 @@ How framework upgrades reach an instance (an org's hq repo).
 
 ## Schema versions
 
-Each schema carries its own version in the file (`state/1`, `org/4`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
+Each schema carries its own version in the file (`state/1`, `org/5`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
 
 How long a holding keeps reading the previous schema version of a company `state.md` is an open question (design spec, section 11). Until resolved, a reader should accept the version it knows and report any other as "unreadable schema" rather than guess.
 
@@ -42,3 +42,5 @@ Version `0.8.1` makes one copy of the plugin, installed at project scope in the 
 Version `0.9.0` changes the setup wizard and the generated hq: chat language asked first, multi-line answers kept verbatim, a commands question for custom departments, an `attribution` setting for commits and pull requests, repos that do not exist yet (`planned: true`), "later" answers that become action items, the per-department option "top model, workers included" (`workers: same`), and a pending list across companies at the start of a holding session. No schema changes: both new keys in `org.yaml` are optional. Migration: `0.8.1-to-0.9.0.md`.
 
 Version `0.10.0` adds the fleet purpose `personal` (company level only, never in a holding portfolio, no holding policy or employer rules, no product repos or roadmap questions), three advisory catalog entries offered only for it (`health`, `money`, `paperwork`), and a git-ignored `private/` folder for personal data in a personal hq. No schema changes: `personal` and the three catalog ids are new allowed values. Migration: `0.9.0-to-0.10.0.md` (version bump; a holding also gets two one-line edits in `CLAUDE.md` so it skips personal hqs).
+
+Version `0.11.0` bumps `org.yaml` to `org/5`: every repo in `repos:` declares `protected` (the hq never; other repos by default), and on a protected repo every write needs the CEO's OK. It also moves procedures from `CLAUDE.md` into hidden skills (`session-start`, `departments`, `product-repos`), adds a size budget for the files read at session start, lifecycle frontmatter for analyses and notes and an `archive/` folder, four ways to build the org with an overlap check, an opt-in reading of connected services at setup, a wider design and brand suggestion with the org chart as first task, and clone paths next to the hq. Migration: `0.10.0-to-0.11.0.md` (`CLAUDE.md`, `org.yaml`, `operating-model.md`, new `.ignore` and `archive/README.md`, and the engineering department's files when it comes from the catalog).

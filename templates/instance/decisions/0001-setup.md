@@ -7,7 +7,7 @@
 
 ## Context
 
-{{ORG_NAME}} (`{{ORG_ID}}`) was set up with ceo-of-agents {{FRAMEWORK_VERSION}}. The setup wizard asked {{SETUP_QUESTION_COUNT}} question groups; rows marked not applicable were skipped. The answers below are the starting configuration. They live in `org.yaml`, which stays the source of truth for the current values.
+{{ORG_NAME}} (`{{ORG_ID}}`) was set up with ceo-of-agents {{FRAMEWORK_VERSION}}. The setup wizard asked {{SETUP_QUESTION_COUNT}} question groups; rows marked not applicable were skipped. Services read at setup to pre-fill answers (read-only, only those marked as this org's; nothing granted): {{SETUP_SERVICES}}. The answers below are the starting configuration. They live in `org.yaml`, which stays the source of truth for the current values.
 
 ## Options
 

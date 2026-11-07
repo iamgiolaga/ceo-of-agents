@@ -77,7 +77,7 @@ Full steps: [Install](#3-install) · [First run](#4-first-run) · [Daily use](#5
 | **company** | A company, or a **holding**: it follows its companies without changing them, gives you one pending list across them, and sets shared rules (approvals, model limits) they follow. |
 | **personal** | Your own life: health, money, paperwork. Personal data stays on your computer, out of git. Suggested departments (health, money, paperwork) only prepare and remember: your doctor, accountant or lawyer decides, and they never file, sign or pay. Never joins a holding. |
 
-You pick each department, or none.
+You pick each department, or none. Take the suggested ones as they are, change what one covers, write your own from scratch, or bring agents and skills you already have; setup warns you when two departments cover the same work. Except for a holding and personal, setup also suggests a design and brand department: its first task can be to draw your org chart, which your chief of staff offers at the first session.
 
 ## 2. What you need
 
@@ -146,6 +146,8 @@ The plugin is then turned on in the folder's `.claude/settings.json`, so it load
 3. Answer the setup questions: the language to chat in (asked first, unless you already wrote something), purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, the language of the files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, your product's repos and roadmap board if you have them, and how commits and pull requests are signed.
 
    Optional answers can be "later": your chief of staff puts them on your list to answer later.
+
+   Setup can also look at the services you already connected in Claude Code (chat, docs, code) to suggest names, channels and repos. It asks once; say no and nothing changes. Say yes and you pick which services are this org's: only those are read, read-only, and you confirm every suggestion before it is written. Reading them gives no agent access to them.
 4. Confirm the summary, and your hq is ready: your chief of staff and departments are set up in a git repo you own.
 5. Approve the permission prompt that appears, then the first save (commit). The setup never pushes: you choose when.
 
@@ -158,6 +160,8 @@ The plugin is then turned on in the folder's `.claude/settings.json`, so it load
 ### Open a session
 
 Open Claude Code in the hq folder. The CoS gets the latest hq, reads what departments left for it and gives you a short status with the codes of what waits on you.
+
+Your hq grows every day, but each session reads only a small set of files at the start. If those files grow past their size budget, the CoS says so and offers to move the detail into linked notes. Old documents can be archived: they move to `archive/`, stay in git, and stop showing up in everyday searches.
 
 ### Talk in plain language
 
@@ -173,6 +177,8 @@ Open Claude Code in the hq folder. The CoS gets the latest hq, reads what depart
 ### What needs your OK
 
 Your agents do safe things on their own (drafts, research), tell you before saving changes, and ask for your OK before anything that goes outside or can't be undone: merging, publishing, spending money, contacting people. What waits for you gets a short code, so you can approve several at once (for example "approve ACME-A2").
+
+On a repo that other people work on, your agents ask you before they write anything there, even an issue or a comment. Setup asks about each repo you register, except the hq, which is yours.
 
 ### Direct session with one department
 

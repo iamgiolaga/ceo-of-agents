@@ -2,7 +2,7 @@
 name: hq-version
 description: Compare this hq's framework version with the installed ceo-of-agents plugin version and, after the CEO's OK, apply the pending migrations in order. Use at session start in a ceo-of-agents hq, and when the CEO approves an hq update.
 user-invocable: false
-allowed-tools: Read Grep Glob Edit Write Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git mv:*) Bash(git commit:*) Bash(git remote:*) Bash(git push:*) Bash(ls:*) Bash(date:*)
+allowed-tools: Read Grep Glob Edit Write Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git mv:*) Bash(git commit:*) Bash(git remote:*) Bash(git push:*) Bash(git check-ignore:*) Bash(ls:*) Bash(wc:*) Bash(date:*)
 ---
 
 # hq-version: check the hq against the plugin, then migrate
