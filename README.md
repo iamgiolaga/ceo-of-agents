@@ -11,7 +11,8 @@
 <p align="center">
   <a href="#3-install"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-2DD4BF?style=flat-square&labelColor=0F172A"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/iamgiolaga/ceo-of-agents?style=flat-square&labelColor=0F172A&color=94A3B8"></a>
-  <img alt="Version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fiamgiolaga%2Fceo-of-agents%2Fmain%2F.claude-plugin%2Fplugin.json&query=%24.version&label=version&style=flat-square&labelColor=0F172A&color=A78BFA">
+  <a href="https://github.com/iamgiolaga/ceo-of-agents/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/iamgiolaga/ceo-of-agents?label=release&style=flat-square&labelColor=0F172A&color=A78BFA"></a>
+  <a href="https://github.com/iamgiolaga/ceo-of-agents/actions/workflows/ci.yml?query=branch%3Amain"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/iamgiolaga/ceo-of-agents/ci.yml?branch=main&label=CI&style=flat-square&labelColor=0F172A&color=2DD4BF"></a>
   <img alt="Status: early" src="https://img.shields.io/badge/status-early-94A3B8?style=flat-square&labelColor=0F172A">
 </p>
 

@@ -1,0 +1,54 @@
+name: Bug report
+description: Something in the plugin does not work as described.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please use placeholder names (for example `ACME`) and remove secrets, tokens and personal data from anything you paste. For a security problem, do not open an issue: see SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      description: In Claude Code, `/plugin`, Installed tab.
+      placeholder: "0.11.0"
+    validations:
+      required: true
+  - type: input
+    id: hq-version
+    attributes:
+      label: hq framework version
+      description: "`framework_version` in your hq's `org.yaml`, if the bug is in an hq."
+      placeholder: "0.11.0"
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Setup (init-fleet)
+        - Chief of staff procedures (intake, decisions, briefs, session start)
+        - Departments and catalog
+        - Migrations and updates
+        - Product repos and roadmap
+        - README or docs
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, step by step, and what the plugin did.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Claude Code version, operating system, relevant lines of generated files.
