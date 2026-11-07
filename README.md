@@ -28,7 +28,7 @@ The freedom stays with you. You set the rules, you decide how your agents improv
 
 If you build a product on GitHub, your fleet can also follow its repos and roadmap, and keep the issues up to date as it works.
 
-Nothing important happens without your OK. Status: early; see the [design notes](docs/design.md).
+Nothing important happens without your OK. More in the [design notes](docs/design.md).
 
 <p align="center">
   <img src="assets/setup.gif" width="100%" alt="Animation: you run /ceo-of-agents:init-fleet and pick what the fleet is for; then your org takes shape: you, the CEO; your chief of staff; departments branching out one by one; and every state update, decision and brief landing as a commit in your hq repo.">
@@ -36,13 +36,7 @@ Nothing important happens without your OK. Status: early; see the [design notes]
 
 ## Get started in 30 seconds
 
-<p align="center">
-  <img src="assets/quickstart.svg" width="100%" alt="Four steps: 1. You need Claude Code, git and a GitHub account. 2. Install the plugin with two commands inside Claude Code. 3. In an empty folder run /ceo-of-agents:init-fleet and say what the fleet is for. 4. Talk to your chief of staff in plain language and approve by code.">
-</p>
-
-**You need:** Claude Code (signed in), git, a GitHub account ([details](#2-what-you-need)).
-
-**1. Install** (create an empty hq folder inside a parent folder, as shown in [Folders](#folders), and open Claude Code there). Run these two commands one at a time:
+**1. Install.** Check [what you need](#2-what-you-need), create an empty hq folder inside a parent folder, as shown in [Folders](#folders), and open Claude Code there. Run these two commands one at a time:
 
 1. Add the marketplace:
 
@@ -58,13 +52,13 @@ Nothing important happens without your OK. Status: early; see the [design notes]
 
 Using the `/plugin` menu instead? In the "Add Marketplace" field, type only `iamgiolaga/ceo-of-agents`.
 
-**2. Start** (same folder):
+**2. Start** (same folder) and say what the fleet is for:
 
 ```
 /ceo-of-agents:init-fleet
 ```
 
-**3. Talk.** No more commands: talk to your chief of staff in plain language.
+**3. Talk.** No more commands: talk to your chief of staff in plain language. It shows what waits on you, and you approve by code, for example "Approve ACME-A2."
 
 Full steps: [Install](#3-install) · [First run](#4-first-run) · [Daily use](#5-daily-use)
 
@@ -110,21 +104,7 @@ If the hq is the only thing you keep on GitHub, you have nothing more to do: the
 
 ### Install the plugin
 
-Install the plugin in your hq folder, not for your whole computer. Open the empty hq folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then run these two commands one at a time:
-
-1. Add the marketplace:
-
-   ```
-   /plugin marketplace add iamgiolaga/ceo-of-agents
-   ```
-
-2. Install the plugin. When asked where to install, pick project scope:
-
-   ```
-   /plugin install ceo-of-agents@ceo-of-agents
-   ```
-
-Using the `/plugin` menu instead? In the "Add Marketplace" field, type only `iamgiolaga/ceo-of-agents`.
+Install the plugin in your hq folder, not for your whole computer. Open the empty hq folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then run the two commands in [Get started](#get-started-in-30-seconds), step 1, one at a time.
 
 Or from your shell, inside that folder:
 
@@ -133,30 +113,21 @@ claude plugin marketplace add iamgiolaga/ceo-of-agents
 claude plugin install ceo-of-agents@ceo-of-agents --scope project
 ```
 
-The plugin is then turned on in the folder's `.claude/settings.json`, so it loads only in your hq. Install it once, at project scope only: a second copy at another scope can stay on an older version and be the one that loads. On another computer, run the same commands inside your hq's clone.
+The plugin is then turned on in the folder's `.claude/settings.json`, so it loads only in your hq. Install it once, at project scope only: a second copy at another scope can stay on an older version and be the one that loads ([how to remove one](#6-update)). On another computer, run the same commands inside your hq's clone.
 
 ## 4. First run
 
-1. Open the same folder in Claude Code, if it is not open already.
-2. Run the setup command:
+In your hq folder, run the setup command from [Get started](#get-started-in-30-seconds), step 2. Then:
 
-   ```
-   /ceo-of-agents:init-fleet
-   ```
-
-3. Answer the setup questions: the language to chat in (asked first, unless you already wrote something), purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, the language of the files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, your product's repos and roadmap board if you have them, and how commits and pull requests are signed.
+1. Answer the setup questions: the language to chat in (asked first, unless you already wrote something), purpose (for a company: company or holding), org name and short id for codes (for example `ACME`), what the org does and why, the language of the files, departments (from the catalog, your own, or none), names for your CoS and departments, approval rules, which Claude models to use, a holding's shared rules if any, an optional GitHub repo, your product's repos and roadmap board if you have them, and how commits and pull requests are signed.
 
    Optional answers can be "later": your chief of staff puts them on your list to answer later.
 
    Setup can also look at the services you already connected in Claude Code (chat, docs, code) to suggest names, channels and repos. It asks once; say no and nothing changes. Say yes and you pick which services are this org's: only those are read, read-only, and you confirm every suggestion before it is written. Reading them gives no agent access to them.
-4. Confirm the summary, and your hq is ready: your chief of staff and departments are set up in a git repo you own.
-5. Approve the permission prompt that appears, then the first save (commit). The setup never pushes: you choose when.
+2. Confirm the summary, and your hq is ready: your chief of staff and departments are set up in a git repo you own.
+3. Approve the permission prompt that appears, then the first save (commit). The setup never pushes: you choose when.
 
 ## 5. Daily use
-
-<p align="center">
-  <img src="assets/exchange.svg" width="100%" alt="A typical exchange. You say: I have an idea, a referral program for early users. The chief of staff frames it, checks for duplicates, picks the route and runs it. You say: Decide whether we keep the free tier. It writes a decision card and adds ACME-D3 to your list. You say: ACME-D3, option b. It records the decision, clears the card and updates the state. You say: Pass to engineering, why did the last release fail? It forwards it, returns engineering's answer and adds its view.">
-</p>
 
 ### Open a session
 
@@ -168,9 +139,9 @@ Your hq grows every day, but each session reads only a small set of files at the
 
 | You say | What happens |
 |---|---|
-| "I have an idea: a referral program for early users." | The CoS frames it, checks for duplicates and routes it: a decision card, a department task or a note. |
+| "I have an idea: a referral program for early users." | The CoS frames it, checks for duplicates, picks the route (a decision card, a department task or a note) and runs it. |
 | "Decide whether we keep the free tier." | A decision card with a code (for example `ACME-D3`), options and a recommendation, added to your pending list. |
-| "Approve ACME-A2." or "ACME-D3: b." | The CoS runs exactly that, or records your decision, and clears the item. |
+| "Approve ACME-A2." or "ACME-D3: b." | The CoS runs exactly that, or records your decision, then clears the item and updates the state. |
 | "Brief." | A dated brief, saved in the hq: changes, sourced numbers, risks, pending items, and a cleanup check that proposes what to archive. |
 | "Pass to engineering: why did the last release fail?" | The CoS forwards your text, returns the answer verbatim and adds its comment. |
 | "Resume." | The CoS picks up from the state, the latest brief and the inbox, and proposes a next step. |
@@ -195,13 +166,9 @@ Use the name you gave the department, in lowercase (for example `mike`), or its 
 
 Update from `/plugin` (Installed tab, **Update now**) or, inside your hq folder, with `claude plugin update ceo-of-agents@ceo-of-agents --scope project`. Auto-update is off by default for third-party marketplaces; turn it on in `/plugin`, Marketplaces tab.
 
-If you also installed the plugin for your whole computer (user scope), check `/plugin`, Installed tab, and remove the extra copy with `claude plugin uninstall ceo-of-agents@ceo-of-agents --scope user`; otherwise an older copy may be the one that loads. Install it at project scope in each of your hqs first.
+If you also installed the plugin for your whole computer (user scope), install it at project scope in each of your hqs first, then check `/plugin`, Installed tab, and remove the extra copy with `claude plugin uninstall ceo-of-agents@ceo-of-agents --scope user`.
 
-Updates never touch your hq.
-
-When the plugin updates, your chief of staff notices at the start of a session and offers to bring your hq up to date.
-
-Nothing in your hq changes until you say OK. Each update is described in [`migrations/`](migrations/README.md); your CoS shows a short summary of what changed and saves it as one commit per update.
+An update never changes your hq by itself: at the start of a session your chief of staff notices the new version and offers to bring your hq up to date, and nothing in your hq changes until you say OK. Each update is described in [`migrations/`](migrations/README.md); your CoS shows a short summary of what changed and saves it as one commit per update.
 
 ## 7. Built with ceo-of-agents
 
