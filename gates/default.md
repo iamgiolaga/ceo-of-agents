@@ -45,6 +45,15 @@ The setup wizard shows the meaning and the example to the CEO, never the id. The
 3. Run exactly the approved action, nothing broader.
 4. Tracking writes (issues, Project items and fields, labels, milestones, comments) and PR creation are free; the review and merge are the control point. Changing a Project's or a repo's settings, including its built-in workflows, is `org-or-repo-settings`.
 
+## Protected repos
+
+The table applies to the org's own repos. A repo that other people work on is marked `protected: true` in `repos:` in `org.yaml` (schema `org/5`), and there every write needs the CEO's explicit OK, whatever its tier in the table: issues, labels, milestones, comments, pull requests, branch pushes, and every action of the ok tier. Reads stay free.
+
+- The hq is never protected. Every other repo defaults to protected; the flag is set once, when the repo is registered, with one plain question ("Do other people work on this project and see what your agents write there?"); "not sure" keeps it protected. No question while the hq is the only repo.
+- A repo with no item in `repos:` and no matching owner pattern counts as protected.
+- Advanced, only when the CEO asks: an owner pattern `owner/*` with one `protected` value for all that owner's repos, and exact items as exceptions.
+- The flag is not inferred from the repo owner: the plugin cannot tell whether an account or an org is the CEO's own.
+
 ## Advisory departments
 
 Legal, finance and tax departments are advisory, and so are the personal health, money and paperwork departments. They never perform `file-or-sign` or `make-payment` at all, in any tier: they prepare and recommend, and the CEO acts outside the agents. No org configuration or policy may lower this; those two actions stay in `ok` and the advisory departments do not get tools for them.

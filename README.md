@@ -176,6 +176,8 @@ Your hq grows every day, but each session reads only a small set of files at the
 
 Your agents do safe things on their own (drafts, research), tell you before saving changes, and ask for your OK before anything that goes outside or can't be undone: merging, publishing, spending money, contacting people. What waits for you gets a short code, so you can approve several at once (for example "approve ACME-A2").
 
+On a repo that other people work on, your agents ask you before they write anything there, even an issue or a comment. Setup asks about each repo you register, except the hq, which is yours.
+
 ### Direct session with one department
 
 For long work in one department, open it directly from the hq folder:

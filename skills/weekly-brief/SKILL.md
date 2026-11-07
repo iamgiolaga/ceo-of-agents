@@ -19,7 +19,7 @@ On demand only: no scheduled automation. Never invent numbers; every number carr
 
 3. Product repos and tracker, read-only. Skip this step when `repos` in `org.yaml` is `[]` and `tracker` is `none`, or both are absent (an `org/2` file). Never write to GitHub from this skill.
    - Tracker (if not `none`): `gh project item-list <number> --owner <owner> --format json --limit 200`; count items by `tracker.status_field`.
-   - For each registered repo: `gh issue list -R <slug> --state open --limit 50`, `gh issue list -R <slug> --state closed --search "closed:>=<date from step 2>" --limit 50`, and `gh pr list -R <slug> --state open`.
+   - For each registered repo (owner patterns `owner/*` and planned repos excluded; reads are free also on protected repos): `gh issue list -R <slug> --state open --limit 50`, `gh issue list -R <slug> --state closed --search "closed:>=<date from step 2>" --limit 50`, and `gh pr list -R <slug> --state open`.
    - Fallback: if a `gh` call fails (not installed, not signed in, no `project` scope, no access), write `not read: <reason>` for that source in the brief and in the chat summary, and suggest the exact command (for example `gh auth refresh -s project`). Never fill the gap with guesses or with older numbers presented as current.
    - Drift: an issue closed but still open on the tracker, work recorded in hq with no issue, a merged PR whose issue is still open. List it under Roadmap; do not fix it here.
 

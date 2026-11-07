@@ -13,7 +13,7 @@ How framework upgrades reach an instance (an org's hq repo).
 
 ## Schema versions
 
-Each schema carries its own version in the file (`state/1`, `org/4`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
+Each schema carries its own version in the file (`state/1`, `org/5`, `portfolio/1`, `policy/1`). A breaking change bumps the number (`state/1` to `state/2`) and ships with a migration. Additive, backward-compatible changes do not bump it.
 
 How long a holding keeps reading the previous schema version of a company `state.md` is an open question (design spec, section 11). Until resolved, a reader should accept the version it knows and report any other as "unreadable schema" rather than guess.
 

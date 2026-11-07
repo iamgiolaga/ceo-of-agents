@@ -1,4 +1,4 @@
-schema: org/4
+schema: org/5
 framework_version: {{FRAMEWORK_VERSION}}
 org:
   id: {{ORG_ID}}
@@ -38,6 +38,7 @@ accounts:
 #    role: code                 # short: code, site, docs or hq
 #    visibility: public         # public | private; public repos get no internal names, codes or hq content
 #    issues_home: true          # exactly one item: where cross-cutting issues go (may be the hq)
+#    protected: true            # true: agents ask you before any write there; the hq is always false
 #    planned: true              # optional: not created yet; the CoS asks you to create it
 # Local clone paths are per machine: repo_paths in accounts.local.yaml, not here.
 repos: {{REPOS_YAML}}

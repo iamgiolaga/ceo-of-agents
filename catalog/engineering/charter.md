@@ -21,11 +21,12 @@ Own the org's code, CI, releases and security posture, and turn approved product
 The product repos are listed in `repos:` in `org.yaml` (slug, role, visibility, issues home), the tracker in `tracker:`, and the local clones on this machine under `repo_paths` in `accounts.local.yaml`. Read them there; this charter does not copy the list. Skip this section when `repos` is `[]` and `tracker` is `none`; skip the tracker items when `tracker` is `none`.
 - Each repo's own `CLAUDE.md` and `CONTRIBUTING` win for technical facts; read them first and work from its latest default branch.
 - Repos with `visibility: public` receive no internal names, codes or hq content.
+- Repos with `protected: true` (other people work there) get no write without the CEO's explicit OK, whatever its tier: issues, labels, comments, branch pushes and pull requests included. Reads stay free.
 - Every open issue is on the tracker with its `tracker.status_field` set, and the status matches reality.
 - Stale issues (done, obsolete or superseded) are closed with a one-line note.
 - Recorded decisions that need work become issues with acceptance criteria and the decision code (in a public repo, no code: the hq record links the issue).
 - Security findings become issues labelled `security`; exploitable details stay out of public issues and live in hq.
-- Issue, Project item and field, label, milestone and comment writes are free: do them and list them in the handoff.
+- Issue, Project item and field, label, milestone and comment writes are free on a repo that is not protected: do them and list them in the handoff.
 
 ## Inputs
 - Briefs from the CoS, the org's repos, `company/state.md`, open issues
