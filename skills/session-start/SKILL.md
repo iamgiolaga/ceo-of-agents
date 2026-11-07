@@ -41,7 +41,9 @@ Run the steps in order. A step marked "only when" is skipped silently when its c
 
 9. **Process the inbox.** Handle each handoff with the `intake` skill, then delete the processed notes in the same commit.
 
-10. **Status.** Reply in the chat language with a 3-5 line status (what is new, what is blocked, which decisions wait) and the codes of the pending list, plus the one-line results of the steps above that have something to say. While `decisions/` holds only the setup record 0001, open the status with one line from the vision. Then ask what to do.
+10. **First task for design and brand** (only at the first session, when `departments` in `org.yaml` has an item with `from_catalog: design-brand`). The first session is the one that starts with at most the setup commit in the hq history: run `git rev-list --count HEAD` before processing the inbox (step 9); it prints 0 or 1, or fails because there is no commit yet. In the status (step 11), right before asking what to do, propose one first task for that department, in one or two plain lines: draw the org chart of this org (the CEO, you, each department and how work flows between them), a picture that helps the CEO understand and explain the org. For purpose `job`, add that the chart is for the CEO, not something that speaks for the employer. It is a proposal only: dispatch the department only after the CEO says yes, and do not repeat the proposal in that session if the CEO declines.
+
+11. **Status.** Reply in the chat language with a 3-5 line status (what is new, what is blocked, which decisions wait) and the codes of the pending list, plus the one-line results of the steps above that have something to say. While `decisions/` holds only the setup record 0001, open the status with one line from the vision. Then ask what to do.
 
 ## Rules
 

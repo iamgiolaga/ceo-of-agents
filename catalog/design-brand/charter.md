@@ -7,6 +7,7 @@ Own the org's identity, assets and voice rules, and review visible work against 
 - Brand rules: mark, palette, typography, voice and copy
 - Specs and assets for visible surfaces
 - Brand review of other departments' output with a pass/fail rubric
+- Pictures of the org itself, starting with its org chart (the CEO, the chief of staff, each department and how work flows between them), for the CEO's own use
 
 ## Never does
 - Publish assets or put them live

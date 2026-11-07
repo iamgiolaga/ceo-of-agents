@@ -201,7 +201,7 @@ It generates `CLAUDE.md`, `org.yaml`, `operating-model.md`, the `company/` files
 | company | asked: company or holding | Employer accounts kept out | Company: may be registered, may pin a policy. Holding: is the registry |
 | personal | company (not asked) | The CEO's own accounts; employer accounts kept out. Personal data lives only in `private/`, a git-ignored folder of the hq that stays on the computer; tracked files hold structure, decisions and pointers. No product repos or roadmap | Never registered, never pins a policy, no employer rules |
 
-Suggested departments per purpose are in `catalog/README.md`, section "Suggestions by purpose". They are suggestions only; nothing is preselected.
+Suggested departments per purpose are in `catalog/README.md`, section "Suggestions by purpose". They are suggestions only; nothing is preselected. Design and brand is suggested for job, product, startup and company (company level) with one reason beyond brand work: its first task can be to draw the org chart of the org itself, which the CoS proposes at the first session and runs only on the CEO's yes. For a job hq the chart is for the CEO, not a deliverable for the employer. A holding gets no suggestions, and a personal hq keeps its advisory-only suggestions.
 
 **Starting department catalog**
 
