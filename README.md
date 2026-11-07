@@ -41,7 +41,7 @@ Nothing important happens without your OK. Status: early; see the [design notes]
 
 **You need:** Claude Code (signed in), git, a GitHub account ([details](#2-what-you-need)).
 
-**1. Install** (open Claude Code in an empty folder: it becomes your hq). Run these two commands one at a time:
+**1. Install** (create an empty hq folder inside a parent folder, as shown in [Folders](#folders), and open Claude Code there). Run these two commands one at a time:
 
 1. Add the marketplace:
 
@@ -82,7 +82,7 @@ You pick each department, or none.
 ## 2. What you need
 
 - **Claude Code** on your own machine, signed in: the terminal, the desktop app, or an IDE extension such as VS Code or JetBrains.
-- **git** and an **empty folder** for the hq.
+- **git** and an **empty folder** for the hq, inside a parent folder ([Folders](#folders)).
 - **A GitHub account** to host the hq as a private repo (you can add the remote later).
 - **`gh` (GitHub CLI)**, optional: only if your agents work on GitHub, for example to open pull requests or keep your roadmap up to date.
 
@@ -90,7 +90,26 @@ Not needed: coding skills, servers, extra API keys or scheduled jobs. Nothing ru
 
 ## 3. Install
 
-Install the plugin in the folder that will become your hq, not for your whole computer. Open the empty folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then run these two commands one at a time:
+### Folders
+
+Set up your folders once, before you install:
+
+1. Create a parent folder for your GitHub account or organization, and name it after it (for example `my-org`). If you already keep that account's repos in one folder, use that one.
+2. Inside it, create an empty folder for the hq (for example `my-org-hq`). This is the folder you open in Claude Code, every time.
+3. Product repos (your code), if you have any, go next to the hq, inside the same parent folder. Never put them inside the hq folder: a repo inside another repo mixes your records with code and confuses git.
+
+```
+my-org/            <- one folder per GitHub account or organization
+  my-org-hq/       <- the hq: run Claude Code here
+  product-a/       <- a product repo, next to the hq
+  product-b/
+```
+
+If the hq is the only thing you keep on GitHub, you have nothing more to do: the parent folder and the hq folder are all you need.
+
+### Install the plugin
+
+Install the plugin in your hq folder, not for your whole computer. Open the empty hq folder in Claude Code (terminal: `cd` into it and run `claude`; desktop app: open it in the Code tab), then run these two commands one at a time:
 
 1. Add the marketplace:
 
