@@ -77,7 +77,7 @@ Full steps: [Install](#3-install) · [First run](#4-first-run) · [Daily use](#5
 | **company** | A company, or a **holding**: it follows its companies without changing them, gives you one pending list across them, and sets shared rules (approvals, model limits) they follow. |
 | **personal** | Your own life: health, money, paperwork. Personal data stays on your computer, out of git. Suggested departments (health, money, paperwork) only prepare and remember: your doctor, accountant or lawyer decides, and they never file, sign or pay. Never joins a holding. |
 
-You pick each department, or none. Except for a holding and personal, setup also suggests a design and brand department: its first task can be to draw your org chart, which your chief of staff offers at the first session.
+You pick each department, or none. Take the suggested ones as they are, change what one covers, write your own from scratch, or bring agents and skills you already have; setup warns you when two departments cover the same work. Except for a holding and personal, setup also suggests a design and brand department: its first task can be to draw your org chart, which your chief of staff offers at the first session.
 
 ## 2. What you need
 

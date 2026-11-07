@@ -78,7 +78,7 @@ Route by agent name: the Agent column, which is the `name` in `.claude/agents/<a
 
 {{DEPARTMENTS_TABLE}}
 
-Each department has a charter in `departments/<id>/charter.md` and an agent in `.claude/agents/<agent>.md` with an explicit tool allowlist. Route by scope: read the charter if unsure. A department prepares and recommends; it does not take actions the gates reserve for the CEO. Work that spans departments goes through you.
+Each department has a charter in `departments/<id>/charter.md` and an agent in `.claude/agents/<agent>.md` with an explicit tool allowlist. Route by scope: read the charter if unsure. A department prepares and recommends; it does not take actions the gates reserve for the CEO. Work that spans departments goes through you. A department with `from_catalog: own` in `org.yaml` is the CEO's own agent or skill, used as it is: its charter says how to use it, and you never edit its file.
 <!-- END IF -->
 <!-- IF no-departments -->
 This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card.

@@ -42,12 +42,24 @@
 #                           ^[a-z][a-z0-9-]*$. The persona slug when display_name is a
 #                           persona, otherwise equal to id. The agent file is
 #                           .claude/agents/<agent>.md. Unique; never another
-#                           department's id, never "reader" or "worker"
+#                           department's id, never "reader" or "worker". For
+#                           from_catalog own: the name the CEO's own agent or skill
+#                           already has (any name without spaces, ":" allowed)
 #     from_catalog          a catalog id (engineering, design-brand, business,
 #                           growth-social, legal, finance, tax, operations; and
-#                           health, money, paperwork in a personal hq only) or "custom"
+#                           health, money, paperwork in a personal hq only), "custom",
+#                           or "own" (the CEO's own agent or skill, used as it is: its
+#                           file lives outside the hq and is never edited; the hq holds
+#                           only its charter, from templates/department/own-charter.md)
+#     adapted               optional, only with a catalog id. true = the CEO changed the
+#                           catalog entry (scope, exclusions or tools); the changes are
+#                           in a "Changes for this org" section of its charter and agent
+#                           file, everything else is the catalog's
+#     kind                  only with own: agent | skill
+#     location              only with own: where it lives, as the CEO said it (a path, the
+#                           CEO's own agents, or a plugin name); informational
 #     display_name          role name or a persona name, the CEO's choice
-#     model                 one of models.tiers
+#     model                 one of models.tiers; omitted for own (its own file decides)
 #     workers               optional. Absent = follow models.workers (one-down). "same" =
 #                           "top model, workers included": allowed only when the
 #                           department model is the first entry of models.tiers; its
@@ -215,7 +227,10 @@ employer_rules: null
 #     (departments/<id>/charter.md).
 #   - Each department has an agent matching ^[a-z][a-z0-9-]*$, unique, not equal to another
 #     department's id, "reader" or "worker". The file .claude/agents/<agent>.md exists and
-#     its name: equals the file name and agent.
+#     its name: equals the file name and agent. Exception, from_catalog own: the agent is
+#     any name without spaces, has no file in .claude/agents/, and the item has kind and
+#     location and no model.
+#   - adapted appears only with a catalog id and is true.
 #   - No connector pattern appears both in a department connectors list and in
 #     accounts.forbidden_connectors.
 #   - Every gate action id is known (see gates/default.md) and listed exactly once.

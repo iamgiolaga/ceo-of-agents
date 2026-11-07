@@ -21,7 +21,7 @@ models:
 # Zero departments is valid. Item shape:
 #  - id: engineering            # kebab-case; departments/<id>/charter.md, cards and handoffs
 #    agent: mike                # agent name: persona in lowercase, or the id; file .claude/agents/<agent>.md
-#    from_catalog: engineering  # catalog id or "custom"
+#    from_catalog: engineering  # catalog id, "custom", or "own" (your own agent or skill, used as it is)
 #    display_name: Engineering  # role name or persona, the CEO's choice
 #    model: opus
 #    workers: same              # optional: top model, workers included (only with the top tier)
