@@ -15,14 +15,14 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
 
 ## Inputs
 
-1. Handoff notes: every file in `inbox/` except `README.md` (`inbox/YYYY-MM-DD-<from>-to-<to>-<slug>.md`, frontmatter `from`, `to`, `date`, `needs_ceo_decision`, `proposed_card`, sections `Ask or finding`, `Done`, `Links`).
+1. Handoff notes: every file in `inbox/` except `README.md` (`inbox/YYYY-MM-DD-<from>-to-<to>-<slug>.md`, frontmatter `from`, `to`, `date`, `needs_ceo_decision`, `proposed_card` and the optional `initiative`, sections `Ask or finding`, `Done`, `Links`).
 2. A new request, idea or finding the CEO states in chat.
 
 ## Steps
 
 1. Sync. Run `git remote`. If it prints nothing, skip pull and push and say once: "No remote: pull and push skipped". Otherwise run `git pull`; if it fails, say so in one line and continue with the local copy. Skip this step if the session already synced hq.
 
-2. Orient. Read `org.yaml`, `company/vision.md` and `company/strategy.md` (if present), `company/state.md`, `company/decision-queue.md` and `ls inbox/`. Note the org id, the level and the next codes (`next_action`, `next_decision`). Search `decisions/` and the queue for duplicates and conflicts with the topic (Grep). If `repos` in `org.yaml` is not empty, also search the open issues of the repo the topic touches and of the issues home, read-only (`gh issue list -R <slug> --state open --search "<words>"`); a match is a duplicate: add the new context as a comment (`gh issue comment`) instead of opening another issue. If the search fails, say so once and continue without it. If a topic is already decided, say so and cite the record rather than reopening it, unless the new input is a reason to supersede it. If a request does not serve the vision or the current focus, say so in one line, then follow the CEO. If this session has not run the version check yet (an hq generated before 0.7.0 has no such step in its `CLAUDE.md`), use the `hq-version` skill once, check only.
+2. Orient. Read `org.yaml`, `company/vision.md` and `company/strategy.md` (if present), `company/state.md`, `company/decision-queue.md` and `ls inbox/`. Note the org id, the level and the next codes (`next_action`, `next_decision`). Search `decisions/` and the queue for duplicates and conflicts with the topic (Grep); also `initiatives/README.md` (if present), but only when the topic may span several sessions or departments or the note names an initiative. If `repos` in `org.yaml` is not empty, also search the open issues of the repo the topic touches and of the issues home, read-only (`gh issue list -R <slug> --state open --search "<words>"`); a match is a duplicate: add the new context as a comment (`gh issue comment`) instead of opening another issue. If the search fails, say so once and continue without it. If a topic is already decided, say so and cite the record rather than reopening it, unless the new input is a reason to supersede it. If a request does not serve the vision or the current focus, say so in one line, then follow the CEO. If this session has not run the version check yet (an hq generated before 0.7.0 has no such step in its `CLAUDE.md`), use the `hq-version` skill once, check only.
 
 3. For a new CEO request (no note): restate it in one line. Classify it into exactly one primary route:
    - Decision: a clear choice is needed, so add a card.
@@ -36,6 +36,7 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
    - Reasoning session: vague or strategic; propose a conversation first and record only what comes out of it.
    - Later: does not fit now; park it as a low-urgency item rather than dropping it.
    State the route in one short line, then execute. Do not ask for OKs the gate table does not require.
+   If the work spans several sessions or departments, open an initiative for it with the `initiatives` skill (or use the current one that covers it) and name its folder in every brief. Work that one department finishes in one go needs none.
    A department task or a decision about work in a registered repo also gets its issue (see "Issue route"), unless one already exists.
 
 4. For each handoff note, read it fully, then:
@@ -44,6 +45,7 @@ Formats are fixed: `${CLAUDE_PLUGIN_ROOT}/schemas/state.md`, `${CLAUDE_PLUGIN_RO
    - If something only the CEO can do is needed: add `- <ORG_ID>-A<n> [urgency]: <exact action: where, what, link> (since YYYY-MM-DD)` to "Waiting on the CEO" and increment `next_action`.
    - Codes are namespaced, monotonic and never reused. Never reuse a code of a removed item.
    - Remove "Waiting on the CEO" items the note shows are already done.
+   - If the note names an initiative (`initiative: <slug>` in its frontmatter, or a path under `initiatives/`), update that initiative with the `initiatives` skill (section Update).
 
 5. Escalation (company level, purpose product, startup or company; the `escalate:` line does not exist in a holding, a job or a personal queue): if a decision touches money, personal liability or the portfolio, set `escalate: holding` on the card and append ` [escalate: holding]` to its line in "Open decisions". The holding reads it on its next portfolio brief. Never write to the holding repo. Tell the CEO the card is flagged and that the answer is still recorded here.
 

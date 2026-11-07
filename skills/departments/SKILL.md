@@ -35,7 +35,7 @@ A reply from the CEO to a denied permission is not a grant by itself: do not wid
 
 Record the decision with the `record-decision` skill, then apply exactly what was decided:
 
-- New department: `departments/<id>/charter.md` and `.claude/agents/<agent>.md` rendered from the catalog entry or the custom template, or only the charter for the CEO's own agent or skill (placeholders as in the `init-fleet` skill's placeholder reference), an item in `departments:` in `org.yaml` (`connectors: []` unless the decision grants one), and a row in the routing table of `CLAUDE.md`. Writes into `.claude/` may raise a permission prompt.
+- New department: `departments/<id>/charter.md` and `.claude/agents/<agent>.md` rendered from the catalog entry or the custom template, or only the charter for the CEO's own agent or skill, and in every case `departments/<id>/README.md`, the index of its documents, from `${CLAUDE_PLUGIN_ROOT}/templates/department/index.md` (placeholders as in the `init-fleet` skill's placeholder reference), an item in `departments:` in `org.yaml` (`connectors: []` unless the decision grants one), and a row in the routing table of `CLAUDE.md`. Writes into `.claude/` may raise a permission prompt.
 - Grant: add the connector to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. For the CEO's own agent or skill, record it in `org.yaml` only and tell the CEO that its own file decides what it can use.
 - `workers: same` gained or lost: also update the worker model lines in its agent file.
 - Removal: delete its charter folder and agent file, its item in `org.yaml` and its routing row. Git keeps the history.
