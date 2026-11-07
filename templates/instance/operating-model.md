@@ -88,7 +88,7 @@ Full support: Claude Code on your own machine with the plugin enabled (terminal,
 
 ## Plugin requirement
 
-The `ceo-of-agents` plugin must be enabled in this hq. The CoS procedures (`intake`, `record-decision`, `weekly-brief`) come from it. They are hidden from the `/` menu: the CEO never types them, the CoS invokes them.
+The `ceo-of-agents` plugin must be enabled in this hq. The CoS procedures (`session-start`, `intake`, `record-decision`, `weekly-brief`, `hq-version`, `departments`, `product-repos`) come from it. They are hidden from the `/` menu: the CEO never types them, the CoS invokes them.
 <!-- IF holding -->
 The holding also uses the `portfolio-brief` procedure.
 <!-- END IF -->

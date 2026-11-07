@@ -1,0 +1,3 @@
+# Search tools that follow .ignore files (Claude Code's search among them) skip these paths.
+# Git does not read this file: everything here is still tracked and pushed.
+archive/

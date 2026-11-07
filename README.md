@@ -159,6 +159,8 @@ The plugin is then turned on in the folder's `.claude/settings.json`, so it load
 
 Open Claude Code in the hq folder. The CoS gets the latest hq, reads what departments left for it and gives you a short status with the codes of what waits on you.
 
+Your hq grows every day, but each session reads only a small set of files at the start. If those files grow past their size budget, the CoS says so and offers to move the detail into linked notes. Old documents can be archived: they move to `archive/`, stay in git, and stop showing up in everyday searches.
+
 ### Talk in plain language
 
 | You say | What happens |

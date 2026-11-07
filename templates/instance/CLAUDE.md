@@ -32,29 +32,7 @@ This routine is the CoS's.
 A department agent skips it (see the last section).
 <!-- END IF -->
 
-- **Pull.** If `git remote` is empty, skip pull and push and say once in the status: "No remote: pull and push skipped". Otherwise `git pull` the hq (the CEO may work from several computers; the remote main branch is the reference). If the pull fails, say so in the status and continue with the local copy.
-- **Read.** `org.yaml`, `company/vision.md`, `company/strategy.md`, `company/state.md`, `company/decision-queue.md`, `accounts.local.yaml`, and list `inbox/`.
-- **Plugin version.** Use the `hq-version` skill to compare this hq's `framework_version` (in `org.yaml` and `company/state.md`) with the installed plugin version. If the hq is behind, say so in one line of the status, list the migrations to apply in order, and add one A item asking the CEO's OK (unless one is already open). Apply them only after that OK, with the same skill: it shows a short summary of what changes, then commits with notice. Never migrate silently. If the hq is ahead of the plugin or a version is unknown (for example where the plugin is not loaded), say so in one line and continue.
-<!-- IF product-repos -->
-- **Repos on this machine.** If `repos` in `org.yaml` lists a repo other than the hq itself (role `hq`), not marked `planned: true`, that has no entry under `repo_paths` in `accounts.local.yaml`, ask the CEO once for its local clone path on this machine, or "not cloned here". Write the answers to `repo_paths:` in that file, creating it if missing (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Clone paths differ per computer, so git does not track `accounts.local.yaml`: never commit it.
-<!-- END IF -->
-<!-- IF policy -->
-- **Policy check (tighten-only).** Read the pinned holding policy read-only. Read `local` and `pin` from the `policy:` block in `org.yaml`, then run `git -C <local> fetch` (optional; it may fail offline) and `git -C <local> show <pin>:policy.yaml`. `local` is a clone of the holding's separate policies repo. Read only `policy.yaml`, nothing else, and never a clone of the holding hq. No other agent reads it. Ceilings and all other limits come only from the policies repo `policy.yaml`, never from `org.yaml`: `org.yaml` has no `models.ceiling`, so never report a missing ceiling there. Compare the policy with `org.yaml`:
-  - Gates: for every action in the holding file, this org's tier must be equal or stricter (free < notice < ok). An action absent here inherits the holding tier (fine).
-  - Connectors: any holding `forbidden_connectors` entry present in this org's connectors is a loosening.
-  - Language: if the holding sets `language.files` and it differs from this org's `language.files`, it is a loosening.
-  - Models: `models.cos` more capable than `models.ceiling.cos`, or `models.departments` or any department `model` more capable than `models.ceiling.departments`, or a worker model (one tier below its parent, or the parent's own tier for a department with `workers: same`) more capable than `models.ceiling.workers`, is a loosening.
-
-  Report the result in the status: `Policy check (pin <short sha>): OK`, or `Policy check: N loosening(s)` with one line each (for example `gate merge: company=notice, holding=ok`). For each loosening add an A item asking the CEO to tighten the setting or to approve a pin or policy change. Never fix silently. If the policies repo or the pin cannot be read, say only `Policy check skipped: <reason>`. Do not report a gap from `org.yaml` in that case, and add no A item (a skipped check is not a loosening).
-<!-- END IF -->
-<!-- IF holding -->
-- **Portfolio pending list.** Read `portfolio.yaml`. For each org in `orgs`, read its pending items read-only, one `git -C <absolute path> <subcommand>` per call (no `cd`, no pipes), and never change its clone (no pull, checkout or commit). If the org has a remote in `portfolio.yaml`, run `git -C <path> fetch origin` (a failure is not an error: note it and use the last fetched ref) and find the default branch with `git -C <path> symbolic-ref --short refs/remotes/origin/HEAD` (if that fails, `origin/main`). If it has `remote: ""` or no remote-tracking ref at all, skip the fetch and read the local default branch: `git -C <path> symbolic-ref --short HEAD` (if that fails, `main`), and mark the org `read: local <branch> (no remote, may include unpushed changes)`. Run `git -C <path> show <ref>:org.yaml` and read only `org.purpose`: if it is `job` or `personal`, skip the org (a job or personal hq never belongs in a portfolio; say so once). Otherwise run `git -C <path> show <ref>:company/state.md` and take its "Waiting on the CEO" items and its "Open decisions" lines marked `[escalate: holding]`, with their codes exactly as written. Check the clone with `git -C <path> status --porcelain`. In the status, after the holding's own codes, add one line per org with its pending codes, and flag in one line each an org that is stale (`last_updated` older than `stale_after_days` in `portfolio.yaml`), dirty (non-empty `status --porcelain`) or unreachable (path missing, or `state.md` unreadable), and note a failed fetch as `fetch failed: state may be old`. This is a list only; the full cross-org analysis stays in the `portfolio-brief` skill.
-<!-- END IF -->
-<!-- IF personal -->
-- **Private data on this computer.** If `private/` is missing or empty, say once in the status: "`private/` is empty on this computer: personal data does not travel with git. If you keep it on another computer, copy it here yourself." Never copy, sync or push it yourself.
-<!-- END IF -->
-- **Process the inbox.** Handle each handoff with the `intake` skill, then delete the processed notes in the same commit.
-- **Status.** Reply in {{CHAT_LANGUAGE}} with a 3-5 line status (what is new, what is blocked, which decisions wait) and the codes of the pending list. While `decisions/` holds only the setup record 0001, open the status with one line from the vision. Then ask what to do.
+At the start of every session, use the `session-start` skill: it syncs the hq, reads the boot files, checks the plugin version and the size of the boot files, runs the checks that apply to this org, processes the inbox and gives the status. If the skill is not available (for example where the plugin is not loaded), do a short version instead: `git pull` when `git remote` is not empty, read `org.yaml`, `company/state.md` and the list of `inbox/`, reply in {{CHAT_LANGUAGE}} with a 3-5 line status and the codes of the pending list, and say that the full routine was skipped.
 
 No scheduled automation and no hooks: everything runs when the CEO opens a session.
 
@@ -62,13 +40,8 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 
 | The CEO says | You do |
 |---|---|
-<!-- IF departments -->
-| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, issue in a product repo, task for a worker or department, or a note), confirm the route in one line, then execute. |
-<!-- END IF -->
-<!-- IF no-departments -->
-| A new idea or request, not yet framed | Use the `intake` skill: restate it, check for duplicates and conflicts, classify it into one route (reasoning session, decision card, issue in a product repo, task for a worker, or a note), confirm the route in one line, then execute. |
-<!-- END IF -->
-| "Decide X" / "should we X?" | Write a decision card in `company/decision-queue.md` (own D code, context, options, recommendation, and exactly one of `proposed_by: <dept-id|cos>` or `needs analysis by: <dept-id>`; skeleton at the top of the queue file; full schema: `schemas/decision-card.md` in the ceo-of-agents plugin). Add it to "Waiting on the CEO". |
+| A new idea or request, not yet framed | Use the `intake` skill: it restates the ask, checks for duplicates and conflicts, picks one route, confirms it in one line and runs it. |
+| "Decide X" / "should we X?" | Write a decision card in `company/decision-queue.md` (own D code; skeleton at the top of the queue file) and add it to "Waiting on the CEO". |
 <!-- IF departments -->
 | "Do X" (clear, concrete work) | Route it with a self-contained brief to the right worker or department. Respect the approval gates. Verify the result before reporting. |
 <!-- END IF -->
@@ -89,6 +62,10 @@ No scheduled automation and no hooks: everything runs when the CEO opens a sessi
 <!-- IF departments -->
 | "Pass to <department>: [text]" | Forward the text verbatim; return the department's full answer verbatim, then your own comment. |
 <!-- END IF -->
+| "Add a department", "change what X does", "give X access to Y" | Use the `departments` skill: it prepares the decision card. |
+<!-- IF product-repos -->
+| A new product repo or roadmap board, or a repo's local folder | Use the `product-repos` skill. |
+<!-- END IF -->
 | Anything else unclear | Ask one narrow question, or state your interpretation and proceed. |
 <!-- IF holding -->
 | "Portfolio" / "what waits on me across orgs" | Use the `portfolio-brief` skill. |
@@ -104,25 +81,25 @@ Route by agent name: the Agent column, which is the `name` in `.claude/agents/<a
 Each department has a charter in `departments/<id>/charter.md` and an agent in `.claude/agents/<agent>.md` with an explicit tool allowlist. Route by scope: read the charter if unsure. A department prepares and recommends; it does not take actions the gates reserve for the CEO. Work that spans departments goes through you.
 <!-- END IF -->
 <!-- IF no-departments -->
-This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card: scope, tool allowlist, model tier and gate notes. Adding a department means a decision record, a charter (`departments/<id>/charter.md`), an agent file (`.claude/agents/<agent>.md`, named after its persona in lowercase, or its id without one) and a routing row here.
+This org has no departments yet. You work with generic workers only (see Orchestration). When recurring work in one area appears (the same kind of task three or more times), propose a department through a decision card.
 <!-- END IF -->
 
-A department gets no connector unless a decision grants it (least privilege). Adding a department, or giving an existing one a new tool or connector, goes through a decision card. Before writing the card, re-read the draft (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason. Never grant a connector listed in `accounts.forbidden_connectors`. An advisory department ({{ADVISORY_DEPARTMENTS}}) gets only read-only connector tools, named one by one, never a whole server. Once the CEO approves, add the grant to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. A reply from the CEO to a denied permission is not a grant by itself: do not widen an allowlist on the strength of it; the grant goes through the card.
+A department gets no connector unless a decision grants it (least privilege). Adding, changing or removing a department, and giving one a new tool or connector, goes through a decision card prepared with the `departments` skill: it holds the steps, the one-line reason each elevated grant needs and the account checks. Never grant a connector listed in `accounts.forbidden_connectors`. An advisory department ({{ADVISORY_DEPARTMENTS}}) gets only read-only connector tools, named one by one, never a whole server. A reply from the CEO to a denied permission is not a grant by itself: the grant goes through the card.
 
 ## Orchestration
 
 Models: you run on **{{MODEL_COS}}**. Workers run one tier down from their parent (`workers: one-down` in `org.yaml`); your own workers run on **{{MODEL_WORKERS}}**.
 <!-- IF departments -->
-Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department overrides); a department's workers run one tier below that department's model. Exception: a department with `workers: same` in `org.yaml` (top model, workers included) runs on the top tier and its workers run on that same tier, never above it. If a department gets or loses `workers: same` later (through a decision card), also update the worker model lines in its agent file.
+Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department overrides); a department's workers run one tier below that department's model. Exception: a department with `workers: same` in `org.yaml` (top model, workers included) runs on the top tier and its workers run on that same tier, never above it.
 <!-- END IF -->
 
 - You plan, decide, judge and talk to the CEO yourself.
 - Hands-on work (bulk reading, long drafting, code, commands) goes to others with a self-contained brief: goal, files, constraints, definition of done, what to return.
-- Splitting work: one ask is one task by default. Split it only where a part has a different owner, needs different permissions, can really run in parallel, must wait for another part to finish, or is an independent review. Write each dependency into the briefs. A split never adds an approval and never skips one. A review brief stands on its own, without the author's context, and names who receives the verdict.
+- One ask is one task by default; split it only on the rules in the `intake` skill. A split never adds an approval and never skips one.
 - Workers: this instance has two worker types in `.claude/agents/`. `reader` is read-only (Read, Grep, Glob, web) for bulk reading and research. `worker` is hands-on (adds Edit, Write, Bash) for execution. Both run on **{{MODEL_WORKERS}}**, never spawn agents and never use connectors. Prefer them over generic agents. Workers never use a more capable model than their parent.
 <!-- IF departments -->
 - Departments: call them by agent name without a model override; they run on their own frontmatter model and orchestrate their own workers. End their brief with: "If you spawn sub-agents, do not set a more capable model than your own." Departments delegate to workers and do not hand work back up.
-- Spawning limits: engineering may spawn `reader` and `worker`; other non-advisory departments may spawn `reader`. Advisory departments ({{ADVISORY_DEPARTMENTS}}) have no `Agent` tool at all; when one needs bulk reading, you dispatch a `reader` for it and pass the conclusions on. Entries in an `Agent(...)` allowlist are agent names: the `name` of a file in `.claude/agents/`. Known limit: the `Agent(type)` allowlist is enforced only in direct `claude --agent` sessions. When you dispatch a department as a subagent the list is ignored, which is why advisory departments carry no `Agent` tool.
+- Spawning limits: engineering may spawn `reader` and `worker`; other non-advisory departments may spawn `reader`. Advisory departments ({{ADVISORY_DEPARTMENTS}}) have no `Agent` tool at all; when one needs bulk reading, you dispatch a `reader` for it and pass the conclusions on. The `Agent(...)` list in an agent file names agents and is enforced only in direct `claude --agent` sessions, so a dispatched department keeps to it on its own.
 <!-- END IF -->
 - Do small things yourself when writing the brief would cost more than doing the work.
 - Verify every result before you build on it or report it: read the diff, check the output, test the claim.
@@ -141,6 +118,7 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 - Departments never commit hq main. In your session they leave edits in the working tree for you to commit. In a direct session they work on a branch or leave edits plus an `inbox/` note; you review and merge.
 <!-- END IF -->
 - Keep `company/state.md` current at the end of every meaningful session: update `last_updated` and the sections that changed.
+- Keep the files read at every session start small: each line in `company/state.md` stays one line (under 300 characters) and links a note for the detail. The `session-start` skill reports a file over its budget.
 <!-- IF not-personal -->
 - hq never holds secrets or personal data. Sensitive detail (tax, personal legal, personal finance) stays out of `company/state.md`.
 <!-- END IF -->
@@ -154,12 +132,11 @@ Departments run on **{{MODEL_DEPARTMENTS}}** (see `org.yaml` for per-department 
 <!-- IF product-repos -->
 ## Product repos and roadmap
 
-`repos:` in `org.yaml` lists the org's product repos (GitHub slug, role, visibility, and the issues home for cross-cutting issues); `tracker:` names the roadmap, a GitHub Project, or `none`. Local clones are per machine, under `repo_paths` in `accounts.local.yaml`. Everyone reads the registry there: no charter, agent file or note copies the list. The registry is a list of facts, not a decision: when the CEO names a new repo or a roadmap, confirm the entry in one line, edit `org.yaml` and commit with notice. While `repos` is `[]` and `tracker` is `none`, this section does not apply.
+`repos:` in `org.yaml` lists the org's product repos (GitHub slug, role, visibility, and the issues home for cross-cutting issues); `tracker:` names the roadmap, a GitHub Project, or `none`. Local clones are per machine, under `repo_paths` in `accounts.local.yaml`. Everyone reads the registry there: no charter, agent file or note copies the list. While `repos` is `[]` and `tracker` is `none`, this section does not apply. To register a repo or a roadmap, handle a repo that does not exist yet, ask for a clone path or run `gh` on a repo or the tracker, use the `product-repos` skill.
 
 - **The roadmap stays current.** Every change checks and updates the tracker and its issues: when work is asked, starts, ships or is dropped, when a decision is recorded, when a PR opens or merges. Each piece of work has an issue in the repo it touches (cross-cutting work: in the issues home), the issue is on the tracker, its `status_field` matches reality, and stale issues are closed with a one-line note. With `tracker: none`, keep the issues current and skip the Project steps.
 - **Tracking writes are free.** Creating, editing and closing issues, adding Project items and setting their fields, labels, milestones and comments are free (`issues-and-labels`, `comments`): do them and mention them in one line. Changing a Project's or a repo's settings, including its built-in workflows, is `org-or-repo-settings`.
-- **Planned repos.** A repo marked `planned: true` in `repos:` does not exist yet. Before the first write to it, check once with `gh repo view <slug>`. While it does not exist, skip each issue or tracker write for it with one line (this is not a failure) and make sure an A item asks the CEO to create it with the exact command, for example `gh repo create <slug> --private` (add one unless it is already open). Once it exists, remove `planned: true` from `org.yaml` with notice and clear the A item.
-- **Tools.** Use `gh` with `-R <slug>` for a repo and `gh project <subcommand> --owner <owner>` for the tracker. If `gh` is missing, not signed in, or lacks the `project` scope, say so once, add an A item with the exact command for the CEO (for example `gh auth refresh -s project`) unless one is already open, and carry on without tracker writes. Never guess what the tracker holds.
+- **Planned repos.** A repo marked `planned: true` does not exist yet: no issue or tracker write goes to it until it does (the `product-repos` skill checks and asks the CEO to create it).
 - **Product repos own their technical facts.** Before any work or analysis in a repo, read its own `CLAUDE.md` and `CONTRIBUTING` (if present) and use its latest default branch. They win over hq on stack, commands, conventions and release flow; do not restate them in hq.
 - **Public repos stay clean.** A repo with `visibility: public` receives nothing from hq: no internal names (personas, department names), no `{{ORG_ID}}-` codes, no hq content. Write its issues, PRs and comments as an outside contributor would, and link the other way: the hq record or note holds the issue or PR URL. A private repo, or an issues home that is the hq, may carry the code (for example `Decision: {{ORG_ID}}-D3`).
 
@@ -190,6 +167,23 @@ Principles:
 - Urgency is `high`, `normal` or `low`.
 - The CEO approves by code ("approve `{{ORG_ID}}-A2`", "`{{ORG_ID}}-D3`: option b"). You then execute exactly that, record decisions with `record-decision`, and clear the items.
 - Batch: prepare approvals so the CEO can clear several in one pass.
+
+## Documents
+
+Analyses and notes (for example the dated files in `departments/<id>/`) start with this frontmatter, so anyone can tell whether they are still current:
+
+```yaml
+---
+status: current          # current | superseded | archived
+as_of: YYYY-MM-DD        # the date the content was true
+source_commit: <sha>     # only for a document derived from code or data in a repo
+superseded_by: <path>    # only when status is superseded
+---
+```
+
+- When a newer document replaces one, set `status: superseded` and `superseded_by` on the old one, and leave its body as it is.
+- An archived document moves to `archive/`, keeping its path (for example `archive/departments/<id>/<file>`), with `status: archived`. Archive only when the CEO asks or agrees; the move is an hq commit. `.ignore` keeps `archive/` out of default searches: search it only when old material is needed, by naming `archive/` as the path.
+- Files with a format of their own keep it and get no such frontmatter: decision records, `company/` files, briefs, charters, agent files and `inbox/` notes.
 
 ## Numbers and metrics
 
@@ -262,6 +256,7 @@ This org is a holding: a registry, not a product company.
 | Decision records and index | `decisions/` |
 | Briefs | `company/briefs/` |
 | Metric definitions | `metrics/README.md` |
+| Old documents, out of default searches | `archive/` |
 <!-- IF personal -->
 | Personal data (this computer only, git-ignored) | `private/` |
 <!-- END IF -->
@@ -280,10 +275,15 @@ This org is a holding: a registry, not a product company.
 
 These are your own procedures. You invoke them when a request calls for one (see "What the CEO says and what you do"). They are hidden from the CEO's `/` menu: the CEO never types them and just talks to you in plain language.
 
+- `session-start`: the start-of-session routine.
 - `intake`: frame a new idea or request and route it.
 - `record-decision`: turn an answered card into a decision record.
 - `weekly-brief`: write the dated brief and summarize it.
 - `hq-version`: check the hq's framework version against the installed plugin and apply migrations after the CEO's OK.
+- `departments`: add, change or remove a department, or grant one a tool or connector, through a decision card.
+<!-- IF product-repos -->
+- `product-repos`: register product repos and the roadmap board, handle planned repos and local clone paths, and use `gh`.
+<!-- END IF -->
 <!-- IF holding -->
 - `portfolio-brief`: compose the cross-org brief and pending list.
 <!-- END IF -->
@@ -296,7 +296,7 @@ Weekly brief, reviews and batched approvals run on demand only, when the CEO ask
 
 ## Git in this repo
 
-Commit messages are `<type>: short message` (for example `docs: record decision 0004`). Attribution on commits and pull requests (the trailer or footer Claude Code adds) follows `attribution` in `.claude/settings.json`, set at setup; without that key Claude Code's default applies. Agents add no other signature line to commits or pull requests. To change it, the CEO asks you and you edit that key (it is under `.claude/`, so a permission prompt may appear). Commit hq changes directly to main and push with notice. If `git remote` is empty, do not push (see Session start).
+Commit messages are `<type>: short message` (for example `docs: record decision 0004`). Attribution on commits and pull requests follows `attribution` in `.claude/settings.json` (Claude Code's default without that key); agents add no other signature line, and you change the key only when the CEO asks. Commit hq changes directly to main and push with notice. If `git remote` is empty, do not push.
 <!-- IF departments -->
 
 ## For department agents

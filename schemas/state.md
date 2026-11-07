@@ -28,6 +28,8 @@ An empty section body is the single line `- none`.
 
 ## Line formats
 
+Every line stays under 300 characters, frontmatter included (budget: `schemas/boot-set.md`). An item that needs more keeps one line and links a note for the detail.
+
 Products and status:
 `- <product>: <status in one line> (as of YYYY-MM-DD)`
 

@@ -59,8 +59,8 @@ ceo-of-agents/
     workers/         reader and worker agent templates, one pair per instance
     policies-repo/   policy.yaml and README.md for the holding's separate policies repo
   catalog/           department catalog (charter + agent template each)
-  skills/            init-fleet, intake, record-decision, weekly-brief, portfolio-brief
-  schemas/           state.md, org.yaml, portfolio.yaml, policy.yaml, handoff, decision card, decision record
+  skills/            init-fleet; CoS procedures: session-start, intake, record-decision, weekly-brief, hq-version, departments, product-repos, portfolio-brief
+  schemas/           state.md, org.yaml, portfolio.yaml, policy.yaml, handoff, decision card, decision record, document lifecycle, boot set
   gates/             default approval-gate table
   migrations/        vN-to-vN+1 diffs
 ```
@@ -83,11 +83,18 @@ There is no `agents/` dir: Claude Code auto-registers every `.md` under a plugin
   inbox/                        handoffs, deleted once processed
   departments/<dept>/charter.md
   metrics/README.md             metric definitions, sources, dates
+  archive/                      documents no longer current, same paths; skipped by default searches (.ignore)
   .claude/agents/<dept>.md      department agents with tool allowlists
   .claude/agents/reader.md      read-only worker (bulk reading, research)
   .claude/agents/worker.md      hands-on worker (for departments with Bash)
   portfolio.yaml                holding only
 ```
+
+**Keeping the hq lean.** An hq grows every day, but most of it is read on demand and costs nothing until needed. What every session pays for is the boot set: the files the CoS reads at session start (`CLAUDE.md`, `org.yaml`, `company/vision.md`, `strategy.md`, `state.md`, `decision-queue.md`, `accounts.local.yaml`). Three rules keep it small:
+
+- `CLAUDE.md` holds identity, gates, house rules and a map. Procedures needed only sometimes are hidden plugin skills loaded on demand: `session-start` (the start-of-session routine), `departments` (adding, changing or granting access to a department), `product-repos` (registry, planned repos, clone paths, `gh`), next to `intake`, `record-decision`, `weekly-brief` and `hq-version`. Departments cannot load skills, so every rule a department needs stays in `CLAUDE.md` or in its own files.
+- A budget per boot file and for the whole set (`schemas/boot-set.md`). The `session-start` skill measures it and adds one status line, naming the offending files and lines, when something is over budget.
+- Analyses and notes carry lifecycle frontmatter (`status`, `as_of`, `source_commit`, `superseded_by`; `schemas/document.md`). Archived documents move to `archive/`, which `.ignore` keeps out of default searches while git still tracks it.
 
 A holding instance is an org like any other whose specific job is to be a registry: `portfolio.yaml` lists references to company hqs, which may live in separate code orgs. It does not keep its policies in the hq: they live in a separate small policies repo (see 5), whose path is recorded in `org.yaml` as `policies_repo`. Its departments are chosen at setup like in any org, and may be none.
 
