@@ -37,7 +37,13 @@ A repo marked `planned: true` does not exist yet. Before the first write to it, 
 
 ## Clone paths
 
-Ask once per computer for each registered repo other than the hq that is not planned, is not an owner pattern and has no entry under `repo_paths` in `accounts.local.yaml`: its local clone path on this machine, or "not cloned here". Write the answers to `repo_paths:` in that file, creating it if missing (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Never commit `accounts.local.yaml`.
+Ask once per computer for each registered repo other than the hq that is not planned, is not an owner pattern and has no entry under `repo_paths` in `accounts.local.yaml`: its local clone path on this machine, or "not cloned here".
+
+- Propose a path next to the hq by default: the folder that holds the hq folder, plus the repo name (for an hq in `/home/me/acme/acme-hq`, the repo `acme/app` goes to `/home/me/acme/app`). The CEO may give any other path.
+- If the path the CEO gives is inside the hq folder, warn in one line before writing it: a repo inside the hq mixes the hq's records with code and confuses git. Propose the path next to the hq instead, and record the path the CEO then confirms.
+- Never ask about folders while the hq is the only repo.
+
+Write the answers to `repo_paths:` in that file, creating it if missing (each slug maps to a path, or to `null` when not cloned here; then agents reach it with `gh -R <slug>` only). Never commit `accounts.local.yaml`.
 
 ## Tools
 
