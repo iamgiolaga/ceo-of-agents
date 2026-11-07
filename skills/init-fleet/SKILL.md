@@ -10,7 +10,7 @@ allowed-tools: Read Grep Glob Edit Write Bash(git init *) Bash(git status *) Bas
 
 Reply to the CEO in the chat language, which is settled before question 1 (see "Before question 1: chat language"). Ask the questions in that language. Files you generate use the file language chosen in question 4. Keep technical ids (action ids, file names, patterns) out of the questions; they go into the files.
 
-You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/templates/`, `${CLAUDE_PLUGIN_ROOT}/catalog/`, `${CLAUDE_PLUGIN_ROOT}/gates/default.md` and `${CLAUDE_PLUGIN_ROOT}/schemas/`. Framework version: `0.11.0`.
+You generate a new hq repo in the current directory from `${CLAUDE_PLUGIN_ROOT}/templates/`, `${CLAUDE_PLUGIN_ROOT}/catalog/`, `${CLAUDE_PLUGIN_ROOT}/gates/default.md` and `${CLAUDE_PLUGIN_ROOT}/schemas/`. Framework version: `0.11.0`. <!-- x-release-please-version -->
 
 ## Rules
 
@@ -265,7 +265,7 @@ Render with plain string replacement. Values are single-line unless stated (`{{V
 | `{{FILE_LANGUAGE}}` | File language code (question 4) |
 | `{{CEO_ROLE_ID}}` | `ceo` |
 | `{{CEO_DISPLAY_NAME}}` | CEO display name without quotes, or an empty string. The template already wraps it in quotes (`display_name: "..."`) |
-| `{{FRAMEWORK_VERSION}}` | `0.11.0` |
+| `{{FRAMEWORK_VERSION}}` | `0.11.0` <!-- x-release-please-version --> |
 | `{{DATE}}` | Today, `YYYY-MM-DD` (`date +%F`) |
 | `{{MODEL_COS}}` | Tier chosen for the CoS (question 8) |
 | `{{MODEL_DEPARTMENTS}}` | Tier chosen for departments (question 8; a department may override) |
@@ -375,7 +375,7 @@ Run them and fix what fails; report the results:
 
 ## Git
 
-If there is no `.git`, run `git init --quiet`. If the CEO gave an hq remote, run `git remote add origin <url>`. Show `git status --short`. Ask the CEO before the first commit. If approved, run `git add -A`, then commit everything with `git commit -m` and the message `chore: initialize <org name> hq with ceo-of-agents <framework version>` (for example `ceo-of-agents 0.11.0`) and the attribution lines required by the session. Never push. Tell the CEO how to push on their own (and how to add a remote if none was given). For a holding, say the same for the policies repo.
+If there is no `.git`, run `git init --quiet`. If the CEO gave an hq remote, run `git remote add origin <url>`. Show `git status --short`. Ask the CEO before the first commit. If approved, run `git add -A`, then commit everything with `git commit -m` and the message `chore: initialize <org name> hq with ceo-of-agents <framework version>` (for example `ceo-of-agents 0.11.0`) and the attribution lines required by the session. Never push. Tell the CEO how to push on their own (and how to add a remote if none was given). For a holding, say the same for the policies repo. <!-- x-release-please-version -->
 
 ## End
 
