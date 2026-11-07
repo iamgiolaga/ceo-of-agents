@@ -1,8 +1,8 @@
 ---
 name: departments
-description: Add, change or remove a department of a ceo-of-agents hq, or grant one a new tool or connector, through a decision card. Holds the grant review (a one-line reason for every elevated grant), the account checks and the files to write once the CEO decides. Use when the CEO asks for a new department, a change to one, or access for one, and when recurring work suggests a new department.
+description: Add, change or remove a department of a ceo-of-agents hq, or grant one a new tool or connector, through a decision card. Holds the grant review (a one-line reason for every elevated grant), the account checks and the files to write once the CEO decides, including moving a removed department's folder to the archive. Use when the CEO asks for a new department, a change to one, or access for one, and when recurring work suggests a new department.
 user-invocable: false
-allowed-tools: Read Grep Glob Edit Write Bash(git status:*) Bash(git diff:*) Bash(ls:*) Bash(date:*)
+allowed-tools: Read Grep Glob Edit Write Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git ls-files:*) Bash(git mv:*) Bash(mkdir:*) Bash(ls:*) Bash(date:*)
 ---
 
 # departments: add, change or remove a department, or grant access
@@ -21,6 +21,7 @@ Only the chief of staff (CoS) runs this skill. A department never changes its ow
    - **the CEO's own agent or skill**: registered as it is, never rewritten, copied or moved: a charter from `${CLAUDE_PLUGIN_ROOT}/templates/department/own-charter.md`, an item with `from_catalog: own`, `kind`, `location` and no `model`, and a routing row. It can sit next to the others, replace one (the replaced department is removed in the same decision), or be the only one. If the CEO gives its file path, read it once, read-only, and show its tools; it brings its own tools, and this org grants it nothing.
 
    Ask the CEO for what is missing; never invent it. Then draft the display name and agent name (the persona in lowercase, or the id; a brought-in one keeps its own name; unique, never `reader`, `worker` or another department's id), the model tier (not for a brought-in one) and, if wanted, "top model, workers included" (`workers: same`). For a change to an existing department: the exact lines that change in its charter, its agent file and `org.yaml`.
+   For a removal: who takes over its work, if anyone, and one plain line that its folder will move to the archive, for example "Its notes and analyses move to `archive/departments/support/`: nothing is deleted, and they can come back." The folder is deleted instead only if the CEO asks for that explicitly (see "After the CEO decides").
 3. Overlap check: compare what the new or changed department covers with every other department (charter scopes, changes sections, the core job and triggers of brought-in ones). For each piece of work two of them cover, add one plain line with a suggestion to the card, for example "Engineering and Security both cover security reviews: drop it from Engineering, or keep both and route security work to Security." Warnings only: they never block the card.
 4. Review the draft as a whole (scope, tools, connectors, model) and give a one-line reason for each elevated grant: any connector, `Edit`, `Write`, `Bash` or `Agent`. Drop a grant that has no reason, and say so.
 5. Account checks for a connector:
@@ -38,6 +39,8 @@ Record the decision with the `record-decision` skill, then apply exactly what wa
 - New department: `departments/<id>/charter.md` and `.claude/agents/<agent>.md` rendered from the catalog entry or the custom template, or only the charter for the CEO's own agent or skill, and in every case `departments/<id>/README.md`, the index of its documents, from `${CLAUDE_PLUGIN_ROOT}/templates/department/index.md` (placeholders as in the `init-fleet` skill's placeholder reference), an item in `departments:` in `org.yaml` (`connectors: []` unless the decision grants one), and a row in the routing table of `CLAUDE.md`. Writes into `.claude/` may raise a permission prompt.
 - Grant: add the connector to the department's `connectors:` in `org.yaml` and to the `tools:` list of its agent file. For the CEO's own agent or skill, record it in `org.yaml` only and tell the CEO that its own file decides what it can use.
 - `workers: same` gained or lost: also update the worker model lines in its agent file.
-- Removal: delete its charter folder and agent file, its item in `org.yaml` and its routing row. Git keeps the history.
+- Removal: remove its agent file (`.claude/agents/<agent>.md`), its item in `org.yaml` and its routing row, and archive its folder: nothing in it is deleted. For the CEO's own agent or skill, its own file stays where it is.
+  - Archive `departments/<id>/` as one folder with steps 1 to 4 of `${CLAUDE_PLUGIN_ROOT}/schemas/document.md`, section "Archiving": it becomes `archive/departments/<id>/`, each document in it gets `status: archived`, and links in current files point to the new path. The removal decision is the CEO's OK for this move: do not ask again. Documents it wrote into an initiative's folder stay there.
+  - Delete the folder instead only when the CEO asks for deletion explicitly. That is a `delete-data` action: ask for the CEO's OK on that one folder, by path, as a separate request, then `git rm -r departments/<id>/`. Git still keeps the history.
 
 Then commit with notice, as for any hq change.
